@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<xunit>
-  <assemblies>
-    <assembly filename="DrivenDb.Tests\bin\x86\Debug\DrivenDb.Tests.dll" shadow-copy="true" />
-    <assembly filename="DrivenDb.SqLite.Tests\bin\x86\Debug\DrivenDb.SqLite.Tests.dll" shadow-copy="true" />
-    <assembly filename="DrivenDb.MsSql.Tests\bin\x86\Debug\DrivenDb.MsSql.Tests.dll" shadow-copy="true" />
-  </assemblies>
-</xunit>

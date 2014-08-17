@@ -1,15 +1,27 @@
 @echo off
 
-CALL build-env.bat
 SET PATH=.\3rd\NuGet
 SET EnableNuGetPackageRestore=true
 
 NuGet Update -self
-NuGet Pack DrivenDb.nuspec -OutputDirectory .\Build
+NuGet Pack .\3rd\NuGet\DrivenDb.nuspec -OutputDirectory .\Release
 
-echo Press [Enter] to publish 
-pause
+ECHO.
+ECHO.
 
-NuGet Push .\Build\DrivenDb.%VERSION%.nupkg
+SET /p PUBLISH="Publish to NuGet (y/n): " %=%
 
-pause
+ECHO.
+ECHO.
+
+IF "%PUBLISH%" == "y" (
+	ECHO "YEP"
+	REM NuGet Push .\Build\DrivenDb.2.0.nupkg
+) ELSE (
+	ECHO Publish cancelled.
+)
+
+ECHO.
+ECHO.
+
+PAUSE
