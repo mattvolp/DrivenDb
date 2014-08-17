@@ -8,7 +8,7 @@
 	<UsingTask TaskName="MSBuild.Community.Tasks.Zip" AssemblyFile="$(MSBuildExtensionsPath)\MSBuild.Community.Tasks.dll" />
 
 	<PropertyGroup>
-        <ReleaseFolder>Release</ReleaseFolder>
+        <ReleaseFolder>release</ReleaseFolder>
     </PropertyGroup>
 	
 	<PropertyGroup>
