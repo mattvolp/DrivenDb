@@ -14,9 +14,8 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: update console, keep current one or make command line
   * TODO: sqlite need to just do longs
 * TODO: make studio custom tool for schema generation?
-* public DbChangeEventArgs(IEnumerable<DbChange> changes) array
 * TODO: solve inheritance problem?  is it a problem?
-* 
+
 ### Fixed
 
 * rename protected DbEntity member variables m_LastModified? or make sure they're excluded?  
@@ -29,6 +28,6 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * MissingFieldException gone?
 * Link2Sql Contracts not supported?
 * DbAggregate concept
-* TODO: void Update(T other, bool checkIdentity = true); remove "check"
-* TODO: read identity bad idea? review whole accessor interface
+* void Update(T other, bool checkIdentity = true); remove "check"
+* read identity bad idea? review whole accessor interface
 

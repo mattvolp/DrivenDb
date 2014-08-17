@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using Fastlite.DrivenDb.Core.Contracts;
 using Fastlite.DrivenDb.Core.Contracts.Attributes;
 
-namespace Fastlite.DrivenDb.Data.Tests.MsSql
+namespace Fastlite.DrivenDb.Data.Tests.MsSql.Tables
 {
    [DataContract]
    [DbTable(Name = "TextTable")]

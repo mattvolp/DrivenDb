@@ -52,16 +52,40 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Base\DbAccessorTests.cs" />
-    <Compile Include="MsSql\ImageTable.cs" />
+    <Compile Include="Base\Infrastructure\DataContracts.cs" />
+    <Compile Include="Base\Infrastructure\DbAccessorBuilder.cs" />
+    <Compile Include="Base\Infrastructure\IDbTestFixture.cs" />
+    <Compile Include="Base\Infrastructure\IDbAccessorFactory.cs" />
+    <Compile Include="Base\Tables\MyBadTable.cs" />
+    <Compile Include="Base\Tables\MyBigTable.cs" />
+    <Compile Include="Base\Tables\MyChildren.cs" />
+    <Compile Include="Base\Tables\MyCustomNameTable.cs" />
+    <Compile Include="Base\Tables\MyFriend.cs" />
+    <Compile Include="Base\Tables\MyNopkTable.cs" />
+    <Compile Include="Base\Tables\MyTable.cs" />
+    <Compile Include="Base\Tables\MyTablePartial.cs" />
+    <Compile Include="Base\Tables\MyTablePartial.Partial.cs" />
+    <Compile Include="Base\Tables\MyTableRecord.cs" />
+    <Compile Include="Base\Tables\MyTableSlim.cs" />
+    <Compile Include="Base\Tables\MyTableType.cs" />
+    <Compile Include="Base\Tables\MyTableType2.cs" />
+    <Compile Include="Base\Tables\MyTableWithoutColumnNames.cs" />
+    <Compile Include="MsSql\Infrastructure\MsSqlAccessorFactory.cs" />
+    <Compile Include="MsSql\Infrastructure\MsSqlTestFixture.cs" />
+    <Compile Include="MsSql\Tables\ImageTable.cs" />
     <Compile Include="MsSql\MsSqlAccessorTests.cs" />
     <Compile Include="MsSql\MsSqlScripterTests.cs" />
     <Compile Include="MsSql\MsSqlValueJoinerTests.cs" />
-    <Compile Include="MsSql\TextTable.cs" />
-    <Compile Include="MsSql\TimeTable.cs" />
-    <Compile Include="MsSql\VarbinaryTest.cs" />
+    <Compile Include="MsSql\Tables\TextTable.cs" />
+    <Compile Include="MsSql\Tables\TimeTable.cs" />
+    <Compile Include="MsSql\Tables\VarbinaryTest.cs" />
+    <Compile Include="MySql\Infrastructure\MySqlAccessorFactory.cs" />
     <Compile Include="MySql\MySqlAccessorTests.cs" />
+    <Compile Include="MySql\Infrastructure\MySqlTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqLite\Examples.cs" />
+    <Compile Include="SqLite\Infrastructure\SqLiteAccessorFactory.cs" />
+    <Compile Include="SqLite\Infrastructure\SqLiteTestFixture.cs" />
     <Compile Include="SqLite\SqLiteAccessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +127,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

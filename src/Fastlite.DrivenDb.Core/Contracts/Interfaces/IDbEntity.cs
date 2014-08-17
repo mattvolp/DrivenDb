@@ -23,7 +23,7 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
    {
       T Clone();
 
-      void Update(T other, bool checkIdentity = true);
-      void Merge(T other, bool checkIdentity = true);
+      void Update(T other);
+      void Merge(T other);
    }
 }

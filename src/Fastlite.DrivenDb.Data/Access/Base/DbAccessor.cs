@@ -65,70 +65,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
             }
          }
       }
-
-      [Obsolete("This is fraught with danger")]
-      public T ReadIdentity<T, K1, K2>(K1 key1, K2 key2)
-         where T : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptIdentitySelect<T>(command, key1, key2);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               return _mapper.MapEntity<T>(command.CommandText, reader);
-            }
-         }
-      }
-
-      [Obsolete("This is fraught with danger")]
-      public T ReadIdentity<T, K1, K2, K3>(K1 key1, K2 key2, K3 key3)
-         where T : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptIdentitySelect<T>(command, key1, key2, key3);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               return _mapper.MapEntity<T>(command.CommandText, reader);
-            }
-         }
-      }
-
-      [Obsolete("This is fraught with danger")]
-      public T ReadIdentity<T, K1, K2, K3, K4>(K1 key1, K2 key2, K3 key3, K4 key4)
-         where T : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptIdentitySelect<T>(command, key1, key2, key3, key4);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               return _mapper.MapEntity<T>(command.CommandText, reader);
-            }
-         }
-      }
-
+      
       public IOnJoiner<P, C> ReadRelated<P, C>(P parent)
          where P : IDbRecord, new()
          where C : IDbRecord, new()

@@ -44,22 +44,7 @@ namespace Fastlite.DrivenDb.Data.Access.Wrappers
       {
          return _accessor.ReadIdentity<T, K>(key);
       }
-
-      public T ReadIdentity<T, K1, K2>(K1 key1, K2 key2) where T : IDbRecord, new()
-      {
-         return _accessor.ReadIdentity<T, K1, K2>(key1, key2);
-      }
-
-      public T ReadIdentity<T, K1, K2, K3>(K1 key1, K2 key2, K3 key3) where T : IDbRecord, new()
-      {
-         return _accessor.ReadIdentity<T, K1, K2, K3>(key1, key2, key3);
-      }
-
-      public T ReadIdentity<T, K1, K2, K3, K4>(K1 key1, K2 key2, K3 key3, K4 key4) where T : IDbRecord, new()
-      {
-         return _accessor.ReadIdentity<T, K1, K2, K3, K4>(key1, key2, key3, key4);
-      }
-
+      
       public IOnJoiner<P, C> ReadRelated<P, C>(P parent)
          where P : IDbRecord, new()
          where C : IDbRecord, new()

@@ -96,7 +96,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
       {
          var result = new T();
 
-         result.Update(this.__instance, false);
+         result.Update(this.__instance);
 
          if (__identityColumn.Value != null)
          {
@@ -119,7 +119,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
       {
          var result = new T();
 
-         result.Update(this.__instance, false);
+         result.Update(this.__instance);
 
          if (__identityColumn.Value != null)
          {
@@ -155,13 +155,8 @@ namespace Fastlite.DrivenDb.Core.Contracts
          }
       }
 
-      public void Update(T other, bool checkIdentity = true)
-      {
-         if (checkIdentity && !this.Entity.SameAs(other))
-         {
-            throw new InvalidDataException("Cannot update mismatched records");
-         }
-
+      public void Update(T other)
+      {         
          var properties = __entityAccessor.GetProperties();
 
          foreach (var property in properties)
@@ -208,13 +203,8 @@ namespace Fastlite.DrivenDb.Core.Contracts
          return result;
       }
 
-      void IDbEntity<T>.Merge(T other, bool checkIdentity)
-      {
-         if (checkIdentity && !this.Entity.SameAs(other))
-         {
-            throw new InvalidDataException("Cannot update mismatched records");
-         }
-
+      void IDbEntity<T>.Merge(T other)
+      {         
          var lastModified = __lastModified;
          var lastUpdated = __lastUpdated;
          var changes = new HashSet<string>(__changes);
