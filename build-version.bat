@@ -1,7 +1,7 @@
 @ECHO off
 
 SET VERSION=2.0
-SET PATH=Packages\Zero29.0.6.1\tools\;3rd\Ssed
+SET PATH=3rd\Ploeh;3rd\Ssed
 
 ECHO.
 ECHO CURRENT VERSION: %VERSION%
