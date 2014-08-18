@@ -52,8 +52,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Base\DbAccessorTests.cs" />
+    <Compile Include="Base\DbEntityTests.cs" />
+    <Compile Include="Base\DbMapperTests.cs" />
+    <Compile Include="Base\DbScopeTests.cs" />
+    <Compile Include="Base\FallbackAccessorTests.cs" />
     <Compile Include="Base\Infrastructure\DataContracts.cs" />
     <Compile Include="Base\Infrastructure\DbAccessorBuilder.cs" />
+    <Compile Include="Base\Infrastructure\DbTestClass.cs" />
     <Compile Include="Base\Infrastructure\IDbTestFixture.cs" />
     <Compile Include="Base\Infrastructure\IDbAccessorFactory.cs" />
     <Compile Include="Base\Tables\MyBadTable.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Transactions;
 using Fastlite.DrivenDb.Core.Contracts;
@@ -12,206 +11,10 @@ using Xunit;
 
 namespace Fastlite.DrivenDb.Data.Tests.Base
 {
-   public abstract class DbAccessorTests
-   {
+   public abstract class DbAccessorTests : DbTestClass
+   {            
       [Fact]
-      public void Undelete_RestoresPreviousNewState()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var record = accessor.ReadEntities<MyTable>(@"SELECT * FROM MyTable")
-               .Select(t => t.ToNew())
-               .First();
-
-            record.Entity.Delete();
-
-            Assert.True(record.Entity.State == EntityState.Deleted);
-
-            record.Entity.Undelete();
-
-            Assert.True(record.Entity.State == EntityState.New);
-         }
-      }
-
-      [Fact]
-      public void Undelete_RestoresPreviousCurrentState()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var record = accessor.ReadEntities<MyTable>(@"SELECT * FROM MyTable")
-               .First();
-
-            record.Entity.Delete();
-
-            Assert.True(record.Entity.State == EntityState.Deleted);
-
-            record.Entity.Undelete();
-
-            Assert.True(record.Entity.State == EntityState.Current);
-         }
-      }
-
-      [Fact]
-      public void Undelete_RestoresPreviousUpdateState()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var record = accessor.ReadEntities<MyTable>(@"SELECT * FROM MyTable")
-               .Select(t => t.ToUpdate())
-               .First();
-
-            record.Entity.Delete();
-
-            Assert.True(record.Entity.State == EntityState.Deleted);
-
-            record.Entity.Undelete();
-
-            Assert.True(record.Entity.State == EntityState.Modified);
-         }
-      }
-
-      [Fact]
-      public void ToUpdate_ProvidesUpdatableEntities()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var records = accessor.ReadEntities<MyTable>(@"SELECT * FROM MyTable")
-               .Select(t => t.ToUpdate())
-               .ToArray();
-
-            Assert.True(records[0].MyIdentity == 1);
-            Assert.True(records[1].MyIdentity == 2);
-            Assert.True(records[2].MyIdentity == 3);
-
-            Assert.DoesNotThrow(() => accessor.WriteEntities(records));
-         }
-      }
-
-      [Fact]
-      public void ToNew_ProvidesInsertableEntities()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var records = accessor.ReadEntities<MyTable>(@"SELECT * FROM MyTable")
-               .Select(t => t.ToNew())
-               .ToArray();
-
-            Assert.True(records[0].MyIdentity == 0);
-            Assert.True(records[1].MyIdentity == 0);
-            Assert.True(records[2].MyIdentity == 0);
-
-            accessor.WriteEntities(records);
-
-            Assert.True(records.Length == 3);
-            Assert.True(records[0].MyIdentity == 4);
-            Assert.True(records[1].MyIdentity == 5);
-            Assert.True(records[2].MyIdentity == 6);
-         }
-      }
-
-      [Fact]
-      public void FallbackReadEntitiesWithNullTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entities = accessor.Fallback.ReadEntities<MyTable>(
-               "SELECT * FROM MyTable WHERE MyIdentity IN (@0)"
-               , default(int[])
-               ).ToArray();
-
-            Assert.True(entities.Length == 0);
-         }
-      }
-
-      [Fact]
-      public void FallbackReadEntitiesWithoutValuesTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var identities = new int[0];
-
-            var entities = accessor.Fallback.ReadEntities<MyTable>(
-               "SELECT * FROM MyTable WHERE MyIdentity IN (@0)"
-               , identities
-               ).ToArray();
-
-            Assert.True(entities.Length == 0);
-         }
-      }
-
-      [Fact]
-      public void FallbackReadEntitiesWithValuesTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var identities = new[] {1, 2, 3};
-
-            var entities = accessor.Fallback.ReadEntities<MyTable>(
-               "SELECT * FROM MyTable WHERE MyIdentity IN (@0)"
-               , identities
-               ).ToArray();
-
-            Assert.True(entities.Length == 3);
-         }
-      }
-
-      [Fact]
-      public void Partial_PropertiesWithoutColumnAttributesWillBeScriptedIntoSql()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entity = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable")
-               .First();
-
-            entity.MyNumber = 100;
-            entity.MyString = "100";
-            entity.PartialValue = 100;
-
-            Assert.False(entity.Entity.Changes.Contains("PartialValue"));
-            Assert.DoesNotThrow(() =>
-               accessor.WriteEntity(entity)
-               );
-         }
-      }
-
-      [Fact]
-      public void TransactionScope_AvoidsExecutionWhenAllEntitiesAreCurrent()
+      public void DbAccessor_TransactionScopeAvoidsExecutionWhenAllEntitiesAreCurrent()
       {
          using (var fixture = CreateFixture())
          {
@@ -230,26 +33,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DbScope_AvoidsExecutionWhenAllEntitiesAreCurrent()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
-
-            using (var scope = accessor.CreateScope())
-            {
-               scope.WriteEntities(entities);
-               scope.Commit();
-            }
-         }
-      }
-
-      [Fact]
-      public void TransactionScope_ExecuteCommitsSuccessfully()
+      public void DbAccessor_TransactionScopeExecuteCommitsSuccessfully()
       {
          using (var fixture = CreateFixture())
          {
@@ -273,7 +57,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void TransactionScope_ExecuteRollsbackSuccessfully()
+      public void DbAccessor_TransactionScopeExecuteRollsbackSuccessfully()
       {
          using (var fixture = CreateFixture())
          {
@@ -304,7 +88,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ReadValues_StringsReadSuccessfully()
+      public void DbAccessor_ReadValuesStringsReadSuccessfully()
       {
          using (var fixture = CreateFixture())
          {
@@ -321,52 +105,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DbScope_ExecuteCommitsSuccessfully()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            using (var scope = accessor.CreateScope())
-            {
-               scope.Execute("UPDATE MyTable SET MyString = 'testeroo'");
-               scope.Execute("UPDATE MyTable SET MyNumber = 555");
-               scope.Commit();
-            }
-
-            var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
-
-            Assert.True(entities.All(e => e.MyNumber == 555));
-            Assert.True(entities.All(e => e.MyString == "testeroo"));
-         }
-      }
-
-      [Fact]
-      public void DbScope_ExecuteRollsbackSuccessfully()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            using (var scope = accessor.CreateScope())
-            {
-               scope.Execute("UPDATE MyTable SET MyString = 'testeroo'");
-               scope.Execute("UPDATE MyTable SET MyNumber = 555");
-            }
-
-            var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
-
-            Assert.True(entities.All(e => e.MyNumber != 555));
-            Assert.True(entities.All(e => e.MyString != "testeroo"));
-         }
-      }
-      
-      [Fact]
-      public void ReadEntitiesTest()
+      public void DbAccessor_ReadEntitiesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -391,32 +130,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ParallelReadEntitiesTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entities = accessor.Parallel.ReadEntities<MyTable>("SELECT * FROM MyTable")
-               .ToArray();
-
-            Assert.True(entities.Length == 3);
-            Assert.True(entities[0].MyIdentity == 1);
-            Assert.True(entities[0].MyNumber == 1);
-            Assert.True(entities[0].MyString == "One");
-            Assert.True(entities[1].MyIdentity == 2);
-            Assert.True(entities[1].MyNumber == 2);
-            Assert.True(entities[1].MyString == "Two");
-            Assert.True(entities[2].MyIdentity == 3);
-            Assert.True(entities[2].MyNumber == 3);
-            Assert.True(entities[2].MyString == "Three");
-         }
-      }
-
-      [Fact]
-      public void ReadTypeTest()
+      public void DbAccessor_ReadTypeTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -441,7 +155,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ReadTypeTestWithFields()
+      public void DbAccessor_ReadTypeTestWithFields()
       {
          using (var fixture = CreateFixture())
          {
@@ -466,7 +180,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void InsertEntitiesTest()
+      public void DbAccessor_InsertEntitiesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -521,7 +235,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void InsertUnknownTypeEntitiesTest()
+      public void DbAccessor_InsertUnknownTypeEntitiesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -576,7 +290,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DeleteEntitiesTest()
+      public void DbAccessor_DeleteEntitiesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -622,7 +336,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void UpdateEntitiesTest()
+      public void DbAccessor_UpdateEntitiesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -660,7 +374,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ReadRelatedTest()
+      public void DbAccessor_ReadRelatedTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -699,41 +413,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void SerializationTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable")
-               .OrderBy(e => e.MyNumber)
-               .ToArray();
-
-            entities[1].Entity.Delete();
-            entities[2].MyString = "Three Three Three";
-
-            using (var memory = new MemoryStream())
-            {
-               DataContracts.Serialize(entities, memory);
-
-               memory.Position = 0;
-
-               var hydrated = DataContracts.Deserialize<MyTable[]>(memory);
-
-               Assert.True(hydrated.Length == 3);
-               Assert.True(hydrated[0].Entity.State == EntityState.Current);
-               Assert.True(hydrated[1].Entity.State == EntityState.Deleted);
-               Assert.True(hydrated[2].Entity.State == EntityState.Modified);
-               Assert.True(hydrated[2].Entity.Changes.Contains("MyString"));
-               Assert.True(hydrated[2].MyString == "Three Three Three");
-            }
-         }
-      }
-
-      [Fact]
-      public void ReadAnonymousTest()
+      public void DbAccessor_ReadAnonymousTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -757,7 +437,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void WriteIdentity32()
+      public void DbAccessor_WriteIdentity32()
       {
          using (var fixture = CreateFixture())
          {
@@ -778,7 +458,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void WriteIdentity64()
+      public void DbAccessor_WriteIdentity64()
       {
          using (var fixture = CreateFixture())
          {
@@ -799,7 +479,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void WriteIdentityMixed()
+      public void DbAccessor_WriteIdentityMixed()
       {
          using (var fixture = CreateFixture())
          {
@@ -838,7 +518,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ParameterTest()
+      public void DbAccessor_ParameterTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -869,7 +549,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ParameterTest2()
+      public void DbAccessor_ParameterTest2()
       {
          using (var fixture = CreateFixture())
          {
@@ -894,7 +574,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DrivenRecordTest()
+      public void DbAccessor_DrivenRecordTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -919,7 +599,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void UnrelatedPropertyTest()
+      public void DbAccessor_UnrelatedPropertyTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -947,7 +627,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void UnrelatedPropertyTest2()
+      public void DbAccessor_UnrelatedPropertyTest2()
       {
          using (var fixture = CreateFixture())
          {
@@ -965,7 +645,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void InactiveExtensionTest()
+      public void DbAccessor_InactiveExtensionTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -982,7 +662,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void MissingResultTest()
+      public void DbAccessor_MissingResultTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -997,7 +677,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
       
       [Fact]
-      public void UpdateMultipleValuesTest()
+      public void DbAccessor_UpdateMultipleValuesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1025,7 +705,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void AllowUnmappedColumnsPassTest()
+      public void DbAccessor_AllowUnmappedColumnsPassTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1038,7 +718,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void AllowUnmappedColumnsFailTest()
+      public void DbAccessor_AllowUnmappedColumnsFailTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1053,7 +733,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void AllowCaseInsensitiveColumnMappingPassTest()
+      public void DbAccessor_AllowCaseInsensitiveColumnMappingPassTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1069,7 +749,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void AllowCaseInsensitiveColumnMappingFailTest()
+      public void DbAccessor_AllowCaseInsensitiveColumnMappingFailTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1085,7 +765,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DefaultAttributeNameToPropertyName()
+      public void DbAccessor_DefaultAttributeNameToPropertyName()
       {
          using (var fixture = CreateFixture())
          {
@@ -1101,7 +781,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void NullableReadValueTest()
+      public void DbAccessor_NullableReadValueTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1117,7 +797,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void NullableReadNullValueTest()
+      public void DbAccessor_NullableReadNullValueTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1132,7 +812,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void NullableReadNoRowTest()
+      public void DbAccessor_NullableReadNoRowTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1147,7 +827,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void NullableReadValuesTest()
+      public void DbAccessor_NullableReadValuesTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1165,7 +845,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void SelectIdentityWithLinqTableAttribute()
+      public void DbAccessor_SelectIdentityWithLinqTableAttribute()
       {
          using (var fixture = CreateFixture())
          {
@@ -1178,86 +858,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void DbScopeCommitsData()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var gnu4 = new MyTable()
-               {
-                  MyNumber = 4,
-                  MyString = "Four"
-               };
-            var gnu5 = new MyTable()
-               {
-                  MyNumber = 5,
-                  MyString = "Five"
-               };
-            var gnu6 = new MyTable()
-               {
-                  MyNumber = 6,
-                  MyString = "Six"
-               };
-
-            using (var scope = accessor.CreateScope())
-            {
-               scope.WriteEntity(gnu4);
-               scope.WriteEntities(new[] {gnu5, gnu6});
-               scope.Commit();
-            }
-
-            var committed = accessor.ReadEntities<MyTable>(
-               @"SELECT * FROM MyTable"
-               );
-
-            Assert.Equal(6, committed.Count());
-         }
-      }
-
-      [Fact]
-      public void DbScopeRollsbackData()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var gnu4 = new MyTable()
-               {
-                  MyNumber = 4,
-                  MyString = "Four"
-               };
-            var gnu5 = new MyTable()
-               {
-                  MyNumber = 5,
-                  MyString = "Five"
-               };
-            var gnu6 = new MyTable()
-               {
-                  MyNumber = 6,
-                  MyString = "Six"
-               };
-
-            using (var scope = accessor.CreateScope())
-            {
-               scope.WriteEntity(gnu4);
-               scope.WriteEntities(new[] {gnu5, gnu6});
-            }
-
-            var committed = accessor.ReadEntities<MyTable>(
-               @"SELECT * FROM MyTable"
-               );
-
-            Assert.Equal(3, committed.Count());
-         }
-      }
-
-      [Fact]
-      public void NoPrimaryKeyReadTest()
+      public void DbAccessor_NoPrimaryKeyReadTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1274,7 +875,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void NoPrimaryKeyWriteTest()
+      public void DbAccessor_NoPrimaryKeyWriteTest()
       {
          using (var fixture = CreateFixture())
          {
@@ -1300,7 +901,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
       }
 
       [Fact]
-      public void ReadEntitiesWithCustomPropertyNamesTest()
+      public void DbAccessor_ReadEntitiesWithCustomPropertyNamesTest()
       {         
          using (var fixture = CreateFixture())
          {
@@ -1323,7 +924,5 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
             Assert.True(entities[2].MyStringCustom == "Three");
          }
       }
-
-      protected abstract IDbTestFixture CreateFixture();      
    }
 }

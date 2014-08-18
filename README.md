@@ -15,6 +15,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
   * TODO: sqlite need to just do longs
 * TODO: make studio custom tool for schema generation?
 * TODO: solve inheritance problem?  is it a problem?
+* TODO: review ToUpdate, ToNew, etc... methods 
 
 ### Fixed
 
