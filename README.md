@@ -1,8 +1,8 @@
 #DrivenDb
 
-###Version 2.0 - Release Notes
+###Version 2.0 - Unreleased Notes
 
-In order to continue developing DrivenDb, it seemed necessary to go through the project thoroughly and determine what was valuable.  In the end, some ideas never took hold.  As well, my coding practices and standards have changed.  The core of the library will remain intact.  Some peripheral concepts and classes will be dropped.  Namespaces have been reorganized.  The library in general has been re-branded along with the move to GitHub.  The goal was for the project to be more focused and current. Here is a list of changes:
+In order to continue developing DrivenDb, it seemed necessary to go through the project thoroughly and determine what was valuable.  In the end, some ideas never took hold.  As well, my coding practices and standards have changed.  The core of the library will remain intact.  Some peripheral concepts and classes will be dropped.  Namespaces have been reorganized.  The library in general has been re-branded along with the move to GitHub.  The goal was for the project to be more focused and current. Here is a list of changes that are *possibly* coming:
 
 
 ### Gained
@@ -19,16 +19,14 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 
 ### Fixed
 
-* rename protected DbEntity member variables m_LastModified? or make sure they're excluded?  
-	double __ prefix?
+* Inherited member variables from DbRecord and DbEntity have been renamed as to avoid conflicts with member variables that inherit from them.
 
 ### Depricated
 
-* lose aggregate stuff?
-* collections good or no? no.
-* MissingFieldException gone?
-* Link2Sql Contracts not supported?
-* DbAggregate concept
-* void Update(T other, bool checkIdentity = true); remove "check"
-* read identity bad idea? review whole accessor interface
+* Aggregate loading and saving is gone.  A fresh approach is required?
+* The collection classes were not that useful, and were ok at best.
+* MissingFieldException is gone, due to the PCL targeting ?
+* Link2Sql conrtact support is gone, due to it's age, lack of MS support, and the new PCL target.
+* The identity check on the "void Update(T other, bool checkIdentity = true)" method was too much responsibility for this method.
+* The read identity methods have been deprecated for some time due to their volatile nature.  They are now gone.
 
