@@ -17,9 +17,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Fastlite.DrivenDb.Core.Contracts;
 using Fastlite.DrivenDb.Core.Contracts.Exceptions;
 using Fastlite.DrivenDb.Core.Contracts.Interfaces;
+using Fastlite.DrivenDb.Core.Utility;
 using Fastlite.DrivenDb.Data.Access.Interfaces;
 
 namespace Fastlite.DrivenDb.Data.Access.Base

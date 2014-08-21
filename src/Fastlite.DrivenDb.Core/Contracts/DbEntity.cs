@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.Serialization;
 using Fastlite.DrivenDb.Core.Contracts.Interfaces;
 

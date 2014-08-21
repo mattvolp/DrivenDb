@@ -12,17 +12,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
-namespace Fastlite.DrivenDb.Core.Utility.Interfaces
+namespace Fastlite.DrivenDb.Core.Utility
 {
-   internal interface IEntityAccessor
+   public static class EnumerableExtensions
    {
-      bool HasProperty(string name);
-      bool CanReadProperty(string name);
-      bool CanWriteProperty(string name);
-      Type GetType();
-      IEnumerable<PropertyInfo> GetProperties();
-      PropertyInfo GetPropertyInfo(string name);
+      public static void ForEach<T>(this IEnumerable<T> instance, Action<T> action)
+      {
+         if (instance == null)
+         {
+            return;
+         }
+
+         foreach (var item in instance)
+         {
+            action(item);
+         }
+      }
    }
 }

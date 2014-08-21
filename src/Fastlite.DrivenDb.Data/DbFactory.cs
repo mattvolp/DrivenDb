@@ -60,7 +60,7 @@ namespace Fastlite.DrivenDb.Data
 
       public static IDbAccessor CreateAccessor(DbAccessorType type, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, AccessorExtension.None, connections));
+         return CreateAccessor(type, new Db(type, AccessorExtension.All, connections));
       }
 
       public static IDbAccessor CreateAccessor(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)
@@ -82,7 +82,7 @@ namespace Fastlite.DrivenDb.Data
 
       public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, AccessorExtension.None, connections));
+         return CreateAccessor(type, new Db(type, AccessorExtension.All, connections));
       }
 
       public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)

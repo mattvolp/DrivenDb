@@ -13,21 +13,7 @@
 using System.Collections.Generic;
 
 namespace Fastlite.DrivenDb.Data.Access
-{
-   public class DbSet<T1>
-   {
-      public DbSet(IEnumerable<T1> set1)
-      {
-         Set1 = set1;
-      }
-
-      public IEnumerable<T1> Set1
-      {
-         get;
-         private set;
-      }
-   }
-
+{   
    public class DbSet<T1, T2>
    {
       public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2)

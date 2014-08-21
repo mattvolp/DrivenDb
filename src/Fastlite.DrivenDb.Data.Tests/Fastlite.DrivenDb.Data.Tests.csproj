@@ -89,7 +89,7 @@
     <Compile Include="MsSql\Infrastructure\MsSqlTestFixture.cs" />
     <Compile Include="MsSql\Tables\ImageTable.cs" />
     <Compile Include="MsSql\MsSqlAccessorTests.cs" />
-    <Compile Include="MsSql\MsSqlValueJoinerTests.cs" />
+    <Compile Include="Base\ValueJoinerTests.cs" />
     <Compile Include="MsSql\Tables\TextTable.cs" />
     <Compile Include="MsSql\Tables\TimeTable.cs" />
     <Compile Include="MsSql\Tables\VarbinaryTest.cs" />

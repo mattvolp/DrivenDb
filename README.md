@@ -9,6 +9,10 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 
 * A Windows Phone 8.1 target has been added to the Core project.
 
+### Changed
+
+* The default extension mode is now All instead or None.
+
 ### Improve
 
 * TODO: update console, keep current one or make command line

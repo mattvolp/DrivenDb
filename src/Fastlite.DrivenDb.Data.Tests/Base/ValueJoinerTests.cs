@@ -2,7 +2,7 @@
 using Fastlite.DrivenDb.Data.Access.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Fastlite.DrivenDb.Data.Tests.MsSql
+namespace Fastlite.DrivenDb.Data.Tests.Base
 {
    [TestClass]
    public class MsSqlValueJoinerTests

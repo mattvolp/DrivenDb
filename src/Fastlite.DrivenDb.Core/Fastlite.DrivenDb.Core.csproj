@@ -53,8 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Attributes\DbColumnAttribute.cs" />
-    <Compile Include="Contracts\Attributes\DbForeignAttribute.cs" />
-    <Compile Include="Contracts\Attributes\DbPrimaryAttribute.cs" />
     <Compile Include="Contracts\Attributes\DbSequenceAttribute.cs" />
     <Compile Include="Contracts\Attributes\DbTableAttribute.cs" />
     <Compile Include="Contracts\DbChange.cs" />
@@ -64,19 +62,16 @@
     <Compile Include="Contracts\DbRecord.cs" />
     <Compile Include="Contracts\EntityState.cs" />
     <Compile Include="Contracts\Exceptions\InactiveExtensionException.cs" />
-    <Compile Include="Contracts\Exceptions\InvalidAggregateStructure.cs" />
     <Compile Include="Contracts\Exceptions\MissingResultException.cs" />
-    <Compile Include="Contracts\Extensions.cs" />
+    <Compile Include="Utility\EnumerableExtensions.cs" />
     <Compile Include="Contracts\Interfaces\IDbEntity.cs" />
     <Compile Include="Contracts\Interfaces\IDbRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\DisposableCollection.cs" />
     <Compile Include="Utility\EntityAccessor.cs" />
     <Compile Include="Utility\EntityHelper.cs" />
-    <Compile Include="Utility\Interfaces\IEntityAccessor.cs" />
     <Compile Include="Utility\Weak.cs" />
     <Compile Include="Utility\WeakEqualityComparer.cs" />
-    <Compile Include="Utility\WeakEventManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DrivenDb.snk" />

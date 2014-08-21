@@ -13,7 +13,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Fastlite.DrivenDb.Core.Contracts;
 
 namespace Fastlite.DrivenDb.Core.Utility
 {

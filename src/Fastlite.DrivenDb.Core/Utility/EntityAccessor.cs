@@ -16,11 +16,10 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Fastlite.DrivenDb.Core.Utility.Interfaces;
 
 namespace Fastlite.DrivenDb.Core.Utility
 {
-   public class EntityAccessor<T> : IEntityAccessor
+   public class EntityAccessor<T> 
    {
       private readonly Type _genericType;
       private readonly Type _objectType;
@@ -33,17 +32,20 @@ namespace Fastlite.DrivenDb.Core.Utility
          _genericType = typeof (T);
          _objectType = typeof (object);
 
-         _getters = new Dictionary<string, Func<T, object>>(caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
-         _setters = new Dictionary<string, Action<T, object>>(caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
-         _properties = _genericType.GetProperties().ToDictionary(p => p.Name, caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+         _getters = new Dictionary<string, Func<T, object>>(caseSensitive
+            ? StringComparer.Ordinal
+            : StringComparer.OrdinalIgnoreCase);
+
+         _setters = new Dictionary<string, Action<T, object>>(caseSensitive
+            ? StringComparer.Ordinal
+            : StringComparer.OrdinalIgnoreCase);
+
+         _properties = _genericType.GetProperties().ToDictionary(p => p.Name, caseSensitive
+            ? StringComparer.Ordinal
+            : StringComparer.OrdinalIgnoreCase);
 
          CompileGetters();
          CompileSetters();
-      }
-
-      public bool HasProperty(string name)
-      {
-         return _getters.ContainsKey(name) || _setters.ContainsKey(name);
       }
 
       public bool CanReadProperty(string name)
@@ -55,12 +57,7 @@ namespace Fastlite.DrivenDb.Core.Utility
       {
          return _setters.ContainsKey(name);
       }
-
-      public new Type GetType()
-      {
-         return typeof (T);
-      }
-
+      
       public IEnumerable<PropertyInfo> GetProperties()
       {
          return _properties.Values;
