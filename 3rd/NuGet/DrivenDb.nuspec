@@ -7,7 +7,7 @@
 		<owners>aleatherwood</owners>
 		<licenseUrl>https://github.com/Fastlite/DrivenDb/blob/master/LICENSE</licenseUrl>
 		<projectUrl>https://github.com/Fastlite/DrivenDb</projectUrl>
-		<!--<iconUrl></iconUrl>-->
+		<iconUrl>https://raw.githubusercontent.com/Fastlite/DrivenDb/master/icon.png</iconUrl>
 		<description>DrivenDb is a better microORM.  Unique features, excellent performance, and cleaner code in as few trips to the database as possible.</description>
 			<summary>Features Include: 
 * Self-Tracking entities that maintain their state through WCF serialization.
