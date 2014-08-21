@@ -6,13 +6,16 @@ using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
 using Fastlite.DrivenDb.Data.Tests.Base.Tables;
 using Fastlite.DrivenDb.Data.Tests.MsSql.Infrastructure;
 using Fastlite.DrivenDb.Data.Tests.MsSql.Tables;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#if ALL_TESTS
 
 namespace Fastlite.DrivenDb.Data.Tests.MsSql
 {
+   [TestClass]
    public class MsSqlAccessorTests : DbAccessorTests
    {
-      [Fact]
+      [TestMethod]
       public void WriteTransactionWithScopeIdentityTest()
       {
          using (var fixture = CreateFixture())
@@ -34,13 +37,13 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
                scope.Commit();
             }
 
-            Assert.Equal(4, entities[0].MyIdentity);
-            Assert.Equal(5, entities[1].MyIdentity);
-            Assert.Equal(6, entities[2].MyIdentity);
+            Assert.AreEqual(4, entities[0].MyIdentity);
+            Assert.AreEqual(5, entities[1].MyIdentity);
+            Assert.AreEqual(6, entities[2].MyIdentity);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void ReadEntitysWithTimespanColumnSucceeds()
       {
          using (var fixture = CreateFixture())
@@ -55,18 +58,18 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             var expected = new DateTime(1972, 8, 2, 6, 5, 33);
 
-            Assert.Equal(expected.Date, actual.PartyDate.Date);
-            Assert.Equal(expected.Date, actual.PartyDateTime.Date);
-            Assert.Equal(expected.Date, actual.PartyDateTime2.Date);
+            Assert.AreEqual(expected.Date, actual.PartyDate.Date);
+            Assert.AreEqual(expected.Date, actual.PartyDateTime.Date);
+            Assert.AreEqual(expected.Date, actual.PartyDateTime2.Date);
 
-            Assert.Equal(expected.TimeOfDay, actual.PartyTime);
-            Assert.Equal(null, actual.PartyTime2);
-            Assert.Equal(expected.TimeOfDay, actual.PartyDateTime.TimeOfDay);
-            Assert.Equal(expected.TimeOfDay, actual.PartyDateTime2.TimeOfDay);
+            Assert.AreEqual(expected.TimeOfDay, actual.PartyTime);
+            Assert.AreEqual(null, actual.PartyTime2);
+            Assert.AreEqual(expected.TimeOfDay, actual.PartyDateTime.TimeOfDay);
+            Assert.AreEqual(expected.TimeOfDay, actual.PartyDateTime2.TimeOfDay);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void WriteEntitiesWithScopeIdentityTest()
       {
          using (var fixture = CreateFixture())
@@ -84,13 +87,13 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             accessor.WriteEntitiesUsingScopeIdentity(entities);
 
-            Assert.Equal(4, entities[0].MyIdentity);
-            Assert.Equal(5, entities[1].MyIdentity);
-            Assert.Equal(6, entities[2].MyIdentity);
+            Assert.AreEqual(4, entities[0].MyIdentity);
+            Assert.AreEqual(5, entities[1].MyIdentity);
+            Assert.AreEqual(6, entities[2].MyIdentity);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void VarbinaryTest()
       {
          using (var fixture = CreateFixture())
@@ -108,20 +111,20 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             var existing = accessor.ReadEntities<VarbinaryTest>("SELECT * FROM [VarbinaryTest]");
 
-            Assert.Equal(1, existing.Count());
+            Assert.AreEqual(1, existing.Count());
 
             var first = existing.First();
 
-            Assert.Null(first.Value2);
-            Assert.Null(first.Value3);
+            Assert.IsNull(first.Value2);
+            Assert.IsNull(first.Value3);
 
             var value = GetString(first.Value1);
 
-            Assert.Equal("This is a test", value);
+            Assert.AreEqual("This is a test", value);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void ImageTest()
       {
          using (var fixture = CreateFixture())
@@ -139,16 +142,16 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             var existing = accessor.ReadEntities<ImageTable>("SELECT * FROM [ImageTable]");
 
-            Assert.Equal(1, existing.Count());
+            Assert.AreEqual(1, existing.Count());
 
             var first = existing.First();
             var value = GetString(first.Test);
 
-            Assert.Equal("This is a test", value);
+            Assert.AreEqual("This is a test", value);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void TextTest()
       {
          using (var fixture = CreateFixture())
@@ -166,16 +169,16 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             var existing = accessor.ReadEntities<TextTable>("SELECT * FROM [TextTable]");
 
-            Assert.Equal(1, existing.Count());
+            Assert.AreEqual(1, existing.Count());
 
             var first = existing.First();
             var value = first.Test;
 
-            Assert.Equal("This is a test", value);
+            Assert.AreEqual("This is a test", value);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void WriteEntitiesWithOutputTest()
       {
          using (var fixture = CreateFixture())
@@ -201,14 +204,14 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
 
             entities.Add(gnu);
 
-            var changes = accessor.WriteEntitiesAndOutputDeleted(entities, new {MyNumber = 0L, MyString = ""}).ToArray();
+            var changes = accessor.WriteEntitiesAndOutputDeleted(entities, new { MyNumber = 0L, MyString = "" }).ToArray();
 
-            Assert.Equal(changes[0].Item2.MyNumber, 1);
-            Assert.Equal(changes[0].Item2.MyString, "One");
-            Assert.Equal(changes[1].Item2.MyNumber, 2);
-            Assert.Equal(changes[1].Item2.MyString, "Two");
-            Assert.Equal(changes[2].Item2.MyNumber, 3);
-            Assert.Equal(changes[2].Item2.MyString, "Three");
+            Assert.AreEqual(changes[0].Item2.MyNumber, 1);
+            Assert.AreEqual(changes[0].Item2.MyString, "One");
+            Assert.AreEqual(changes[1].Item2.MyNumber, 2);
+            Assert.AreEqual(changes[1].Item2.MyString, "Two");
+            Assert.AreEqual(changes[2].Item2.MyNumber, 3);
+            Assert.AreEqual(changes[2].Item2.MyString, "Three");
          }
       }
 
@@ -232,3 +235,5 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql
       }
    }
 }
+
+#endif

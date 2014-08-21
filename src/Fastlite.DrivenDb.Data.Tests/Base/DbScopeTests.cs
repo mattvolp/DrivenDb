@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
 using Fastlite.DrivenDb.Data.Tests.Base.Tables;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Fastlite.DrivenDb.Data.Tests.Base
 {
    public abstract class DbScopeTests : DbTestClass
    {
-      [Fact]
+      [TestMethod]
       public void DbScope_CommitsData()
       {
          using (var fixture = CreateFixture())
@@ -43,11 +43,11 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                @"SELECT * FROM MyTable"
                );
 
-            Assert.Equal(6, committed.Count());
+            Assert.AreEqual(6, committed.Count());
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbScope_RollsbackData()
       {
          using (var fixture = CreateFixture())
@@ -82,11 +82,11 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                @"SELECT * FROM MyTable"
                );
 
-            Assert.Equal(3, committed.Count());
+            Assert.AreEqual(3, committed.Count());
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbScope_AvoidsExecutionWhenAllEntitiesAreCurrent()
       {
          using (var fixture = CreateFixture())
@@ -105,7 +105,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbScope_ExecuteCommitsSuccessfully()
       {
          using (var fixture = CreateFixture())
@@ -123,12 +123,12 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
             var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
 
-            Assert.True(entities.All(e => e.MyNumber == 555));
-            Assert.True(entities.All(e => e.MyString == "testeroo"));
+            Assert.IsTrue(entities.All(e => e.MyNumber == 555));
+            Assert.IsTrue(entities.All(e => e.MyString == "testeroo"));
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbScope_ExecuteRollsbackSuccessfully()
       {
          using (var fixture = CreateFixture())
@@ -145,8 +145,8 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
             var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
 
-            Assert.True(entities.All(e => e.MyNumber != 555));
-            Assert.True(entities.All(e => e.MyString != "testeroo"));
+            Assert.IsTrue(entities.All(e => e.MyNumber != 555));
+            Assert.IsTrue(entities.All(e => e.MyString != "testeroo"));
          }
       }
    }

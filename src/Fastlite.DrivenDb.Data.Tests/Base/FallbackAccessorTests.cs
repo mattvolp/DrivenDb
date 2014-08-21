@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
 using Fastlite.DrivenDb.Data.Tests.Base.Tables;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Fastlite.DrivenDb.Data.Tests.Base
 {
    public abstract class FallbackAccessorTests : DbTestClass
    {
-      [Fact]
+      [TestMethod]
       public void FallbackAccessor_ReadEntitiesWithNullTest()
       {
          using (var fixture = CreateFixture())
@@ -21,11 +21,11 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                , default(int[])
                ).ToArray();
 
-            Assert.True(entities.Length == 0);
+            Assert.IsTrue(entities.Length == 0);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void FallbackAccessor_ReadEntitiesWithoutValuesTest()
       {
          using (var fixture = CreateFixture())
@@ -41,11 +41,11 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                , identities
                ).ToArray();
 
-            Assert.True(entities.Length == 0);
+            Assert.IsTrue(entities.Length == 0);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void FallbackAccessor_ReadEntitiesWithValuesTest()
       {
          using (var fixture = CreateFixture())
@@ -61,7 +61,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                , identities
                ).ToArray();
 
-            Assert.True(entities.Length == 3);
+            Assert.IsTrue(entities.Length == 3);
          }
       }
    }

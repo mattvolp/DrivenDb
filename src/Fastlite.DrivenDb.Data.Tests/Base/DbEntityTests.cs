@@ -3,13 +3,13 @@ using System.Linq;
 using Fastlite.DrivenDb.Core.Contracts;
 using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
 using Fastlite.DrivenDb.Data.Tests.Base.Tables;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Fastlite.DrivenDb.Data.Tests.Base
 {
    public abstract class DbEntityTests : DbTestClass
    {
-      [Fact]
+      [TestMethod]
       public void DbEntity_SerializationTest()
       {
          using (var fixture = CreateFixture())
@@ -33,17 +33,17 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
                var hydrated = DataContracts.Deserialize<MyTable[]>(memory);
 
-               Assert.True(hydrated.Length == 3);
-               Assert.True(hydrated[0].Entity.State == EntityState.Current);
-               Assert.True(hydrated[1].Entity.State == EntityState.Deleted);
-               Assert.True(hydrated[2].Entity.State == EntityState.Modified);
-               Assert.True(hydrated[2].Entity.Changes.Contains("MyString"));
-               Assert.True(hydrated[2].MyString == "Three Three Three");
+               Assert.IsTrue(hydrated.Length == 3);
+               Assert.IsTrue(hydrated[0].Entity.State == EntityState.Current);
+               Assert.IsTrue(hydrated[1].Entity.State == EntityState.Deleted);
+               Assert.IsTrue(hydrated[2].Entity.State == EntityState.Modified);
+               Assert.IsTrue(hydrated[2].Entity.Changes.Contains("MyString"));
+               Assert.IsTrue(hydrated[2].MyString == "Three Three Three");
             }
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_PartialPropertiesWithoutColumnAttributesWillBeScriptedIntoSql()
       {
          using (var fixture = CreateFixture())
@@ -59,14 +59,14 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
             entity.MyString = "100";
             entity.PartialValue = 100;
 
-            Assert.False(entity.Entity.Changes.Contains("PartialValue"));
-            Assert.DoesNotThrow(() =>
+            Assert.IsFalse(entity.Entity.Changes.Contains("PartialValue"));
+            Asserts.DoesNotThrow(() =>
                accessor.WriteEntity(entity)
                );
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_UndeleteRestoresPreviousNewState()
       {
          using (var fixture = CreateFixture())
@@ -81,15 +81,15 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
             record.Entity.Delete();
 
-            Assert.True(record.Entity.State == EntityState.Deleted);
+            Assert.IsTrue(record.Entity.State == EntityState.Deleted);
 
             record.Entity.Undelete();
 
-            Assert.True(record.Entity.State == EntityState.New);
+            Assert.IsTrue(record.Entity.State == EntityState.New);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_UndeleteRestoresPreviousCurrentState()
       {
          using (var fixture = CreateFixture())
@@ -103,15 +103,15 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
             record.Entity.Delete();
 
-            Assert.True(record.Entity.State == EntityState.Deleted);
+            Assert.IsTrue(record.Entity.State == EntityState.Deleted);
 
             record.Entity.Undelete();
 
-            Assert.True(record.Entity.State == EntityState.Current);
+            Assert.IsTrue(record.Entity.State == EntityState.Current);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_UndeleteRestoresPreviousUpdateState()
       {
          using (var fixture = CreateFixture())
@@ -126,15 +126,15 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
 
             record.Entity.Delete();
 
-            Assert.True(record.Entity.State == EntityState.Deleted);
+            Assert.IsTrue(record.Entity.State == EntityState.Deleted);
 
             record.Entity.Undelete();
 
-            Assert.True(record.Entity.State == EntityState.Modified);
+            Assert.IsTrue(record.Entity.State == EntityState.Modified);
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_ToUpdateProvidesUpdatableEntities()
       {
          using (var fixture = CreateFixture())
@@ -147,15 +147,15 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                .Select(t => t.ToUpdate())
                .ToArray();
 
-            Assert.True(records[0].MyIdentity == 1);
-            Assert.True(records[1].MyIdentity == 2);
-            Assert.True(records[2].MyIdentity == 3);
+            Assert.IsTrue(records[0].MyIdentity == 1);
+            Assert.IsTrue(records[1].MyIdentity == 2);
+            Assert.IsTrue(records[2].MyIdentity == 3);
 
-            Assert.DoesNotThrow(() => accessor.WriteEntities(records));
+            Asserts.DoesNotThrow(() => accessor.WriteEntities(records));
          }
       }
 
-      [Fact]
+      [TestMethod]
       public void DbEntity_ToNewProvidesInsertableEntities()
       {
          using (var fixture = CreateFixture())
@@ -168,16 +168,16 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
                .Select(t => t.ToNew())
                .ToArray();
 
-            Assert.True(records[0].MyIdentity == 0);
-            Assert.True(records[1].MyIdentity == 0);
-            Assert.True(records[2].MyIdentity == 0);
+            Assert.IsTrue(records[0].MyIdentity == 0);
+            Assert.IsTrue(records[1].MyIdentity == 0);
+            Assert.IsTrue(records[2].MyIdentity == 0);
 
             accessor.WriteEntities(records);
 
-            Assert.True(records.Length == 3);
-            Assert.True(records[0].MyIdentity == 4);
-            Assert.True(records[1].MyIdentity == 5);
-            Assert.True(records[2].MyIdentity == 6);
+            Assert.IsTrue(records.Length == 3);
+            Assert.IsTrue(records[0].MyIdentity == 4);
+            Assert.IsTrue(records[1].MyIdentity == 5);
+            Assert.IsTrue(records[2].MyIdentity == 6);
          }
       }
    }
