@@ -19,9 +19,10 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
   * TODO: sqlite need to just do longs
 * TODO: make studio custom tool for schema generation?
 * TODO: solve inheritance problem?  is it a problem?
-* TODO: review ToUpdate, ToNew, etc... methods 
-* TODO: review DbRecord.TableOverride property
+* TODO: review ToUpdate, ToNew, ToMapped, MapTo etc... methods 
 * TODO: review DbRecord.PrimaryKey property
+* TODO: move static methods out of DbEntity & DbRecord to other static classes
+* TODO: review IEquuitable & IComparable & SameAs implementations on DbRecord
 
 ### Fixed
 
@@ -35,4 +36,5 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * Link2Sql conrtact support is gone, due to it's age, lack of MS support, and the new PCL target.
 * The identity check on the "void Update(T other, bool checkIdentity = true)" method was too much responsibility for this method.
 * The read identity methods have been deprecated for some time due to their volatile nature.  They are now gone.
+* Removed DbRecord.TableOverride property.  The ReadType methods now satisfy the original motive for this.
 

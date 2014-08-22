@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Fastlite.DrivenDb.Core.Contracts.Arguments;
 using Fastlite.DrivenDb.Core.Contracts.Attributes;
 using Fastlite.DrivenDb.Core.Contracts.Interfaces;
 using Fastlite.DrivenDb.Core.Utility;
@@ -21,7 +22,7 @@ using Fastlite.DrivenDb.Core.Utility;
 // ReSharper disable StaticFieldInGenericType
 namespace Fastlite.DrivenDb.Core.Contracts
 {
-   public delegate void StateChangedEvent(EntityState previous, EntityState current);
+   public delegate void StateChangedEvent(object sender, StateChangedEventArgs e);
 
    [DataContract]
    public abstract class DbRecord<T> 
@@ -45,9 +46,9 @@ namespace Fastlite.DrivenDb.Core.Contracts
       {
          var type = typeof(T);
 
-         __table = GetTableAttribute(type);
-         __sequence = GetSequenceAttribute(type);
-         __columns = GetColumnAttributes(type);
+         __table = AttributeHelper.GetTableAttribute(type);
+         __sequence = AttributeHelper.GetSequenceAttribute(type);
+         __columns = AttributeHelper.GetColumnAttributes(type);
 
          __primaryColumns = __columns
             .Where(c => c.Value.IsPrimaryKey)
@@ -106,7 +107,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
 
          if (previous != state && StateChanged != null)
          {
-            StateChanged(previous, state);
+            StateChanged(this, new StateChangedEventArgs(previous, state));
          }
       }
 
@@ -120,52 +121,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       {
          __instance = (T) (object) this;
          __hashcode = new Lazy<int>(() => _hasher(__instance));
-      }
-
-      private static DbTableAttribute GetTableAttribute(MemberInfo type)
-      {
-         return type.GetCustomAttributes(true)
-            .OfType<DbTableAttribute>()
-            .Select(a =>
-               {
-                  a.Name = a.Name ?? type.Name;
-                  return a;
-               })
-            .Single();
-      }
-
-      private static DbSequenceAttribute GetSequenceAttribute(MemberInfo type)
-      {
-         return type.GetCustomAttributes(true)
-            .OfType<DbSequenceAttribute>()
-            .SingleOrDefault();
-      }
-
-      private static IDictionary<string, DbColumnAttribute> GetColumnAttributes(Type type)
-      {
-         var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-         var columns = new Dictionary<string, DbColumnAttribute>();
-
-         foreach (var property in properties)
-         {
-            if (property.Name == "Record" || property.Name == "Entity")
-            {
-               continue;
-            }
-
-            var found = property.GetCustomAttributes(true)
-               .OfType<DbColumnAttribute>()
-               .FirstOrDefault();
-
-            if (found != null)
-            {
-               found.Name = found.Name ?? property.Name;
-
-               columns.Add(property.Name, found);
-            }
-         }
-
-         return columns;
       }
 
       int IDbRecord.IdentityHash
@@ -218,12 +173,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       DbSequenceAttribute IDbRecord.Sequence
       {
          get { return __sequence; }
-      }
-
-      DbTableAttribute IDbRecord.TableOverride
-      {
-         get;
-         set;
       }
 
       DbColumnAttribute IDbRecord.IdentityColumn

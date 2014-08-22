@@ -47,13 +47,7 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       {
          get;
       }
-
-      DbTableAttribute TableOverride
-      {
-         get;
-         set;
-      }
-
+      
       DbColumnAttribute IdentityColumn
       {
          get;

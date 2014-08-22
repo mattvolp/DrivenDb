@@ -233,8 +233,8 @@ namespace Fastlite.DrivenDb.Core.Contracts
          __changes = new HashSet<string>(changes);
 
          var state = other.State == EntityState.Deleted || other.State == EntityState.Modified
-                      ? other.State
-                      : __state;
+            ? other.State
+            : __state;
 
          ChangeState(state);
 

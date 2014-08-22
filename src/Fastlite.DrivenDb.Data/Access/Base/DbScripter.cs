@@ -73,7 +73,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var builder = _builders();
 
          builder.Schema = metadata.Schema;
-         builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
+         builder.Table = metadata.Table.Name;
 
          metadata.Columns.Values.ForEach(
              c => builder.AddColumn(c.Name)
@@ -107,7 +107,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var count = 0;
          
          builder.Schema = metadata.Schema;
-         builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
+         builder.Table = metadata.Table.Name;
 
          // ReSharper disable AccessToModifiedClosure
          metadata.Changes.ForEach(
@@ -147,7 +147,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var count = 0;
 
          builder.Schema = metadata.Schema;
-         builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
+         builder.Table = metadata.Table.Name;
 
          metadata.PrimaryColumns.ForEach(
             k => builder.AddWhere(k.Name, count++)
@@ -174,7 +174,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var builder = _builders();
 
          builder.Schema = metadata.Schema;
-         builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
+         builder.Table = metadata.Table.Name;
 
          metadata.Columns.Values.ForEach(c => builder.AddColumn(c.Name));
 
@@ -207,7 +207,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var metadata = entity;
 
          builder.Schema = metadata.Schema;
-         builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
+         builder.Table = metadata.Table.Name;
 
          entity.Changes.ForEach(c => builder.AddSetter(c, count++));
 
@@ -222,7 +222,9 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var gnuquery = "";
          var gnuparameters = ManipulateQuery(out gnuquery, index, query, (parameters ?? new object[0]).ToArray());
 
-         command.CommandText += gnuquery + Environment.NewLine;
+         gnuquery += Environment.NewLine;
+
+         command.CommandText += gnuquery;
 
          AppendParameters(command, index, gnuparameters);
       }

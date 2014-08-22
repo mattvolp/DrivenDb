@@ -61,8 +61,10 @@
     <Compile Include="Contracts\DbEntity.cs" />
     <Compile Include="Contracts\DbRecord.cs" />
     <Compile Include="Contracts\EntityState.cs" />
+    <Compile Include="Contracts\Arguments\StateChangedEventArgs.cs" />
     <Compile Include="Contracts\Exceptions\InactiveExtensionException.cs" />
     <Compile Include="Contracts\Exceptions\MissingResultException.cs" />
+    <Compile Include="Utility\AttributeHelper.cs" />
     <Compile Include="Utility\EnumerableExtensions.cs" />
     <Compile Include="Contracts\Interfaces\IDbEntity.cs" />
     <Compile Include="Contracts\Interfaces\IDbRecord.cs" />
