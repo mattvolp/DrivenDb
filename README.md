@@ -20,6 +20,8 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: make studio custom tool for schema generation?
 * TODO: solve inheritance problem?  is it a problem?
 * TODO: review ToUpdate, ToNew, etc... methods 
+* TODO: review DbRecord.TableOverride property
+* TODO: review DbRecord.PrimaryKey property
 
 ### Fixed
 
