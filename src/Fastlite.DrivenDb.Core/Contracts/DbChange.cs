@@ -19,39 +19,49 @@ namespace Fastlite.DrivenDb.Core.Contracts
    [DataContract]
    public class DbChange
    {
-      public DbChange(DbChangeType changeType, string affectedTable, IEnumerable<string> affectedColumns, IDbEntity entity)
-      {
-         ChangeType = changeType;
-         AffectedTable = affectedTable;
-         AffectedColumns = affectedColumns;
-         Entity = entity;
-      }
+      [DataMember]
+      private readonly DbChangeType _changeType;
 
       [DataMember]
+      private readonly string _affectedTable;
+
+      [DataMember]
+      private readonly IEnumerable<string> _affectedColumns;
+
+      [DataMember]
+      private readonly IDbEntity _entity;
+
+      public DbChange(
+         DbChangeType changeType, 
+         string affectedTable, 
+         IEnumerable<string> affectedColumns, 
+         IDbEntity entity
+         )
+      {
+         _changeType = changeType;
+         _affectedTable = affectedTable;
+         _affectedColumns = affectedColumns;
+         _entity = entity;         
+      }
+
       public DbChangeType ChangeType
       {
-         get;
-         private set;
+         get { return _changeType; }
       }
 
-      [DataMember]
       public string AffectedTable
       {
-         get;
-         private set;
+         get { return _affectedTable; }
       }
 
-      [DataMember]
       public IEnumerable<string> AffectedColumns
       {
-         get;
-         private set;
+         get { return _affectedColumns; }
       }
 
       public IDbEntity Entity
       {
-         get;
-         private set;
+         get { return _entity; }
       }
    }
 }
