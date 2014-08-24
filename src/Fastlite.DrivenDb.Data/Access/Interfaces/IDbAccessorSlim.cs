@@ -24,18 +24,7 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
          get;
          set;
       }
-
-      T ReadIdentity<T, K>(K key)
-         where T : IDbRecord, new();
-
-      IOnJoiner<P, C> ReadRelated<P, C>(P parent)
-         where P : IDbRecord, new()
-         where C : IDbRecord, new();
-
-      IOnJoiner<P, C> ReadRelated<P, C>(IEnumerable<P> parents)
-         where P : IDbRecord, new()
-         where C : IDbRecord, new();
-
+      
       IEnumerable<T> ReadValues<T>(string query, params object[] parameters);
 
       T ReadValue<T>(string query, params object[] parameters);

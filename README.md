@@ -22,7 +22,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: review ToUpdate, ToNew, ToMapped, MapTo etc... methods 
 * TODO: review DbRecord.PrimaryKey property
 * TODO: move static methods out of DbEntity & DbRecord to other static classes
-* TODO: review IEquuitable & IComparable & SameAs implementations on DbRecord
+* TODO: review IEquitable & IComparable & SameAs implementations on DbRecord
 
 ### Fixed
 

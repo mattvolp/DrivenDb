@@ -72,8 +72,6 @@
     <Compile Include="Utility\DisposableCollection.cs" />
     <Compile Include="Utility\EntityAccessor.cs" />
     <Compile Include="Utility\EntityHelper.cs" />
-    <Compile Include="Utility\Weak.cs" />
-    <Compile Include="Utility\WeakEqualityComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DrivenDb.snk" />

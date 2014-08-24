@@ -17,8 +17,7 @@ using Fastlite.DrivenDb.Data.Access.Interfaces;
 namespace Fastlite.DrivenDb.Data.Access
 {
    internal class Db : IDb
-   {      
-      private readonly DbAccessorType _type;
+   {
       private readonly AccessorExtension _extensions;
       private readonly Func<IDbConnection> _connections;
 
@@ -28,12 +27,11 @@ namespace Fastlite.DrivenDb.Data.Access
       }
 
       public Db(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)
-      {         
-         _type = type;
+      {
          _extensions = extensions;
          _connections = connections;
 
-         switch(_type)
+         switch(type)
          {
             case DbAccessorType.MsSql:
                ParameterLimit = 1000;     // half of what is available

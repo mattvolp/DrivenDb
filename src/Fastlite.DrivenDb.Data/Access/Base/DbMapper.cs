@@ -32,10 +32,11 @@ namespace Fastlite.DrivenDb.Data.Access.Base
    {      
       #region --- STATIC --------------------------------------------------------------------------
 
-      private static readonly Dictionary<RuntimeTypeHandle, MethodInfo> _methods;
-      private static readonly MethodInfo _isDbNull = typeof (IDataRecord).GetMethod("IsDBNull");
-      private static readonly MethodInfo _getValue = typeof (IDataRecord).GetMethod("GetValue");
+      private static readonly MethodInfo _isDbNull = typeof(IDataRecord).GetMethod("IsDBNull");
+      private static readonly MethodInfo _getValue = typeof(IDataRecord).GetMethod("GetValue");
 
+      private static readonly Dictionary<RuntimeTypeHandle, MethodInfo> _methods;
+      
       static DbMapper()
       {
          _methods = new Dictionary<RuntimeTypeHandle, MethodInfo>();
@@ -410,12 +411,12 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       private Dictionary<string, FieldInfo> BuildFieldDictionary<T>()
       {
          var fields = m_Db.CaseInsensitiveColumnMapping
-                         ? new Dictionary<string, FieldInfo>(StringComparer.CurrentCultureIgnoreCase)
-                         : new Dictionary<string, FieldInfo>();
+            ? new Dictionary<string, FieldInfo>(StringComparer.CurrentCultureIgnoreCase)
+            : new Dictionary<string, FieldInfo>();
 
          var bindings = m_Db.PrivateMemberColumnMapping
-                           ? BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
-                           : BindingFlags.Public | BindingFlags.Instance;
+            ? BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+            : BindingFlags.Public | BindingFlags.Instance;
 
          foreach (var field in typeof(T).GetFields(bindings))
          {
@@ -439,12 +440,12 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       private Dictionary<string, PropertyInfo>  BuildPropertyDictionary<T>()
       {
          var properties = m_Db.CaseInsensitiveColumnMapping
-                             ? new Dictionary<string, PropertyInfo>(StringComparer.CurrentCultureIgnoreCase)
-                             : new Dictionary<string, PropertyInfo>();
+            ? new Dictionary<string, PropertyInfo>(StringComparer.CurrentCultureIgnoreCase)
+            : new Dictionary<string, PropertyInfo>();
 
          var bindings = m_Db.PrivateMemberColumnMapping
-                           ? BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
-                           : BindingFlags.Public | BindingFlags.Instance;
+            ? BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+            : BindingFlags.Public | BindingFlags.Instance;
 
          foreach (var property in typeof(T).GetProperties(bindings))
          {

@@ -62,7 +62,6 @@
     <Compile Include="Access\Base\DbMapper.cs" />
     <Compile Include="Access\Base\DbScope.cs" />
     <Compile Include="Access\Base\DbScripter.cs" />
-    <Compile Include="Access\Base\EntityJoiner.cs" />
     <Compile Include="Access\Base\FallbackAccessorSlim.cs" />
     <Compile Include="Access\Base\SqlBuilder.cs" />
     <Compile Include="Access\Base\ValueJoiner.cs" />
@@ -76,14 +75,11 @@
     <Compile Include="Access\Interfaces\IDbMonitor.cs" />
     <Compile Include="Access\Interfaces\IDbScope.cs" />
     <Compile Include="Access\Interfaces\IDbScripter.cs" />
-    <Compile Include="Access\Interfaces\IEqualsJoinable.cs" />
     <Compile Include="Access\Interfaces\IFallbackAccessorSlim.cs" />
-    <Compile Include="Access\Interfaces\IOnJoiner.cs" />
     <Compile Include="Access\Interfaces\IParallelAccessor.cs" />
     <Compile Include="Access\Interfaces\IParallelAccessorSlim.cs" />
     <Compile Include="Access\Interfaces\ISqlBuilder.cs" />
     <Compile Include="Access\Interfaces\IValueJoiner.cs" />
-    <Compile Include="Access\Interfaces\IWhereJoinable.cs" />
     <Compile Include="Access\MsSql\Interfaces\IMsSqlAccessor.cs" />
     <Compile Include="Access\MsSql\Interfaces\IMsSqlBuilder.cs" />
     <Compile Include="Access\MsSql\Interfaces\IMsSqlScope.cs" />

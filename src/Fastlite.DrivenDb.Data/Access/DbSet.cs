@@ -16,7 +16,10 @@ namespace Fastlite.DrivenDb.Data.Access
 {   
    public class DbSet<T1, T2>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -37,7 +40,11 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -65,7 +72,12 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -100,7 +112,13 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -142,7 +160,14 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5, T6>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5, IEnumerable<T6> set6)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5, 
+         IEnumerable<T6> set6
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -191,7 +216,15 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5, T6, T7>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5, IEnumerable<T6> set6, IEnumerable<T7> set7)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5, 
+         IEnumerable<T6> set6, 
+         IEnumerable<T7> set7
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -247,7 +280,16 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5, IEnumerable<T6> set6, IEnumerable<T7> set7, IEnumerable<T8> set8)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5, 
+         IEnumerable<T6> set6, 
+         IEnumerable<T7> set7, 
+         IEnumerable<T8> set8
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -310,7 +352,17 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5, IEnumerable<T6> set6, IEnumerable<T7> set7, IEnumerable<T8> set8, IEnumerable<T9> set9)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5, 
+         IEnumerable<T6> set6, 
+         IEnumerable<T7> set7, 
+         IEnumerable<T8> set8, 
+         IEnumerable<T9> set9
+         )
       {
          Set1 = set1;
          Set2 = set2;
@@ -380,7 +432,18 @@ namespace Fastlite.DrivenDb.Data.Access
 
    public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
    {
-      public DbSet(IEnumerable<T1> set1, IEnumerable<T2> set2, IEnumerable<T3> set3, IEnumerable<T4> set4, IEnumerable<T5> set5, IEnumerable<T6> set6, IEnumerable<T7> set7, IEnumerable<T8> set8, IEnumerable<T9> set9, IEnumerable<T10> set10)
+      public DbSet(
+         IEnumerable<T1> set1, 
+         IEnumerable<T2> set2, 
+         IEnumerable<T3> set3, 
+         IEnumerable<T4> set4, 
+         IEnumerable<T5> set5, 
+         IEnumerable<T6> set6, 
+         IEnumerable<T7> set7, 
+         IEnumerable<T8> set8, 
+         IEnumerable<T9> set9, 
+         IEnumerable<T10> set10
+         )
       {
          Set1 = set1;
          Set2 = set2;

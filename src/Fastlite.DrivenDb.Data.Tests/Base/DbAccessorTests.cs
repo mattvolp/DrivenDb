@@ -372,46 +372,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
             Assert.IsTrue(entities[2].MyString == "I said Three!");
          }
       }
-
-      [TestMethod]
-      public void DbAccessor_ReadRelatedTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var entities = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable")
-               .OrderBy(e => e.MyNumber)
-               .ToArray();
-
-            var children = accessor.ReadRelated<MyTable, MyChildren>(entities[0])
-               .On(e => new {e.MyIdentity}, c => new {c.HisIdentity})
-               .ToArray();
-
-            Assert.IsTrue(children.Length == 3);
-
-            children = accessor.ReadRelated<MyTable, MyChildren>(entities[1])
-               .On(e => new {e.MyIdentity}, c => new {c.HisIdentity})
-               .ToArray();
-
-            Assert.IsTrue(children.Length == 0);
-
-            children = accessor.ReadRelated<MyTable, MyChildren>(entities[2])
-               .On(e => new {e.MyIdentity}, c => new {c.HisIdentity})
-               .ToArray();
-
-            Assert.IsTrue(children.Length == 1);
-
-            children = accessor.ReadRelated<MyTable, MyChildren>(entities)
-               .On(e => new {e.MyIdentity}, c => new {c.HisIdentity})
-               .ToArray();
-
-            Assert.IsTrue(children.Length == 4);
-         }
-      }
-
+      
       [TestMethod]
       public void DbAccessor_ReadAnonymousTest()
       {
@@ -625,25 +586,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
             Assert.IsTrue(records[2].UnrelatedProperty == "yo");
          }
       }
-
-      [TestMethod]
-      public void DbAccessor_UnrelatedPropertyTest2()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            var record = accessor.ReadIdentity<MyTablePartial, int>(1);
-
-            Assert.IsTrue(record.MyIdentity == 1);
-            Assert.IsTrue(record.MyNumber == 1);
-            Assert.IsTrue(record.MyString == "One");
-            Assert.IsTrue(record.UnrelatedProperty == "yo");
-         }
-      }
-
+      
       [TestMethod]
       public void DbAccessor_InactiveExtensionTest()
       {
@@ -841,19 +784,6 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
             Assert.IsTrue(values.Count(v => v.HasValue && v.Value == 1) == 1);
             Assert.IsTrue(values.Count(v => v.HasValue && v.Value == 2) == 1);
             Assert.IsTrue(values.Count(v => !v.HasValue) == 2);
-         }
-      }
-
-      [TestMethod]
-      public void DbAccessor_SelectIdentityWithLinqTableAttribute()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
-
-            Asserts.DoesNotThrow(() => accessor.ReadIdentity<MyTableSlim, int>(1));
          }
       }
 

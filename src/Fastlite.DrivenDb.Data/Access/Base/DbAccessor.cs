@@ -45,41 +45,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          get;
          set;
       }
-
-      public T ReadIdentity<T, K>(K key)
-         where T : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptIdentitySelect<T>(command, key);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               return _mapper.MapEntity<T>(command.CommandText, reader);
-            }
-         }
-      }
       
-      public IOnJoiner<P, C> ReadRelated<P, C>(P parent)
-         where P : IDbRecord, new()
-         where C : IDbRecord, new()
-      {
-         return new EntityJoiner<P, C>(CommandTimeout, _db, _scripter, _mapper, new[] {parent});
-      }
-
-      public IOnJoiner<P, C> ReadRelated<P, C>(IEnumerable<P> parents)
-         where P : IDbRecord, new()
-         where C : IDbRecord, new()
-      {
-         return new EntityJoiner<P, C>(CommandTimeout, _db, _scripter, _mapper, parents);
-      }
-
       public IEnumerable<T> ReadValues<T>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
