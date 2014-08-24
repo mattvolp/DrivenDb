@@ -327,7 +327,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
             
             if (assignment == null && !m_Db.AllowUnmappedColumns)
             {
-               throw new InactiveExtensionException(AccessorExtension.AllowUnmappedColumns.ToString(), "Unable to map column '" + columnName + "', type '" + columnType.Name + "' on target type '" + typeof(T).Name + "'.");
+               throw new InactiveExtensionException(AccessorOptions.AllowUnmappedColumns.ToString(), "Unable to map column '" + columnName + "', type '" + columnType.Name + "' on target type '" + typeof(T).Name + "'.");
             }
             else if (assignment != null)
             {

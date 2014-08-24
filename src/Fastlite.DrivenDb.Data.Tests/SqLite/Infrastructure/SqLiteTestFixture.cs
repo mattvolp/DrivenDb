@@ -32,7 +32,7 @@ namespace Fastlite.DrivenDb.Data.Tests.SqLite.Infrastructure
       private static void CreateDatabase(string _database)
       {         
          var accessor = DbFactory.CreateAccessor(
-             DbAccessorType.SqLite, AccessorExtension.All, () => new SQLiteConnection(String.Format("Data Source={0};Version=3;New=True", _database))
+             DbAccessorType.SqLite, AccessorOptions.All, () => new SQLiteConnection(String.Format("Data Source={0};Version=3;New=True", _database))
              );
 
          accessor.Execute(@"

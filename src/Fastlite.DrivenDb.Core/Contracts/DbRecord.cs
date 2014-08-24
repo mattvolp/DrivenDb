@@ -24,8 +24,8 @@ namespace Fastlite.DrivenDb.Core.Contracts
    public delegate void StateChangedEvent(object sender, StateChangedEventArgs e);
 
    [DataContract]
-   public abstract class DbRecord<T> 
-      : IDbRecord<T> where T : IDbRecord
+   public abstract class DbRecord<T> : IDbRecord
+      where T : IDbRecord
    {
       // ReSharper disable InconsistentNaming
       protected static readonly EntityAccessor<T> __entityAccessor = new EntityAccessor<T>(true);
@@ -36,9 +36,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       protected static readonly DbSequenceAttribute __sequence;
       // ReSharper restore InconsistentNaming
 
-      private static readonly Func<T, T, int> _compareTo;
-      private static readonly Func<T, T, bool> _equals;
-      private static readonly Func<T, int> _hasher;
       private static readonly bool? _isIdentity32;
 
       static DbRecord()
@@ -60,10 +57,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
          {
             _isIdentity32 = __entityAccessor.GetPropertyInfo(__identityColumn.Key).PropertyType == typeof(int);
          }
-
-         _compareTo = EntityHelper.CompareTo<T>(__primaryColumns.Select(p => p.Key)); 
-         _equals = EntityHelper.Equals<T>(__primaryColumns.Select(p => p.Key));
-         _hasher = EntityHelper.GetHashCode<T>(__primaryColumns.Select(p => p.Key));
       }
 
       // ReSharper disable InconsistentNaming
@@ -118,15 +111,9 @@ namespace Fastlite.DrivenDb.Core.Contracts
 
       private void Initialize()
       {
-         __instance = (T) (object) this;
-         __hashcode = new Lazy<int>(() => _hasher(__instance));
+         __instance = (T) (object) this;         
       }
-
-      int IDbRecord.IdentityHash
-      {
-         get { return __hashcode.Value; }
-      }
-
+      
       object[] IDbRecord.PrimaryKey
       {
          get
@@ -226,29 +213,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
          __lastModified = null;
          __lastUpdated = DateTime.Now;
          __changes.Clear();
-      }
-
-      bool IDbRecord<T>.SameAs(T other)
-      {
-         return __hashcode.Value == other.IdentityHash && _equals(__instance, other);
-      }
-
-      bool IEquatable<T>.Equals(T other)
-      {
-         var value1 = __state == EntityState.New && this.__hashcode.Value == default(int)
-            ? this.GetHashCode()
-            : __hashcode.Value;
-
-         var value2 = __state == EntityState.New && this.__hashcode.Value == default(int)
-            ? other.GetHashCode()
-            : other.IdentityHash;
-
-         return value1 == value2 && _equals(__instance, other);
-      }
-
-      int IComparable<T>.CompareTo(T other)
-      {
-         return _compareTo(this.__instance, other);
       }
    }
 }

@@ -31,7 +31,7 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql.Infrastructure
          SqlConnection.ClearAllPools();
 
          var master = DbFactory.CreateAccessor(
-            DbAccessorType.MsSql, AccessorExtension.All,
+            DbAccessorType.MsSql, AccessorOptions.All,
             () => new SqlConnection(MASTER_CSTRING)
             );
 
@@ -45,7 +45,7 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql.Infrastructure
             );
 
          var accessor = DbFactory.CreateAccessor(
-             DbAccessorType.MsSql, AccessorExtension.All,
+             DbAccessorType.MsSql, AccessorOptions.All,
              () => new SqlConnection(TEST_CSTRING)
              );
 

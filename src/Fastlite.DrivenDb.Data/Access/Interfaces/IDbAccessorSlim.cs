@@ -56,11 +56,6 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
          set;
       }
 
-      IParallelAccessorSlim Parallel
-      {
-         get;
-      }
-
       IFallbackAccessorSlim Fallback
       {
          get;

@@ -1,16 +1,16 @@
-﻿using Fastlite.DrivenDb.Data.Tests.Base;
-using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
-using Fastlite.DrivenDb.Data.Tests.SqLite.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//using Fastlite.DrivenDb.Data.Tests.Base;
+//using Fastlite.DrivenDb.Data.Tests.Base.Infrastructure;
+//using Fastlite.DrivenDb.Data.Tests.SqLite.Infrastructure;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Fastlite.DrivenDb.Data.Tests.SqLite
-{
-   [TestClass]
-   public class SqLiteMapperTests : DbMapperTests
-   {
-      protected override IDbTestFixture CreateFixture()
-      {
-         return new SqLiteTestFixture();
-      }
-   }
-}
+//namespace Fastlite.DrivenDb.Data.Tests.SqLite
+//{
+//   [TestClass]
+//   public class SqLiteMapperTests : DbMapperTests
+//   {
+//      protected override IDbTestFixture CreateFixture()
+//      {
+//         return new SqLiteTestFixture();
+//      }
+//   }
+//}

@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Fastlite.DrivenDb.Data.Utility
 {
-   class DataRecord : IDataRecord
+   internal sealed class DataRecord : IDataRecord
    {
       private readonly Dictionary<string,object> _dictionary = new Dictionary<string, object>();
       private readonly string[] _names;

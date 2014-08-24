@@ -17,12 +17,7 @@ using Fastlite.DrivenDb.Core.Contracts.Attributes;
 namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
 {   
    public interface IDbRecord
-   {
-      int IdentityHash
-      {
-         get;
-      }
-
+   {      
       object[] PrimaryKey
       {
          get;
@@ -85,10 +80,5 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       void SetProperty(string property, object value);
 
       void Reset();
-   }
-
-   public interface IDbRecord<T> : IDbRecord, IEquatable<T>, IComparable<T>
-   {
-      bool SameAs(T other);
    }
 }

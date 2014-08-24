@@ -15,7 +15,7 @@ using System;
 namespace Fastlite.DrivenDb.Data.Access
 {
    [Flags]
-   public enum AccessorExtension
+   public enum AccessorOptions
    {
       None = 0,
       AllowEnumerableParameters = 1,

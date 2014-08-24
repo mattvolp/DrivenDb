@@ -7,10 +7,10 @@ namespace Fastlite.DrivenDb.Data.Tests.MySql.Infrastructure
 {
    internal sealed class MySqlAccessorFactory : IDbAccessorFactory
    {
-      public IDbAccessor Create(string database, AccessorExtension extensions)
+      public IDbAccessor Create(string database, AccessorOptions options)
       {
          return DbFactory.CreateAccessor(
-            DbAccessorType.MySql, extensions,
+            DbAccessorType.MySql, options,
             () => new MySqlConnection("Server=localhost;User Id=root;Password=;Database=DrivenDbTest")
             );
       }

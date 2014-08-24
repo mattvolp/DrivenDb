@@ -5,6 +5,6 @@ namespace Fastlite.DrivenDb.Data.Tests.Base.Infrastructure
 {
    public interface IDbAccessorFactory
    {
-      IDbAccessor Create(string database, AccessorExtension extensions);
+      IDbAccessor Create(string database, AccessorOptions options);
    }
 }

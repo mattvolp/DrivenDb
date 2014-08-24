@@ -18,17 +18,12 @@ namespace Fastlite.DrivenDb.Data.Access
 {
    internal class Db : IDb
    {
-      private readonly AccessorExtension _extensions;
+      private readonly AccessorOptions _options;
       private readonly Func<IDbConnection> _connections;
 
-      public Db(AccessorExtension extensions, Func<IDbConnection> connections)
-         : this(DbAccessorType.MsSql, extensions, connections)
-      {         
-      }
-
-      public Db(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)
+      public Db(DbAccessorType type, AccessorOptions options, Func<IDbConnection> connections)
       {
-         _extensions = extensions;
+         _options = options;
          _connections = connections;
 
          switch(type)
@@ -58,27 +53,27 @@ namespace Fastlite.DrivenDb.Data.Access
 
       public bool AllowEnumerableParameters
       {
-         get { return (_extensions & AccessorExtension.AllowEnumerableParameters) == AccessorExtension.AllowEnumerableParameters; }
+         get { return (_options & AccessorOptions.AllowEnumerableParameters) == AccessorOptions.AllowEnumerableParameters; }
       }
 
       public bool LimitDateParameters
       {
-         get { return (_extensions & AccessorExtension.LimitDateParameters) == AccessorExtension.LimitDateParameters; }
+         get { return (_options & AccessorOptions.LimitDateParameters) == AccessorOptions.LimitDateParameters; }
       }
 
       public bool AllowUnmappedColumns
       {
-         get { return (_extensions & AccessorExtension.AllowUnmappedColumns) == AccessorExtension.AllowUnmappedColumns; }
+         get { return (_options & AccessorOptions.AllowUnmappedColumns) == AccessorOptions.AllowUnmappedColumns; }
       }
 
       public bool CaseInsensitiveColumnMapping
       {
-         get { return (_extensions & AccessorExtension.CaseInsensitiveColumnMapping) == AccessorExtension.CaseInsensitiveColumnMapping; }
+         get { return (_options & AccessorOptions.CaseInsensitiveColumnMapping) == AccessorOptions.CaseInsensitiveColumnMapping; }
       }
 
       public bool PrivateMemberColumnMapping
       {
-         get { return (_extensions & AccessorExtension.PrivateMemberColumnMapping) == AccessorExtension.PrivateMemberColumnMapping; }
+         get { return (_options & AccessorOptions.PrivateMemberColumnMapping) == AccessorOptions.PrivateMemberColumnMapping; }
       }
 
       public IDbConnection CreateConnection()

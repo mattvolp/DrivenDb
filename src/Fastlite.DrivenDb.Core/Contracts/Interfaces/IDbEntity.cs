@@ -18,7 +18,7 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       void Undelete();
    }
 
-   public interface IDbEntity<T> : IDbEntity, IDbRecord<T>
+   public interface IDbEntity<T> : IDbEntity
       where T : IDbEntity
    {
       T Clone();

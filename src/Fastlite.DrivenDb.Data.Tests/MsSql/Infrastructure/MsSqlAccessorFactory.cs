@@ -9,10 +9,10 @@ namespace Fastlite.DrivenDb.Data.Tests.MsSql.Infrastructure
    {
       private const string TEST_CSTRING = @"Integrated Security=SSPI;Initial Catalog=DrivenDbTest;Data Source=localhost";
 
-      public IDbAccessor Create(string database, AccessorExtension extensions)
+      public IDbAccessor Create(string database, AccessorOptions options)
       {
          return DbFactory.CreateAccessor(
-            DbAccessorType.MsSql, extensions,
+            DbAccessorType.MsSql, options,
             () => new SqlConnection(TEST_CSTRING)
             );
       }

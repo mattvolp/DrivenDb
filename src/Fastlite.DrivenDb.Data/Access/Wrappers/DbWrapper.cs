@@ -212,19 +212,6 @@ namespace Fastlite.DrivenDb.Data.Access.Wrappers
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(query, parameters);
       }
 
-      public IParallelAccessor Parallel
-      {
-         get { return _accessor.Parallel; }
-         // ReSharper disable ValueParameterNotUsed
-         private set { }
-         // ReSharper restore ValueParameterNotUsed
-      }
-
-      IParallelAccessorSlim IDbAccessorSlim.Parallel
-      {
-         get { return Parallel; }
-      }
-
       public IFallbackAccessorSlim Fallback
       {
          get { return _accessor.Fallback; }

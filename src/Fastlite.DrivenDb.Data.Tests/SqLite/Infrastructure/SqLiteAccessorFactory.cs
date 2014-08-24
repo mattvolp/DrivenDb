@@ -8,10 +8,10 @@ namespace Fastlite.DrivenDb.Data.Tests.SqLite.Infrastructure
 {
    internal sealed class SqLiteAccessorFactory : IDbAccessorFactory
    {
-      public IDbAccessor Create(string database, AccessorExtension extensions)
+      public IDbAccessor Create(string database, AccessorOptions options)
       {
          return DbFactory.CreateAccessor(
-            DbAccessorType.SqLite, extensions,
+            DbAccessorType.SqLite, options,
             () => new SQLiteConnection(String.Format("Data Source={0};Version=3;New=True", database))
             );
       }

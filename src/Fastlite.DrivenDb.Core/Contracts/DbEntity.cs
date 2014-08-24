@@ -21,7 +21,10 @@ namespace Fastlite.DrivenDb.Core.Contracts
    [DataContract]
    public abstract class DbEntity<T> 
       : DbRecord<T>
-      , IDbEntity<T> where T : DbEntity<T>, IDbEntity, INotifyPropertyChanged, new()
+      , IDbEntity<T> where T : DbEntity<T>
+      , IDbEntity
+      , INotifyPropertyChanged
+      , new()
    {
       protected DbEntity()
       {

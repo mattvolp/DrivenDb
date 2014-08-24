@@ -23,7 +23,7 @@ using Fastlite.DrivenDb.Data.Access.Interfaces;
 
 namespace Fastlite.DrivenDb.Data.Access.Base
 {
-   internal class DbAccessor : IDbAccessor, IParallelAccessor
+   internal class DbAccessor : IDbAccessor
    {
       private const int TEN_MINUTES = 600;
 
@@ -177,25 +177,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               return _mapper.MapEntities<T>(command.CommandText, reader);
-            }
-         }
-      }
-
-      IEnumerable<T> IParallelAccessorSlim.ReadEntities<T>(string query, params object[] parameters)
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
                return _mapper.ParallelMapEntities<T>(command.CommandText, reader);
             }
          }
@@ -204,29 +185,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       public DbSet<T1, T2> ReadEntities<T1, T2>(string query, params object[] parameters)
          where T1 : IDbRecord, new()
          where T2 : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(2, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-
-               return new DbSet<T1, T2>(set1, set2);
-            }
-         }
-      }
-
-      DbSet<T1, T2> IParallelAccessor.ReadEntities<T1, T2>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -266,31 +224,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(3, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(3, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3>(set1, set2, set3);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3> IParallelAccessor.ReadEntities<T1, T2, T3>(string query, params object[] parameters)
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
                var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(3, 1);
                var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
@@ -307,33 +240,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          where T2 : IDbRecord, new()
          where T3 : IDbRecord, new()
          where T4 : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(4, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(4, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(4, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4>(set1, set2, set3, set4);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4> IParallelAccessor.ReadEntities<T1, T2, T3, T4>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -379,35 +285,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(5, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(5, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(5, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(5, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5>(set1, set2, set3, set4, set5);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5>(string query, params object[] parameters)
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
                var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(5, 1);
                var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
@@ -430,37 +307,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          where T4 : IDbRecord, new()
          where T5 : IDbRecord, new()
          where T6 : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(6, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(6, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(6, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(6, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(6, 5);
-               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5, T6>(set1, set2, set3, set4, set5, set6);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5, T6> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5, T6>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -512,39 +358,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 5);
-               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(7, 6);
-               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5, T6, T7>(set1, set2, set3, set4, set5, set6, set7);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5, T6, T7> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7>(string query, params object[] parameters)
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
                var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 1);
                var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
@@ -573,41 +386,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          where T6 : IDbRecord, new()
          where T7 : IDbRecord, new()
          where T8 : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 5);
-               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 6);
-               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(8, 7);
-               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8>(set1, set2, set3, set4, set5, set6, set7, set8);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5, T6, T7, T8> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -665,43 +443,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 5);
-               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 6);
-               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 7);
-               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(9, 8);
-               var set9 = _mapper.MapEntities<T9>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9>(set1, set2, set3, set4, set5, set6, set7, set8, set9);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string query, params object[] parameters)
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
                var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 1);
                var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
@@ -736,45 +477,6 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          where T8 : IDbRecord, new()
          where T9 : IDbRecord, new()
          where T10 : IDbRecord, new()
-      {
-         using (var connection = _db.CreateConnection())
-         using (var command = connection.CreateCommand())
-         {
-            connection.Open();
-            command.CommandTimeout = CommandTimeout;
-
-            _scripter.ScriptSelect(command, query, parameters);
-
-            LogMessage(command.CommandText);
-
-            using (var reader = command.ExecuteReader())
-            {
-               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 1);
-               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 2);
-               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 3);
-               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 4);
-               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 5);
-               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 6);
-               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 7);
-               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 8);
-               var set9 = _mapper.MapEntities<T9>(command.CommandText, reader);
-               if (!reader.NextResult()) throw new MissingResultException(10, 9);
-               var set10 = _mapper.MapEntities<T10>(command.CommandText, reader);
-
-               return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(set1, set2, set3, set4, set5, set6, set7, set8, set9, set10);
-            }
-         }
-      }
-
-      DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> IParallelAccessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string query, params object[] parameters)
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -1077,19 +779,9 @@ namespace Fastlite.DrivenDb.Data.Access.Base
           set;
       }
 
-      IParallelAccessorSlim IDbAccessorSlim.Parallel
-      {
-         get { return this; }
-      }
-
       IFallbackAccessorSlim IDbAccessorSlim.Fallback
       {
          get { return new FallbackAccessorSlim(this); }
-      }
-
-      IParallelAccessor IDbAccessor.Parallel
-      {
-         get { return this; }
       }
 
       public IDbScope CreateScope()

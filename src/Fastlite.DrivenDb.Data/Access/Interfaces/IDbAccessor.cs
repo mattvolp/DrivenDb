@@ -87,10 +87,5 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
          where T8 : IDbRecord, new()
          where T9 : IDbRecord, new()
          where T10 : IDbRecord, new();
-
-      new IParallelAccessor Parallel
-      {
-         get;
-      }
    }
 }

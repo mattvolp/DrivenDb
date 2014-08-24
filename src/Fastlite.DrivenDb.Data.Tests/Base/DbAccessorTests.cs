@@ -653,7 +653,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
          using (var fixture = CreateFixture())
          {
             var accessor = fixture.CreateAccessor()
-               .WithExtensions(AccessorExtension.AllowUnmappedColumns)
+               .WithExtensions(AccessorOptions.AllowUnmappedColumns)
                .Build();
 
             Asserts.DoesNotThrow(() => accessor.ReadEntities<MyTableSlim>("SELECT * FROM MyTable"));
@@ -681,7 +681,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
          using (var fixture = CreateFixture())
          {
             var accessor = fixture.CreateAccessor()
-               .WithExtensions(AccessorExtension.CaseInsensitiveColumnMapping)
+               .WithExtensions(AccessorOptions.CaseInsensitiveColumnMapping)
                .Build();
 
             Asserts.DoesNotThrow(() =>

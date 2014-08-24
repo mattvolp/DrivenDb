@@ -26,7 +26,7 @@ namespace Fastlite.DrivenDb.Data.Tests.MySql.Infrastructure
       private static void CreateDatabase()
       {         
          var accessor = DbFactory.CreateAccessor(
-             DbAccessorType.MySql, AccessorExtension.All, () => new MySqlConnection("Server=localhost;User Id=root;Password=")
+             DbAccessorType.MySql, AccessorOptions.All, () => new MySqlConnection("Server=localhost;User Id=root;Password=")
              );
 
          accessor.Execute(@"

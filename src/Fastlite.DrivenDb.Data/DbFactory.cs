@@ -60,19 +60,12 @@ namespace Fastlite.DrivenDb.Data
 
       public static IDbAccessor CreateAccessor(DbAccessorType type, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, AccessorExtension.All, connections));
+         return CreateAccessor(type, new Db(type, AccessorOptions.All, connections));
       }
 
-      public static IDbAccessor CreateAccessor(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)
+      public static IDbAccessor CreateAccessor(DbAccessorType type, AccessorOptions options, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, extensions, connections));
-      }
-
-      public static IDbAccessor CreateAccessor(Func<ISqlBuilder> builder, AccessorExtension extensions, Func<IDbConnection> connections)
-      {
-         var db = new Db(extensions, connections);
-         
-         return new DbAccessor(new DbScripter(db, new ValueJoiner(), builder), new DbMapper(db), db);
+         return CreateAccessor(type, new Db(type, options, connections));
       }
 
       public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, IDb db)
@@ -82,19 +75,12 @@ namespace Fastlite.DrivenDb.Data
 
       public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, AccessorExtension.All, connections));
+         return CreateAccessor(type, new Db(type, AccessorOptions.All, connections));
       }
 
-      public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, AccessorExtension extensions, Func<IDbConnection> connections)
+      public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, AccessorOptions options, Func<IDbConnection> connections)
       {
-         return CreateAccessor(type, new Db(type, extensions, connections));
-      }
-
-      public static IDbAccessorSlim CreateSlimAccessor(Func<ISqlBuilder> builder, AccessorExtension extensions, Func<IDbConnection> connections)
-      {
-         var db = new Db(extensions, connections);
-         
-         return new DbAccessor(new DbScripter(db, new ValueJoiner(), builder), new DbMapper(db), new Db(extensions, connections));
+         return CreateAccessor(type, new Db(type, options, connections));
       }
    }
 }

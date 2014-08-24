@@ -71,7 +71,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\DisposableCollection.cs" />
     <Compile Include="Utility\EntityAccessor.cs" />
-    <Compile Include="Utility\EntityHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DrivenDb.snk" />

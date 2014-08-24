@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbFactory.cs" />
-    <Compile Include="Access\AccessorExtensions.cs" />
+    <Compile Include="Access\AccessorOptions.cs" />
     <Compile Include="Access\Base\DbAccessor.cs" />
     <Compile Include="Access\Base\DbMapper.cs" />
     <Compile Include="Access\Base\DbScope.cs" />
@@ -76,8 +76,6 @@
     <Compile Include="Access\Interfaces\IDbScope.cs" />
     <Compile Include="Access\Interfaces\IDbScripter.cs" />
     <Compile Include="Access\Interfaces\IFallbackAccessorSlim.cs" />
-    <Compile Include="Access\Interfaces\IParallelAccessor.cs" />
-    <Compile Include="Access\Interfaces\IParallelAccessorSlim.cs" />
     <Compile Include="Access\Interfaces\ISqlBuilder.cs" />
     <Compile Include="Access\Interfaces\IValueJoiner.cs" />
     <Compile Include="Access\MsSql\Interfaces\IMsSqlAccessor.cs" />

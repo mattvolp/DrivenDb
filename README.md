@@ -12,6 +12,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 ### Changed
 
 * The default extension mode is now All instead or None.
+* AccessorExtensions is now AccessorOptions
 
 ### Improve
 
@@ -23,6 +24,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: review DbRecord.PrimaryKey property
 * TODO: move static methods out of DbEntity & DbRecord to other static classes
 * TODO: review IEquitable & IComparable & SameAs implementations on DbRecord
+* Fallback & Parallel accessors just need to be options
 
 ### Fixed
 
@@ -37,4 +39,5 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * The identity check on the "void Update(T other, bool checkIdentity = true)" method was too much responsibility for this method.
 * The read identity methods have been deprecated for some time due to their volatile nature.  They are now gone.
 * Removed DbRecord.TableOverride property.  The ReadType methods now satisfy the original motive for this.
+* The "ReadRelated" methods on the DbAccessor have been removed.
 

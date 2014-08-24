@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Fastlite.DrivenDb.Data.Access
 {   
-   public class DbSet<T1, T2>
+   public sealed class DbSet<T1, T2>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -38,7 +38,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3>
+   public sealed class DbSet<T1, T2, T3>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -70,7 +70,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4>
+   public sealed class DbSet<T1, T2, T3, T4>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -110,7 +110,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5>
+   public sealed class DbSet<T1, T2, T3, T4, T5>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -158,7 +158,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5, T6>
+   public sealed class DbSet<T1, T2, T3, T4, T5, T6>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -214,7 +214,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5, T6, T7>
+   public sealed class DbSet<T1, T2, T3, T4, T5, T6, T7>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -278,7 +278,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8>
+   public sealed class DbSet<T1, T2, T3, T4, T5, T6, T7, T8>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -350,7 +350,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9>
+   public sealed class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9>
    {
       public DbSet(
          IEnumerable<T1> set1, 
@@ -430,7 +430,7 @@ namespace Fastlite.DrivenDb.Data.Access
       }
    }
 
-   public class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
+   public sealed class DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
    {
       public DbSet(
          IEnumerable<T1> set1, 
