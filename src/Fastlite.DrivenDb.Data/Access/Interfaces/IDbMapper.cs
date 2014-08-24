@@ -32,10 +32,7 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
          where T : IDbRecord, new();
 
       IEnumerable<T> MapAnonymous<T>(T model, string query, IDataReader reader);
-
-      IEnumerable<T> ParallelMapEntities<T>(string query, IDataReader reader)
-         where T : IDbRecord, new();
-
+      
       IEnumerable<T> MapType<T>(string query, IDataReader reader)
          where T : new();
 

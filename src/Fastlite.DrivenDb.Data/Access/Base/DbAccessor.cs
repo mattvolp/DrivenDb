@@ -177,7 +177,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               return _mapper.ParallelMapEntities<T>(command.CommandText, reader);
+               return _mapper.MapEntities<T>(command.CommandText, reader);
             }
          }
       }
@@ -198,9 +198,9 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(2, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
 
                return new DbSet<T1, T2>(set1, set2);
             }
@@ -224,11 +224,11 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(3, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(3, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3>(set1, set2, set3);
             }
@@ -253,13 +253,13 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(4, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(4, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(4, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4>(set1, set2, set3, set4);
             }
@@ -285,15 +285,15 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(5, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(5, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(5, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(5, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5>(set1, set2, set3, set4, set5);
             }
@@ -320,17 +320,17 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(6, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(6, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(6, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(6, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(6, 5);
-               var set6 = _mapper.ParallelMapEntities<T6>(command.CommandText, reader);
+               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5, T6>(set1, set2, set3, set4, set5, set6);
             }
@@ -358,19 +358,19 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 5);
-               var set6 = _mapper.ParallelMapEntities<T6>(command.CommandText, reader);
+               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(7, 6);
-               var set7 = _mapper.ParallelMapEntities<T7>(command.CommandText, reader);
+               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5, T6, T7>(set1, set2, set3, set4, set5, set6, set7);
             }
@@ -399,21 +399,21 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 5);
-               var set6 = _mapper.ParallelMapEntities<T6>(command.CommandText, reader);
+               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 6);
-               var set7 = _mapper.ParallelMapEntities<T7>(command.CommandText, reader);
+               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(8, 7);
-               var set8 = _mapper.ParallelMapEntities<T8>(command.CommandText, reader);
+               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8>(set1, set2, set3, set4, set5, set6, set7, set8);
             }
@@ -443,23 +443,23 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 5);
-               var set6 = _mapper.ParallelMapEntities<T6>(command.CommandText, reader);
+               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 6);
-               var set7 = _mapper.ParallelMapEntities<T7>(command.CommandText, reader);
+               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 7);
-               var set8 = _mapper.ParallelMapEntities<T8>(command.CommandText, reader);
+               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(9, 8);
-               var set9 = _mapper.ParallelMapEntities<T9>(command.CommandText, reader);
+               var set9 = _mapper.MapEntities<T9>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9>(set1, set2, set3, set4, set5, set6, set7, set8, set9);
             }
@@ -490,25 +490,25 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
             using (var reader = command.ExecuteReader())
             {
-               var set1 = _mapper.ParallelMapEntities<T1>(command.CommandText, reader);
+               var set1 = _mapper.MapEntities<T1>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 1);
-               var set2 = _mapper.ParallelMapEntities<T2>(command.CommandText, reader);
+               var set2 = _mapper.MapEntities<T2>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 2);
-               var set3 = _mapper.ParallelMapEntities<T3>(command.CommandText, reader);
+               var set3 = _mapper.MapEntities<T3>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 3);
-               var set4 = _mapper.ParallelMapEntities<T4>(command.CommandText, reader);
+               var set4 = _mapper.MapEntities<T4>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 4);
-               var set5 = _mapper.ParallelMapEntities<T5>(command.CommandText, reader);
+               var set5 = _mapper.MapEntities<T5>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 5);
-               var set6 = _mapper.ParallelMapEntities<T6>(command.CommandText, reader);
+               var set6 = _mapper.MapEntities<T6>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 6);
-               var set7 = _mapper.ParallelMapEntities<T7>(command.CommandText, reader);
+               var set7 = _mapper.MapEntities<T7>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 7);
-               var set8 = _mapper.ParallelMapEntities<T8>(command.CommandText, reader);
+               var set8 = _mapper.MapEntities<T8>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 8);
-               var set9 = _mapper.ParallelMapEntities<T9>(command.CommandText, reader);
+               var set9 = _mapper.MapEntities<T9>(command.CommandText, reader);
                if (!reader.NextResult()) throw new MissingResultException(10, 9);
-               var set10 = _mapper.ParallelMapEntities<T10>(command.CommandText, reader);
+               var set10 = _mapper.MapEntities<T10>(command.CommandText, reader);
 
                return new DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(set1, set2, set3, set4, set5, set6, set7, set8, set9, set10);
             }

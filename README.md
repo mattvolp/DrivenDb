@@ -13,6 +13,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 
 * The default extension mode is now All instead or None.
 * AccessorExtensions is now AccessorOptions
+* Parallel mapping is the default behavior now
 
 ### Improve
 
@@ -22,9 +23,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: solve inheritance problem?  is it a problem?
 * TODO: review ToUpdate, ToNew, ToMapped, MapTo etc... methods 
 * TODO: review DbRecord.PrimaryKey property
-* TODO: move static methods out of DbEntity & DbRecord to other static classes
-* TODO: review IEquitable & IComparable & SameAs implementations on DbRecord
-* Fallback & Parallel accessors just need to be options
+* Fallback accessor just need to be options
 
 ### Fixed
 
@@ -35,9 +34,9 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * Aggregate loading and saving is gone.  A fresh approach is required?
 * The collection classes were not that useful, and were ok at best.
 * MissingFieldException is gone, due to the PCL targeting ?
-* Link2Sql conrtact support is gone, due to it's age, lack of MS support, and the new PCL target.
+* Link2Sql contract support is gone, due to it's age, lack of MS support, and the new PCL target.
 * The identity check on the "void Update(T other, bool checkIdentity = true)" method was too much responsibility for this method.
 * The read identity methods have been deprecated for some time due to their volatile nature.  They are now gone.
 * Removed DbRecord.TableOverride property.  The ReadType methods now satisfy the original motive for this.
 * The "ReadRelated" methods on the DbAccessor have been removed.
-
+* Removed IEquitable & IComparable & SameAs implementations on DbRecord

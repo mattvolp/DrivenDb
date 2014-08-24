@@ -48,7 +48,8 @@ namespace Fastlite.DrivenDb.Data.Access.Base
             : new T[0];
       }
 
-      public IEnumerable<T> ReadType<T>(string query, params object[] parameters) where T : new()
+      public IEnumerable<T> ReadType<T>(string query, params object[] parameters) 
+         where T : new()
       {
          return !DoFallback(parameters)
             ? _accessor.ReadType<T>(query, parameters)
@@ -62,14 +63,16 @@ namespace Fastlite.DrivenDb.Data.Access.Base
             : new T[0];
       }
 
-      public T ReadEntity<T>(string query, params object[] parameters) where T : IDbRecord, new()
+      public T ReadEntity<T>(string query, params object[] parameters) 
+         where T : IDbRecord, new()
       {
          return !DoFallback(parameters)
             ? _accessor.ReadEntity<T>(query, parameters)
             : default(T);
       }
 
-      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters) where T : IDbRecord, new()
+      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters) 
+         where T : IDbRecord, new()
       {
          return !DoFallback(parameters)
             ? _accessor.ReadEntities<T>(query, parameters)

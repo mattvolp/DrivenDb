@@ -56,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utility\QueryMapper.cs" />
+    <Compile Include="Utility\QueryIdentity.cs" />
+    <Compile Include="Utility\AnonFactory.cs" />
     <Compile Include="DbFactory.cs" />
     <Compile Include="Access\AccessorOptions.cs" />
     <Compile Include="Access\Base\DbAccessor.cs" />
