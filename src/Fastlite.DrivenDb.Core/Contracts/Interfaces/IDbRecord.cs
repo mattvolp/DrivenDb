@@ -17,12 +17,7 @@ using Fastlite.DrivenDb.Core.Contracts.Attributes;
 namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
 {   
    public interface IDbRecord
-   {      
-      object[] PrimaryKey
-      {
-         get;
-      }
-
+   {            
       EntityState State
       {
          get;

@@ -22,14 +22,13 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * TODO: make studio custom tool for schema generation?
 * TODO: solve inheritance problem?  is it a problem?
 * TODO: review ToUpdate, ToNew, ToMapped, MapTo etc... methods 
-* TODO: review DbRecord.PrimaryKey property
 * Fallback accessor just need to be options
 
 ### Fixed
 
 * Inherited member variables from DbRecord and DbEntity have been renamed as to avoid conflicts with member variables that inherit from them.
 
-### Depricated
+### Removed
 
 * Aggregate loading and saving is gone.  A fresh approach is required?
 * The collection classes were not that useful, and were ok at best.
@@ -40,3 +39,4 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * Removed DbRecord.TableOverride property.  The ReadType methods now satisfy the original motive for this.
 * The "ReadRelated" methods on the DbAccessor have been removed.
 * Removed IEquitable & IComparable & SameAs implementations on DbRecord
+* Removed DbRecord.PrimaryKey property

@@ -75,7 +75,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       [DataMember]
       protected EntityState __state;
 
-      protected Lazy<int> __hashcode;
       protected T __instance;
       // ReSharper restore InconsistentNaming
 
@@ -114,23 +113,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
          __instance = (T) (object) this;         
       }
       
-      object[] IDbRecord.PrimaryKey
-      {
-         get
-         {
-            var result = new List<object>();
-
-            foreach (var column in __primaryColumns)
-            {
-               var value = __entityAccessor.GetPropertyValue<object>(__instance, column.Key);
-
-               result.Add(value);
-            }
-
-            return result.ToArray();
-         }
-      }
-
       DateTime? IDbRecord.LastUpdated
       {
          get { return __lastUpdated; }
