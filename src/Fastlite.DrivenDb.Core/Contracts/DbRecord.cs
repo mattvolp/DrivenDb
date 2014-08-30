@@ -9,6 +9,7 @@
  * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
  **************************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,9 +71,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       protected DateTime? __lastUpdated;
 
       [DataMember]
-      protected EntityState __preDeletedState;
-
-      [DataMember]
       protected EntityState __state;
 
       protected T __instance;
@@ -128,6 +126,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
          get { return __state; }
       }
 
+      // TODO: this need to a defined construct, not just a string
       string IDbRecord.Schema
       {
          get { return __table.Schema; }
@@ -153,6 +152,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
          get { return __primaryColumns.Select(c => c.Value).ToArray(); }
       }
 
+      // TODO: needs to be a defined construct, not just a dictionary
       IDictionary<string, DbColumnAttribute> IDbRecord.Columns
       {
          get { return __columns; }

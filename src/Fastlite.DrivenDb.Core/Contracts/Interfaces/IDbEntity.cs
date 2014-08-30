@@ -15,7 +15,6 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
    public interface IDbEntity : IDbRecord
    {
       void Delete();
-      void Undelete();
    }
 
    public interface IDbEntity<T> : IDbEntity
@@ -24,6 +23,7 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       T Clone();
 
       void Update(T other);
+
       void Merge(T other);
    }
 }

@@ -36,16 +36,19 @@ namespace Fastlite.DrivenDb.Core.Contracts
          get { return this; }
       }
 
+      // TODO: unnecessary, if not inherited
       protected virtual void BeforeSerialization()
       {
       }
 
+      // TODO: unnecessary, if not inherited
       [OnSerializing]
       private void OnSerializing(StreamingContext context)
       {
          BeforeSerialization();
       }
 
+      // TODO: unnecessary, if not inherited
       protected virtual void AfterDeserialization()
       {
       }
@@ -59,101 +62,30 @@ namespace Fastlite.DrivenDb.Core.Contracts
 
       private void Initialize()
       {
-         __instance.PropertyChanged += (s, e) =>
-            {
-               if (__columns.ContainsKey(e.PropertyName))
-               {
-                  __changes.Add(e.PropertyName);
-                  __lastModified = DateTime.Now;
+         __instance.PropertyChanged += __instance_PropertyChanged;
+      }
 
-                  if (__state != EntityState.New)
-                  {
-                     ChangeState(EntityState.Modified);
-                  }
-               }
-            };
+      void __instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
+      {
+         if (__columns.ContainsKey(e.PropertyName))
+         {
+            __changes.Add(e.PropertyName);
+            __lastModified = DateTime.Now;
+
+            if (__state != EntityState.New)
+            {
+               ChangeState(EntityState.Modified);
+            }
+         }
       }
 
       void IDbEntity.Delete()
       {
          if (__state != EntityState.Deleted)
          {
-            __preDeletedState = __state;
+            //__preDeletedState = __state;
 
             ChangeState(EntityState.Deleted);
-         }
-      }
-
-      void IDbEntity.Undelete()
-      {
-         if (__state == EntityState.Deleted)
-         {
-            __state = __preDeletedState;
-
-            ChangeState(__preDeletedState);
-         }
-      }
-
-      public T ToNew()
-      {
-         var result = new T();
-
-         result.Update(this.__instance);
-
-         if (__identityColumn.Value != null)
-         {
-            var property = __entityAccessor.GetPropertyInfo(__identityColumn.Key);
-
-            var value = property.PropertyType.IsValueType
-               ? Activator.CreateInstance(property.PropertyType)
-               : null;
-
-            result.Entity.SetProperty(__identityColumn.Key, value);
-            result.__changes.Remove(__identityColumn.Key);
-         }
-
-         result.__state = EntityState.New;
-
-         return result;
-      }
-
-      public T ToUpdate()
-      {
-         var result = new T();
-
-         result.Update(this.__instance);
-
-         if (__identityColumn.Value != null)
-         {
-            result.__changes.Remove(__identityColumn.Key);
-         }
-
-         result.__state = EntityState.Modified;
-
-         return result;
-      }
-
-      public TOther ToMapped<TOther>()
-         where TOther : new()
-      {
-         var result = new TOther();
-
-         MapTo(result);
-
-         return result;
-      }
-
-      public void MapTo<TOther>(TOther other)
-      {
-         var targets = other.GetType()
-            .GetProperties();
-
-         foreach (var target in targets)
-         {
-            if (target.CanWrite && __entityAccessor.CanReadProperty(target.Name))
-            {
-               target.SetValue(other, __entityAccessor.GetPropertyValue<object>(this.__instance, target.Name), null);
-            }
          }
       }
 
@@ -205,6 +137,7 @@ namespace Fastlite.DrivenDb.Core.Contracts
          return result;
       }
 
+      // TODO: review algorithm
       void IDbEntity<T>.Merge(T other)
       {         
          var lastModified = __lastModified;
