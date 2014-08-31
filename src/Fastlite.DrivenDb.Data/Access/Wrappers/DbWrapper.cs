@@ -77,12 +77,13 @@ namespace Fastlite.DrivenDb.Data.Access.Wrappers
          return _accessor.ReadType(factory, query, parameters);
       }
 
-      public T ReadEntity<T>(string query, params object[] parameters) where T : IDbRecord, new()
+      public T ReadEntity<T>(string query, params object[] parameters) where T : IDbEntity, new()
       {
          return _accessor.ReadEntity<T>(query, parameters);
       }
 
-      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters) where T : IDbRecord, new()
+      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters) 
+         where T : IDbEntity, new()
       {
          return _accessor.ReadEntities<T>(query, parameters);
       }
@@ -114,100 +115,100 @@ namespace Fastlite.DrivenDb.Data.Access.Wrappers
       }
 
       public DbSet<T1, T2> ReadEntities<T1, T2>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2>(query, parameters);
       }
 
       public DbSet<T1, T2, T3> ReadEntities<T1, T2, T3>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4> ReadEntities<T1, T2, T3, T4>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5> ReadEntities<T1, T2, T3, T4, T5>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6> ReadEntities<T1, T2, T3, T4, T5, T6>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7> ReadEntities<T1, T2, T3, T4, T5, T6, T7>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
-         where T9 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
+         where T9 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9>(query, parameters);
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
-         where T9 : IDbRecord, new()
-         where T10 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
+         where T9 : IDbEntity, new()
+         where T10 : IDbEntity, new()
       {
          return _accessor.ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(query, parameters);
       }

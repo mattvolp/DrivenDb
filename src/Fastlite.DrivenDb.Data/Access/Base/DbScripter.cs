@@ -72,7 +72,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var count = 0;
          var builder = _builders();
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = metadata.Table.Schema;
          builder.Table = metadata.Table.Name;
 
          metadata.Columns.Values.ForEach(
@@ -106,7 +106,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
          var count = 0;
          
-         builder.Schema = metadata.Schema;
+         builder.Schema = metadata.Table.Schema;
          builder.Table = metadata.Table.Name;
 
          // ReSharper disable AccessToModifiedClosure
@@ -146,7 +146,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
 
          var count = 0;
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = metadata.Table.Schema;
          builder.Table = metadata.Table.Name;
 
          metadata.PrimaryColumns.ForEach(
@@ -173,7 +173,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var count = 0;
          var builder = _builders();
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = metadata.Table.Schema;
          builder.Table = metadata.Table.Name;
 
          metadata.Columns.Values.ForEach(c => builder.AddColumn(c.Name));
@@ -206,7 +206,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
          var count = 0;
          var metadata = entity;
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = metadata.Table.Schema;
          builder.Table = metadata.Table.Name;
 
          entity.Changes.ForEach(c => builder.AddSetter(c, count++));

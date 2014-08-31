@@ -10,24 +10,13 @@
  * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
  **************************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using Fastlite.DrivenDb.Core.Contracts.Attributes;
 
 namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
-{   
+{
    public interface IDbRecord
-   {            
-      EntityState State
-      {
-         get;
-      }
-
-      string Schema
-      {
-         get;
-      }
-
+   {                  
       DbTableAttribute Table
       {
          get;
@@ -52,28 +41,11 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       {
          get;
       }
-
-      IEnumerable<string> Changes
-      {
-         get;
-      }
-
-      DateTime? LastModified
-      {
-         get;
-      }
-
-      DateTime? LastUpdated
-      {
-         get;
-      }
-
+      
       void SetIdentity(long identity);
 
       object GetProperty(string property);
 
       void SetProperty(string property, object value);
-
-      void Reset();
    }
 }

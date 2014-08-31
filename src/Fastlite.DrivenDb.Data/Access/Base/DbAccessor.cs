@@ -143,7 +143,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public T ReadEntity<T>(string query, params object[] parameters)
-         where T : IDbRecord, new()
+         where T : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -163,7 +163,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters)
-         where T : IDbRecord, new()
+         where T : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -183,8 +183,8 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2> ReadEntities<T1, T2>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -208,9 +208,9 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3> ReadEntities<T1, T2, T3>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -236,10 +236,10 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4> ReadEntities<T1, T2, T3, T4>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -267,11 +267,11 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5> ReadEntities<T1, T2, T3, T4, T5>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -301,12 +301,12 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6> ReadEntities<T1, T2, T3, T4, T5, T6>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -338,13 +338,13 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7> ReadEntities<T1, T2, T3, T4, T5, T6, T7>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -378,14 +378,14 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -421,15 +421,15 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
-         where T9 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
+         where T9 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())
@@ -467,16 +467,16 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public DbSet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> ReadEntities<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string query, params object[] parameters)
-         where T1 : IDbRecord, new()
-         where T2 : IDbRecord, new()
-         where T3 : IDbRecord, new()
-         where T4 : IDbRecord, new()
-         where T5 : IDbRecord, new()
-         where T6 : IDbRecord, new()
-         where T7 : IDbRecord, new()
-         where T8 : IDbRecord, new()
-         where T9 : IDbRecord, new()
-         where T10 : IDbRecord, new()
+         where T1 : IDbEntity, new()
+         where T2 : IDbEntity, new()
+         where T3 : IDbEntity, new()
+         where T4 : IDbEntity, new()
+         where T5 : IDbEntity, new()
+         where T6 : IDbEntity, new()
+         where T7 : IDbEntity, new()
+         where T8 : IDbEntity, new()
+         where T9 : IDbEntity, new()
+         where T10 : IDbEntity, new()
       {
          using (var connection = _db.CreateConnection())
          using (var command = connection.CreateCommand())

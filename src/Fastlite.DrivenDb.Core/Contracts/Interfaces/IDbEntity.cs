@@ -10,10 +10,35 @@
  * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
  **************************************************************************************/
 
+using System;
+using System.Collections.Generic;
+
 namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
 {
    public interface IDbEntity : IDbRecord
    {
+      EntityState State
+      {
+         get;
+      }
+
+      IEnumerable<string> Changes
+      {
+         get;
+      }
+
+      DateTime? LastModified
+      {
+         get;
+      }
+
+      DateTime? LastUpdated
+      {
+         get;
+      }
+
+      void Reset();
+
       void Delete();
    }
 
@@ -21,9 +46,5 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
       where T : IDbEntity
    {
       T Clone();
-
-      void Update(T other);
-
-      void Merge(T other);
    }
 }

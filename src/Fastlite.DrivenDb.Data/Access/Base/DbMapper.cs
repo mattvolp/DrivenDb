@@ -136,7 +136,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public T MapEntity<T>(string query, IDataReader reader)
-         where T : IDbRecord, new()
+         where T : IDbEntity, new()
       {
          var mapper = GetMapper<T>(query, reader);
          var result = new List<T>();
@@ -156,7 +156,7 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public IEnumerable<T> MapEntities<T>(string query, IDataReader reader)
-         where T : IDbRecord, new()
+         where T : IDbEntity, new()
       {
          var mapper = GetMapper<T>(query, reader);
          var names = new List<String>();

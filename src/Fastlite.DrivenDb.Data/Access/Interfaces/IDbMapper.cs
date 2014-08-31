@@ -26,10 +26,10 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
       string MapValue(IDataReader reader);
 
       T MapEntity<T>(string query, IDataReader reader)
-         where T : IDbRecord, new();
+         where T : IDbEntity, new();
 
       IEnumerable<T> MapEntities<T>(string query, IDataReader reader)
-         where T : IDbRecord, new();
+         where T : IDbEntity, new();
 
       IEnumerable<T> MapAnonymous<T>(T model, string query, IDataReader reader);
       

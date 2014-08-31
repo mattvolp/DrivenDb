@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Fastlite.DrivenDb.Core.Contracts.Arguments;
 using Fastlite.DrivenDb.Core.Contracts.Interfaces;
 
 namespace Fastlite.DrivenDb.Core.Contracts
@@ -26,14 +27,49 @@ namespace Fastlite.DrivenDb.Core.Contracts
       , INotifyPropertyChanged
       , new()
    {
+      // ReSharper disable InconsistentNaming
+      [DataMember]
+      protected EntityState __state;
+
+      [DataMember]
+      protected HashSet<string> __changes = new HashSet<string>();
+
+      [DataMember]
+      protected DateTime? __lastModified;
+
+      [DataMember]
+      protected DateTime? __lastUpdated;
+      // ReSharper restore InconsistentNaming
+
       protected DbEntity()
       {
          Initialize();
       }
 
+      public event StateChangedEvent StateChanged;
+
       public IDbEntity<T> Entity
       {
          get { return this; }
+      }
+      EntityState IDbEntity.State
+      {
+         get { return __state; }
+      }
+      
+      DateTime? IDbEntity.LastUpdated
+      {
+         get { return __lastUpdated; }
+      }
+
+      DateTime? IDbEntity.LastModified
+      {
+         get { return __lastModified; }
+      }
+
+      IEnumerable<string> IDbEntity.Changes
+      {
+         get { return __changes; }
       }
 
       // TODO: unnecessary, if not inherited
@@ -79,6 +115,15 @@ namespace Fastlite.DrivenDb.Core.Contracts
          }
       }
 
+      void IDbEntity.Reset()
+      {
+         ChangeState(EntityState.Current);
+
+         __lastModified = null;
+         __lastUpdated = DateTime.Now;
+         __changes.Clear();
+      }
+
       void IDbEntity.Delete()
       {
          if (__state != EntityState.Deleted)
@@ -87,23 +132,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
 
             ChangeState(EntityState.Deleted);
          }
-      }
-
-      public void Update(T other)
-      {         
-         var properties = __entityAccessor.GetProperties();
-
-         foreach (var property in properties)
-         {
-            if (__entityAccessor.CanReadProperty(property.Name)
-               && __entityAccessor.CanWriteProperty(property.Name)
-               )
-            {
-               Entity.SetProperty(property.Name, other.GetProperty(property.Name));
-            }
-         }
-
-         __lastModified = DateTime.Now;
       }
 
       public T Clone()
@@ -137,50 +165,16 @@ namespace Fastlite.DrivenDb.Core.Contracts
          return result;
       }
 
-      // TODO: review algorithm
-      void IDbEntity<T>.Merge(T other)
-      {         
-         var lastModified = __lastModified;
-         var lastUpdated = __lastUpdated;
-         var changes = new HashSet<string>(__changes);
+      protected void ChangeState(EntityState state)
+      {
+         var previous = __state;
 
-         if (__lastUpdated < other.LastUpdated)
+         __state = state;
+
+         if (previous != state && StateChanged != null)
          {
-            var properties = __entityAccessor.GetProperties();
-
-            foreach (var property in properties)
-            {
-               if (!changes.Contains(property.Name))
-               {
-                  Entity.SetProperty(property.Name, other.GetProperty(property.Name));
-               }
-            }
+            StateChanged(this, new StateChangedEventArgs(previous, state));
          }
-
-         foreach (var change in other.Changes)
-         {
-            if (!changes.Contains(change))
-            {
-               Entity.SetProperty(change, other.GetProperty(change));
-               changes.Add(change);
-            }
-         }
-
-         __changes = new HashSet<string>(changes);
-
-         var state = other.State == EntityState.Deleted || other.State == EntityState.Modified
-            ? other.State
-            : __state;
-
-         ChangeState(state);
-
-         __lastModified = lastModified.HasValue && lastModified > other.LastModified
-                             ? lastModified
-                             : other.LastModified;
-
-         __lastUpdated = lastUpdated > other.LastUpdated
-                            ? lastUpdated
-                            : other.LastUpdated;
       }
    }
 }

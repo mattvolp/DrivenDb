@@ -10,7 +10,6 @@
  * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
  **************************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -60,44 +59,17 @@ namespace Fastlite.DrivenDb.Core.Contracts
          }
       }
 
-      // ReSharper disable InconsistentNaming
-      [DataMember]
-      protected HashSet<string> __changes = new HashSet<string>();
-
-      [DataMember]
-      protected DateTime? __lastModified;
-
-      [DataMember]
-      protected DateTime? __lastUpdated;
-
-      [DataMember]
-      protected EntityState __state;
-
       protected T __instance;
-      // ReSharper restore InconsistentNaming
+      
 
       protected DbRecord()
       {
          Initialize();
       }
 
-      public event StateChangedEvent StateChanged;
-
       public IDbRecord Record
       {
          get { return this; }
-      }
-
-      protected void ChangeState(EntityState state)
-      {
-         var previous = __state;
-
-         __state = state;
-
-         if (previous != state && StateChanged != null)
-         {
-            StateChanged(this, new StateChangedEventArgs(previous, state));
-         }
       }
 
       [OnDeserialized]
@@ -111,27 +83,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
          __instance = (T) (object) this;         
       }
       
-      DateTime? IDbRecord.LastUpdated
-      {
-         get { return __lastUpdated; }
-      }
-
-      DateTime? IDbRecord.LastModified
-      {
-         get { return __lastModified; }
-      }
-
-      EntityState IDbRecord.State
-      {
-         get { return __state; }
-      }
-
-      // TODO: this need to a defined construct, not just a string
-      string IDbRecord.Schema
-      {
-         get { return __table.Schema; }
-      }
-
       DbTableAttribute IDbRecord.Table
       {
          get { return __table; }
@@ -158,11 +109,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
          get { return __columns; }
       }
 
-      IEnumerable<string> IDbRecord.Changes
-      {
-         get { return __changes; }
-      }
-
       void IDbRecord.SetIdentity(long identity)
       {
          if (__identityColumn.Value != null && _isIdentity32.HasValue)
@@ -186,15 +132,6 @@ namespace Fastlite.DrivenDb.Core.Contracts
       void IDbRecord.SetProperty(string property, object value)
       {
          __entityAccessor.SetPropertyValue(__instance, property, value);
-      }
-
-      void IDbRecord.Reset()
-      {
-         ChangeState(EntityState.Current);
-
-         __lastModified = null;
-         __lastUpdated = DateTime.Now;
-         __changes.Clear();
       }
    }
 }

@@ -64,15 +64,15 @@ namespace Fastlite.DrivenDb.Data.Access.Base
       }
 
       public T ReadEntity<T>(string query, params object[] parameters) 
-         where T : IDbRecord, new()
+         where T : IDbEntity, new()
       {
          return !DoFallback(parameters)
             ? _accessor.ReadEntity<T>(query, parameters)
             : default(T);
       }
 
-      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters) 
-         where T : IDbRecord, new()
+      public IEnumerable<T> ReadEntities<T>(string query, params object[] parameters)
+         where T : IDbEntity, new()
       {
          return !DoFallback(parameters)
             ? _accessor.ReadEntities<T>(query, parameters)

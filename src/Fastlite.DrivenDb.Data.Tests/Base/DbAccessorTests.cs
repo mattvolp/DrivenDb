@@ -534,30 +534,30 @@ namespace Fastlite.DrivenDb.Data.Tests.Base
          }
       }
 
-      [TestMethod]
-      public void DbAccessor_DrivenRecordTest()
-      {
-         using (var fixture = CreateFixture())
-         {
-            var accessor = fixture.CreateAccessor()
-               .WithAllExtensions()
-               .Build();
+      //[TestMethod]
+      //public void DbAccessor_DrivenRecordTest()
+      //{
+      //   using (var fixture = CreateFixture())
+      //   {
+      //      var accessor = fixture.CreateAccessor()
+      //         .WithAllExtensions()
+      //         .Build();
 
-            var records = accessor.ReadEntities<MyTableRecord>(@"SELECT * FROM MyTable")
-               .ToArray();
+      //      var records = accessor.ReadEntities<MyTableRecord>(@"SELECT * FROM MyTable")
+      //         .ToArray();
 
-            Assert.IsTrue(records.Length == 3);
-            Assert.IsTrue(records[0].MyIdentity == 1);
-            Assert.IsTrue(records[0].MyNumber == 1);
-            Assert.IsTrue(records[0].MyString == "One");
-            Assert.IsTrue(records[1].MyIdentity == 2);
-            Assert.IsTrue(records[1].MyNumber == 2);
-            Assert.IsTrue(records[1].MyString == "Two");
-            Assert.IsTrue(records[2].MyIdentity == 3);
-            Assert.IsTrue(records[2].MyNumber == 3);
-            Assert.IsTrue(records[2].MyString == "Three");
-         }
-      }
+      //      Assert.IsTrue(records.Length == 3);
+      //      Assert.IsTrue(records[0].MyIdentity == 1);
+      //      Assert.IsTrue(records[0].MyNumber == 1);
+      //      Assert.IsTrue(records[0].MyString == "One");
+      //      Assert.IsTrue(records[1].MyIdentity == 2);
+      //      Assert.IsTrue(records[1].MyNumber == 2);
+      //      Assert.IsTrue(records[1].MyString == "Two");
+      //      Assert.IsTrue(records[2].MyIdentity == 3);
+      //      Assert.IsTrue(records[2].MyNumber == 3);
+      //      Assert.IsTrue(records[2].MyString == "Three");
+      //   }
+      //}
 
       [TestMethod]
       public void DbAccessor_UnrelatedPropertyTest()

@@ -37,10 +37,10 @@ namespace Fastlite.DrivenDb.Data.Access.Interfaces
       IEnumerable<T> ReadType<T>(Func<T> factory, string query, params object[] parameters);
 
       T ReadEntity<T>(string query, params object[] parameters)
-         where T : IDbRecord, new();
+         where T : IDbEntity, new();
 
       IEnumerable<T> ReadEntities<T>(string query, params object[] parameters)
-         where T : IDbRecord, new();
+         where T : IDbEntity, new();
 
       IDbScope CreateScope();
 

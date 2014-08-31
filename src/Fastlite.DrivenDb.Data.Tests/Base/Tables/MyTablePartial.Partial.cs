@@ -1,7 +1,9 @@
 ﻿
+using System.ComponentModel;
+
 namespace Fastlite.DrivenDb.Data.Tests.Base.Tables
 {
-   internal partial class MyTablePartial
+   internal partial class MyTablePartial : INotifyPropertyChanged
    {
       public MyTablePartial()
       {

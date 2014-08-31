@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 using Fastlite.DrivenDb.Core.Contracts;
 using Fastlite.DrivenDb.Core.Contracts.Attributes;
 
@@ -6,7 +7,7 @@ namespace Fastlite.DrivenDb.Data.Tests.Base.Tables
 {
    [DataContract]
    [DbTable(Name = "MyTable")]
-   internal partial class MyTablePartial : DbRecord<MyTablePartial>
+   internal partial class MyTablePartial : DbEntity<MyTablePartial>, INotifyPropertyChanged
    {
       [DataMember]
       private long m_MyIdentity;
@@ -36,6 +37,14 @@ namespace Fastlite.DrivenDb.Data.Tests.Base.Tables
       {
          get { return m_MyNumber; }
          set { m_MyNumber = value; }
+      }
+
+      public event PropertyChangedEventHandler PropertyChanged;
+
+      protected virtual void OnPropertyChanged(string propertyName)
+      {
+         PropertyChangedEventHandler handler = PropertyChanged;
+         if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
       }
    }
 }
