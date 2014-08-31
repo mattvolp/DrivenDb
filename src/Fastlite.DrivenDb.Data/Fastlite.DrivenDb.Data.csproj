@@ -97,7 +97,9 @@
     <Compile Include="Utility\DataHolder.cs" />
     <Compile Include="Utility\DataRecord.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="2.0\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fastlite.DrivenDb.Core\Fastlite.DrivenDb.Core.csproj">
       <Project>{c075965c-70b2-4bd2-853d-2872c18818a5}</Project>

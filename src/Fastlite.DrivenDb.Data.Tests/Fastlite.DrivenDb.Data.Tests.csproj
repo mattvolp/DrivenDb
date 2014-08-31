@@ -60,6 +60,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="2.0\DrivenDb_BehaviorTests.cs" />
     <Compile Include="Base\DbAccessorTests.cs" />
     <Compile Include="Base\DbEntityTests.cs" />
     <Compile Include="Base\DbMapperTests.cs" />

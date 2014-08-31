@@ -32,6 +32,7 @@ namespace Fastlite.DrivenDb.Core.Contracts.Interfaces
          get;
       }
 
+      // TODO: difference between LastModified and LastUpdated?
       DateTime? LastUpdated
       {
          get;

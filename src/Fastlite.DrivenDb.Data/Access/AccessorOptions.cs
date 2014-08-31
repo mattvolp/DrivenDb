@@ -20,7 +20,7 @@ namespace Fastlite.DrivenDb.Data.Access
       None = 0,
       AllowEnumerableParameters = 1,
       LimitDateParameters = 2,
-      AllowUnmappedColumns = 4,
+      AllowUnmappedColumns = 4, 
       CaseInsensitiveColumnMapping = 8,
       PrivateMemberColumnMapping = 16,
 
