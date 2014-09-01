@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Fastlite.DrivenDb.Core.Contracts.Arguments;
 using Fastlite.DrivenDb.Core.Contracts.Attributes;
@@ -42,8 +43,8 @@ namespace Fastlite.DrivenDb.Core.Contracts
       {
          var type = typeof(T);
 
-         __table = AttributeHelper.GetTableAttribute(type);
-         __sequence = AttributeHelper.GetSequenceAttribute(type);
+         __table = AttributeHelper.GetTableAttribute(type.GetTypeInfo());
+         __sequence = AttributeHelper.GetSequenceAttribute(type.GetTypeInfo());
          __columns = AttributeHelper.GetColumnAttributes(type);
 
          __primaryColumns = __columns

@@ -14,6 +14,7 @@ In order to continue developing DrivenDb, it seemed necessary to go through the 
 * The default extension mode is now All instead or None.
 * AccessorExtensions is now AccessorOptions
 * Parallel mapping is the default behavior now
+* Now targeting .Net 4.5
 
 ### Improve
 

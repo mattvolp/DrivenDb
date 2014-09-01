@@ -1,0 +1,9 @@
+﻿
+CREATE TABLE TableInt32
+(
+	[Column1] INTEGER
+);
+
+INSERT INTO [TableInt32] VALUES (1);
+INSERT INTO [TableInt32] VALUES (2);
+INSERT INTO [TableInt32] VALUES (3);

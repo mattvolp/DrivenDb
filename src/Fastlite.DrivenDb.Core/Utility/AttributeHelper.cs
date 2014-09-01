@@ -29,7 +29,7 @@ namespace Fastlite.DrivenDb.Core.Utility
 
       public static IDictionary<string, DbColumnAttribute> GetColumnAttributes(Type type)
       {
-         var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+         var properties = type.GetRuntimeProperties(); //BindingFlags.Instance | BindingFlags.Public);
          var columns = new Dictionary<string, DbColumnAttribute>();
 
          foreach (var property in properties)

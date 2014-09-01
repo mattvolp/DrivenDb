@@ -1,123 +1,125 @@
 Insert Strategies
-	* Identity Output
-	* Identity Select
-	
+   * Identity Output
+   * Identity Select
+   
 Result Intercept Targets
-	* DbType
-	* MyColumn
-	
+   * DbType
+   * MyColumn (Name?)
+   * Index
+   
 Result Intercept Types
-	* Alteration
-	* Transformation
+   * Alteration
+   * Transformation
 
 IResultIntercept
-	* IInterceptTarget (e.g. Result Intercept Targets)
-	* IInterceptor
-	
+   * IInterceptTarget (e.g. Result Intercept Targets)
+   * IInterceptor
+   
 Parameter Intercept Targets
-	* Type
-	
+   * Type
+   * Index
+   
 Parameter Intercept Types
-	* Alteration
-	* Transformation
-	* Script
-	
+   * Alteration
+   * Transformation
+   * Script
+   
 IParameterIntercept
-	* IInterceptorTarget (e.g. Parameter Intercept Targets)
-	* Interceptor
-	* ReturnEmptyWhen Func<value, bool>
-	
+   * IInterceptorTarget (e.g. Parameter Intercept Targets)
+   * Interceptor
+   * ReturnEmptyWhen Func<value, bool>
+   
 Accessor Commands
-	* RegisterResultInterceptFor(DbType)
-	* RegisterResultInterceptFor(MyColumn)
-	* RegisterResultIntercept(IResultIntercept)
-	* RegisterResultIntercepts(IEnumerable<IResultIntercept>)???  without this you would linq
-	* RegisterParameterInterceptFor(Type)
-	* RegisterParameterIntercept(IParameterIntercept)
-	* RegisterParameterIntercepts(IEnumerable<IParameterIntercept>)???  without this you would linq
-	* SpecifyInsertStrategyFor(MyTable, InsertStrategy)
-	* CreateTransaction() : DbScope : DbAccessor w/transaction, IDisposable	
-	* Go();
+   * ResultIntercept(DbType)
+   * ResultIntercept(MyColumn)
+   * ResultIntercept(int index)
+   * ResultIntercept(IResultIntercept)	
+   * ParameterIntercept(Type)
+   * ParameterIntercept(uint index)
+   * ParameterIntercept(IParameterIntercept)	
+   * InsertStrategy(InsertStrategy)
+   * InsertStrategy(MyTable, InsertStrategy)
+   * CreateTransaction() : DbScope : DbAccessor w/transaction, IDisposable		
 
 TransactionCommands
-	* all accessor commands 
-	* Commit()
-	
+   * all accessor commands 
+   * Commit()
+   
 Reader Commands
-	* all accessor commands - "CreateTransaction"
-	* IngoreResultInterceptsFor(MySchema)     
-	* IngoreResultInterceptsFor(MyTable)     
-	* IngoreResultInterceptsFor(MyTable.MyColumn)     
-	* IngoreAllParameterIntercepts()
-	* IgnoreAllResultIntercepts()
-	* IgnoreAllIntercepts()	
-	* As<struct>()
-	* As<string>()
-	* As<T...>	
-	* As<T>(T)			// all return arrays.  linq to single or what-ev
-	* As<T>(Func<T>)
-	* As(Type)???
-	* As(Func<object>)???
+   * all accessor commands - "CreateTransaction"    
+   * IngoreResultInterceptsFor(MySchema)     
+   * IngoreResultInterceptsFor(MyTable)     
+   * IngoreResultInterceptsFor(MyTable.MyColumn)     
+   * IngoreAllParameterIntercepts()
+   * IgnoreAllResultIntercepts()
+   * IgnoreAllIntercepts()	
+   * As<struct>()
+   * As<string>()
+   * As<T..10>			
+   * As<T..10>(Func<T>)	// can handle anonymous types too	
 
 Writer Commands
-	* all accessor commands - "CreateTransaction"
-	* all reader commands - "As"
-	
-	
-	
+   * all accessor commands - "CreateTransaction"
+   * all reader commands - "As"
+   
+   
+   
 * MySchema & Table & Column will need to be different types
 * use static MySchema.Table.Column names instead of strings, have those values not be strings so
 * that no one will pass strings to those methods, they will have to use the static values.
-* 
+
+* all current mapper business would now be intercepts
+
 * accessor should inherit from abstract class so that this crapo has to be done in its constructor
-accessor
-    .RegisterResultInterceptFor(DbType).AsTransformation<bit, bool>()
-	.RegisterResultInterceptFor(DbType).AsAlteration()
-	.RegisterResultInterceptFor(MySchema.MyTable.MyColumn).AsTransformation<bit?, bool>(value => Bool.Parse(value))	
-	.RegisterParameterInterceptFor(typeof(IEnumerable)).AsScript(e => String.Join(",", e)).ReturnEmptyWhen(e => e == null || e.Count() == 0)
-	.RegisterParameterInterceptFor(typeof(DateTime)).AsAlteration(d => SqlMinDateTime)
-	.RegisterParameterInterceptFor(typeof(DateTime)).AsTransformation<string>(d => SqlMinDateTime.ToString())	
-	.RegisterParameterIntercept(IParameterIntercept)
-	.SpecifyInsertStrategyFor(MySchema.MyTable, InsertStrategy.IdentitySelect)		// alternate: InsertStrategy.IdentityOutput
-	.Go();
-	
+accessor.Setup
+   .ResultIntercept(DbType).AsTransformation<bit, bool>()
+   .ResultIntercept(DbType).AsAlteration()
+   .ResultIntercept(MySchema.MyTable.MyColumn).AsTransformation<bool>(object => Bool.Parse(value))	
+   .ParameterIntercept(typeof(IEnumerable)).AsScript(e => String.Join(",", e)).ReturnEmptyWhen(e => e == null || e.Count() == 0)
+   .ParameterIntercept(typeof(DateTime)).AsAlteration(d => SqlMinDateTime)
+   .ParameterIntercept(typeof(DateTime)).AsTransformation<string>(d => SqlMinDateTime.ToString())	
+   .ParameterIntercept(IParameterIntercept)
+   .InsertStrategy(MySchema.MyTable, InsertStrategy.IdentitySelect)		// alternate: InsertStrategy.IdentityOutput
+   .Go();
+   
 accessor.Read(
-		"SELECT Type1 WHERE IN(@0)
-		 SELECT Type2 ALSO WHERE
-		")	
-	.IngoreResultInterceptsFor(MySchema)     
-	.IngoreResultInterceptsFor(MyTable)     
-	.IngoreResultInterceptsFor(MyTable.MyColumn)     
-	.IngoreAllParameterIntercepts()
-	.IgnoreAllResultIntercepts()
-	.IgnoreAllIntercepts()
-	...  any intercepts here are only for this read and are overrides for other registered intercepts
-	.As<T1>()	
-	.As<T2>()
-	.Go();
-	
+      "SELECT Type1 WHERE IN(@0)
+       SELECT Type2 ALSO WHERE
+      ")	
+   .IngoreResultInterceptsFor(MySchema)     
+   .IngoreResultInterceptsFor(MyTable)     
+   .IngoreResultInterceptsFor(MyTable.MyColumn)     
+   .IngoreAllParameterIntercepts()
+   .IgnoreAllResultIntercepts()
+   .IgnoreAllIntercepts()
+   ...  any intercepts here are only for this read and are overrides for other registered intercepts
+   .As<T1>()	
+   .As<T2>()
+   .Go();
+   
 accessor.Write("INSERT CRAP")
-	... ignores
-	... overriding intercepts
-	.WithStrategy(MsSql.UseScopeIdentity)
-	.Go();
+   ... ignores
+   ... overriding intercepts
+   .WithStrategy(MsSql.UseScopeIdentity)
+   .Go();
 
 accessor.Write(IList<Entity>)
-	... temporary ignores
-	... overriding intercepts
-	... overriding strategies
-	.Go();
-	
+   ... temporary ignores
+   ... overriding intercepts
+   ... overriding strategies
+   .Go();
+   
 
-	
-	
-	
-	
+   
+   
+   
+   
 accessor.Read(
-	@"SELECT Type1 WHERE IN(@0)"
-	, 1
-	, 2
-	, 3)		
-	.RegisterParameterIntercept(DrivenDb.EmptyEnumerableIntercept)
-	.As<T>()	
-	.Go();
+   @"SELECT TOP @0 Type1 WHERE IN(@1)"
+   , 100
+   , new [] {1,2,3})		
+   .ParameterIntercept("@0").AsScript(i => i.ToString())
+   .ParameterIntercept(DrivenDb.TopNIntercept)
+   .ParameterIntercept(DrivenDb.EnumInIntercept)	
+   .As<T>()	
+   .Go();

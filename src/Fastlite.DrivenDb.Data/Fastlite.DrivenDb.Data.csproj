@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fastlite.DrivenDb.Data</RootNamespace>
     <AssemblyName>Fastlite.DrivenDb.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -46,6 +48,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -56,6 +59,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="2.0\DbAccessor2.cs" />
+    <Compile Include="2.0\DbAccessorType2.cs" />
+    <Compile Include="2.0\DbConnectionFactory.cs" />
+    <Compile Include="2.0\DbRecord2.cs" />
+    <Compile Include="2.0\DbQuery.cs" />
+    <Compile Include="2.0\DbReaderBuilder.cs" />
+    <Compile Include="2.0\DbRecordCollection.cs" />
+    <Compile Include="2.0\DbResultSet.cs" />
+    <Compile Include="2.0\Roles\IDbConnectionFactory.cs" />
+    <Compile Include="2.0\Api\IDbAccessor2.cs" />
+    <Compile Include="2.0\Api\IDbReaderBuilder.cs" />
+    <Compile Include="2.0\Mapper.cs" />
+    <Compile Include="2.0\DbRecordSet.cs" />
+    <Compile Include="2.0\DbResultCollection.cs" />
+    <Compile Include="2.0\MapperStore.cs" />
     <Compile Include="Utility\QueryMapper.cs" />
     <Compile Include="Utility\QueryIdentity.cs" />
     <Compile Include="Utility\AnonFactory.cs" />
@@ -97,9 +115,7 @@
     <Compile Include="Utility\DataHolder.cs" />
     <Compile Include="Utility\DataRecord.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="2.0\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Fastlite.DrivenDb.Core\Fastlite.DrivenDb.Core.csproj">
       <Project>{c075965c-70b2-4bd2-853d-2872c18818a5}</Project>

@@ -40,7 +40,7 @@ namespace Fastlite.DrivenDb.Core.Utility
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase);
 
-         _properties = _genericType.GetProperties().ToDictionary(p => p.Name, caseSensitive
+         _properties = _genericType.GetRuntimeProperties().ToDictionary(p => p.Name, caseSensitive
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase);
 
@@ -120,7 +120,7 @@ namespace Fastlite.DrivenDb.Core.Utility
       {
          foreach (var property in GetProperties().Where(p => p.CanWrite))
          {
-            var setter = property.GetSetMethod();
+            var setter = property.SetMethod;
 
             if (setter != null)
             {
