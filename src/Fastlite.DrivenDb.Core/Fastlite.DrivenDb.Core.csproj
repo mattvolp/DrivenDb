@@ -52,7 +52,6 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="2.0\Framework\Maybe.cs" />
     <Compile Include="Contracts\Attributes\DbColumnAttribute.cs" />
     <Compile Include="Contracts\Attributes\DbSequenceAttribute.cs" />
     <Compile Include="Contracts\Attributes\DbTableAttribute.cs" />

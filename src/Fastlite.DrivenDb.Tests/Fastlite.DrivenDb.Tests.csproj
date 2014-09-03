@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1A373098-BF0D-446C-8379-BAB62AB08963}</ProjectGuid>
+    <ProjectGuid>{2AFE7DFF-A79B-4A23-8ABA-BBF3E234F48A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fastlite.DrivenDb.Data.Tests</RootNamespace>
-    <AssemblyName>Fastlite.DrivenDb.Data.Tests</AssemblyName>
+    <RootNamespace>Fastlite.DrivenDb.Tests</RootNamespace>
+    <AssemblyName>Fastlite.DrivenDb.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -18,7 +18,6 @@
     <TestProjectType>UnitTest</TestProjectType>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +27,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +35,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -45,69 +42,39 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>DrivenDb.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - All Tests|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug - All Tests\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ALL_TESTS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.93.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
       <ItemGroup>
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise />
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Base\DbAccessorTests.cs" />
-    <Compile Include="Base\DbEntityTests.cs" />
-    <Compile Include="Base\DbMapperTests.cs" />
-    <Compile Include="Base\DbScopeTests.cs" />
-    <Compile Include="Base\FallbackAccessorTests.cs" />
-    <Compile Include="Base\Infrastructure\Asserts.cs" />
-    <Compile Include="Base\Infrastructure\DataContracts.cs" />
-    <Compile Include="Base\Infrastructure\DbAccessorBuilder.cs" />
-    <Compile Include="Base\Infrastructure\DbTestClass.cs" />
-    <Compile Include="Base\Infrastructure\IDbTestFixture.cs" />
-    <Compile Include="Base\Infrastructure\IDbAccessorFactory.cs" />
-    <Compile Include="Base\Tables\MyBadTable.cs" />
-    <Compile Include="Base\Tables\MyBigTable.cs" />
-    <Compile Include="Base\Tables\MyChildren.cs" />
-    <Compile Include="Base\Tables\MyCustomNameTable.cs" />
-    <Compile Include="Base\Tables\MyFriend.cs" />
-    <Compile Include="Base\Tables\MyNopkTable.cs" />
-    <Compile Include="Base\Tables\MyTable.cs" />
-    <Compile Include="Base\Tables\MyTablePartial.cs" />
-    <Compile Include="Base\Tables\MyTablePartial.Partial.cs" />
-    <Compile Include="Base\Tables\MyTableRecord.cs" />
-    <Compile Include="Base\Tables\MyTableSlim.cs" />
-    <Compile Include="Base\Tables\MyTableType.cs" />
-    <Compile Include="Base\Tables\MyTableType2.cs" />
-    <Compile Include="Base\Tables\MyTableWithoutColumnNames.cs" />
-    <Compile Include="MsSql\Infrastructure\MsSqlAccessorFactory.cs" />
-    <Compile Include="MsSql\Infrastructure\MsSqlTestFixture.cs" />
-    <Compile Include="MsSql\Tables\ImageTable.cs" />
-    <Compile Include="MsSql\MsSqlAccessorTests.cs" />
-    <Compile Include="Base\ValueJoinerTests.cs" />
-    <Compile Include="MsSql\Tables\TextTable.cs" />
-    <Compile Include="MsSql\Tables\TimeTable.cs" />
-    <Compile Include="MsSql\Tables\VarbinaryTest.cs" />
-    <Compile Include="MySql\Infrastructure\MySqlAccessorFactory.cs" />
-    <Compile Include="MySql\MySqlAccessorTests.cs" />
-    <Compile Include="MySql\Infrastructure\MySqlTestFixture.cs" />
+    <Compile Include="Base\BehaviorTests.cs" />
+    <Compile Include="Base\Contracts\TableInt32.cs" />
+    <Compile Include="Base\Infrastructure\IAccessorBuilder.cs" />
+    <Compile Include="Base\Infrastructure\IBehaviorFixture.cs" />
+    <Compile Include="Framework\DbConnectionFactoryTests.cs" />
+    <Compile Include="Framework\DBRecordCollectionTests.cs" />
+    <Compile Include="Framework\DbResultTests.cs" />
+    <Compile Include="Framework\MaybeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqLite\Infrastructure\SqLiteAccessorFactory.cs" />
-    <Compile Include="SqLite\Infrastructure\SqLiteTestFixture.cs" />
-    <Compile Include="SqLite\SqLiteAccessorTests.cs" />
-    <Compile Include="SqLite\SqLiteEntityTests.cs" />
-    <Compile Include="SqLite\SqLiteFallbackTests.cs" />
-    <Compile Include="SqLite\SqLiteMapperTests.cs" />
-    <Compile Include="SqLite\SqLiteScopeTests.cs" />
+    <Compile Include="SqLite\Infrastructure\SqLiteAccessor.cs" />
+    <Compile Include="SqLite\Infrastructure\SqLiteBuilder.cs" />
+    <Compile Include="SqLite\Infrastructure\SqLiteFixture.cs" />
+    <Compile Include="SqLite\SqLiteTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -115,38 +82,24 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fastlite.DrivenDb.Core\Fastlite.DrivenDb.Core.csproj">
-      <Project>{c075965c-70b2-4bd2-853d-2872c18818a5}</Project>
-      <Name>Fastlite.DrivenDb.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Fastlite.DrivenDb.Data\Fastlite.DrivenDb.Data.csproj">
-      <Project>{45232233-1361-43ae-b0dd-e69b6a9b75ed}</Project>
-      <Name>Fastlite.DrivenDb.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\Packages\MySql.Data.6.8.3\lib\net40\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\Packages\System.Data.SQLite.Core.1.0.93.0\lib\net40\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="SqLite\Resources\SqLiteDatabase.sql" />
     <Content Include="x64\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="x86\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Fastlite.DrivenDb\Fastlite.DrivenDb.csproj">
+      <Project>{7c434eb0-e4cc-4c5c-987b-bfd8cfd1c6d3}</Project>
+      <Name>Fastlite.DrivenDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fastlite.Framework\Fastlite.Framework.csproj">
+      <Project>{a509c7ff-493c-4861-a2ba-7ffb56707cd8}</Project>
+      <Name>Fastlite.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

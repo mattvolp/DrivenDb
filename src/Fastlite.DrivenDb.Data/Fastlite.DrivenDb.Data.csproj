@@ -59,21 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="2.0\DbAccessor2.cs" />
-    <Compile Include="2.0\DbAccessorType2.cs" />
-    <Compile Include="2.0\DbConnectionFactory.cs" />
-    <Compile Include="2.0\DbRecord2.cs" />
-    <Compile Include="2.0\DbQuery.cs" />
-    <Compile Include="2.0\DbReaderBuilder.cs" />
-    <Compile Include="2.0\DbRecordCollection.cs" />
-    <Compile Include="2.0\DbResultSet.cs" />
-    <Compile Include="2.0\Roles\IDbConnectionFactory.cs" />
-    <Compile Include="2.0\Api\IDbAccessor2.cs" />
-    <Compile Include="2.0\Api\IDbReaderBuilder.cs" />
-    <Compile Include="2.0\Mapper.cs" />
-    <Compile Include="2.0\DbRecordSet.cs" />
-    <Compile Include="2.0\DbResultCollection.cs" />
-    <Compile Include="2.0\MapperStore.cs" />
     <Compile Include="Utility\QueryMapper.cs" />
     <Compile Include="Utility\QueryIdentity.cs" />
     <Compile Include="Utility\AnonFactory.cs" />
