@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Fastlite.Framework
 {
-   public struct Maybe<T> : IEnumerable<T>
+   public struct Maybe<T> : IReadOnlyCollection<T>
    {
       private readonly bool _isSet;
       private readonly T _value;
@@ -29,6 +29,11 @@ namespace Fastlite.Framework
             
             return _value;
          }
+      }
+
+      int IReadOnlyCollection<T>.Count
+      {
+         get { return _isSet ? 1 : 0; }
       }
 
       public IEnumerator<T> GetEnumerator()
