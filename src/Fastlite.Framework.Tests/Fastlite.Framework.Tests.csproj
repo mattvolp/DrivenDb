@@ -38,7 +38,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>DrivenDb.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Fastlite.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -56,17 +56,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Collections\EnumerableExtensionTests.cs" />
+    <Compile Include="Collections\FixedListTests.cs" />
     <Compile Include="MaybeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DrivenDb.snk" />
+    <Compile Include="ObjectExtensionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fastlite.Framework\Fastlite.Framework.csproj">
       <Project>{a509c7ff-493c-4861-a2ba-7ffb56707cd8}</Project>
       <Name>Fastlite.Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fastlite.pfx" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

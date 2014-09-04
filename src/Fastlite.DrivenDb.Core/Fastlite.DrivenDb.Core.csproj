@@ -37,7 +37,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>DrivenDb.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Fastlite.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - All Tests|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="Fastlite.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Attributes\DbColumnAttribute.cs" />
@@ -71,9 +72,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\DisposableCollection.cs" />
     <Compile Include="Utility\EntityAccessor.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DrivenDb.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
