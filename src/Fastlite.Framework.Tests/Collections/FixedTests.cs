@@ -8,108 +8,108 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Fastlite.Framework.Tests.Collections
 {
    [TestClass]
-   public class FixedListTests
+   public class FixedTests
    {
       [TestMethod]
-      public void FixedList_IsEmptyWhenNoValueIsPassed()
+      public void Fixed_IsEmptyWhenNoValueIsPassed()
       {
-         var sut = new FixedList<string>();
+         var sut = new Fixed<string>();
 
          Assert.IsFalse(sut.Any());
       }
 
       [TestMethod]
-      public void FixedList_IsNotEmptyWhenNoValueIsPassed()
+      public void Fixed_IsNotEmptyWhenNoValueIsPassed()
       {
          var list = new List<string>()
             {
                "test",
             };
 
-         var sut = new FixedList<string>(list);
+         var sut = new Fixed<string>(list);
 
          Assert.AreEqual("test", sut.Single());
       }
 
       [TestMethod]
-      public void FixedList_CountIsCorrectWhenNoValueIsPassed()
+      public void Fixed_CountIsCorrectWhenNoValueIsPassed()
       {         
-         var sut = new FixedList<string>();
+         var sut = new Fixed<string>();
 
          Assert.AreEqual(0, sut.Count);
       }
 
       [TestMethod]
-      public void FixedList_CountIsCorrectValueIsPassed()
+      public void Fixed_CountIsCorrectValueIsPassed()
       {
          var list = new List<string>()
             {
                "1", "2", "3"
             };
 
-         var sut = new FixedList<string>(list);
+         var sut = new Fixed<string>(list);
 
          Assert.AreEqual(3, sut.Count);
       }
 
       [TestMethod]
-      public void FixedList_IndexReturnsCorrectResultWhenNotEmpty()
+      public void Fixed_IndexReturnsCorrectResultWhenNotEmpty()
       {
          var list = new List<string>()
             {
                "1", "2", "3"
             };
 
-         var sut = new FixedList<string>(list);
+         var sut = new Fixed<string>(list);
 
          Assert.AreEqual("2", sut[1]);
       }
 
       [TestMethod]
       [ExpectedException(typeof(ArgumentOutOfRangeException))]
-      public void FixedList_IndexThrowsWhenOutOfRangeAnNotEmpty()
+      public void Fixed_IndexThrowsWhenOutOfRangeAnNotEmpty()
       {
          var list = new List<string>()
             {
                "1", "2", "3"
             };
 
-         var sut = new FixedList<string>(list);
+         var sut = new Fixed<string>(list);
 
          sut[3].Ignore();
       }
 
       [TestMethod]
       [ExpectedException(typeof(ArgumentOutOfRangeException))]
-      public void FixedList_IndexThrowsWhenOutOfRangeAndEmpty()
+      public void Fixed_IndexThrowsWhenOutOfRangeAndEmpty()
       {         
-         var sut = new FixedList<string>();
+         var sut = new Fixed<string>();
 
          sut[3].Ignore();
       }
 
       [TestMethod]
-      public void FixedList_AcceptsEnumerables()
+      public void Fixed_AcceptsEnumerables()
       {
          IEnumerable<string> list = new List<string>()
             {
                "1", "2", "3"
             };
 
-         var sut = new FixedList<string>(list);
+         var sut = new Fixed<string>(list);
 
          Assert.AreEqual("2", sut[1]);
       }
 
       [TestMethod]
-      public void FixedList_UbiquitousIEnumerableTest()
+      public void Fixed_UbiquitousIEnumerableTest()
       {
          var list = new List<string>()
             {
                "1", "2", "3"
             };
 
-         var sut = (new FixedList<string>(list) as IEnumerable);
+         var sut = (new Fixed<string>(list) as IEnumerable);
 
          Assert.IsNotNull(sut.GetEnumerator());
       }

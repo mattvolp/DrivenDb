@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\Enumerables.cs" />
-    <Compile Include="Collections\FixedList.cs" />
+    <Compile Include="Collections\Fixed.cs" />
     <Compile Include="Maybe.cs" />
     <Compile Include="Objects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

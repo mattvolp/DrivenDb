@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 namespace Fastlite.Framework.Collections
 {
-   public struct FixedList<T> : IReadOnlyList<T>
+   public struct Fixed<T> : IReadOnlyList<T>
    {
       private readonly IReadOnlyList<T> _list;
 
-      public FixedList(IReadOnlyList<T> list)
+      public Fixed(IReadOnlyList<T> list)
       {
          _list = list;
       }
 
-      public FixedList(IEnumerable<T> enumerable)
+      public Fixed(IEnumerable<T> enumerable)
       {
          _list = new List<T>(enumerable);
       }
