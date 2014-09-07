@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Fastlite.DrivenDb
 {
-   public sealed class DbRecordCollection<T> : IReadOnlyList<DbRecord2<T>>
+   public sealed class DbRecordList<T> : IReadOnlyList<DbRecord<T>>
    {
-      private readonly IReadOnlyList<DbRecord2<T>> _records;
+      private readonly IReadOnlyList<DbRecord<T>> _records;
 
-      public DbRecordCollection(IReadOnlyList<DbRecord2<T>> records)
+      public DbRecordList(IReadOnlyList<DbRecord<T>> records)
       {
          _records = records;
       }
 
-      public DbRecord2<T> this[int index]
+      public DbRecord<T> this[int index]
       {
          get { return _records[index]; }
       }
@@ -22,7 +22,7 @@ namespace Fastlite.DrivenDb
          get { return _records.Count; }
       }
 
-      public IEnumerator<DbRecord2<T>> GetEnumerator()
+      public IEnumerator<DbRecord<T>> GetEnumerator()
       {
          return _records.GetEnumerator();
       }

@@ -43,7 +43,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Fastlite.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - All Tests|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -111,7 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Fastlite.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

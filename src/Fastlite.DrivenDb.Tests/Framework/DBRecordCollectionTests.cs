@@ -9,14 +9,14 @@ namespace Fastlite.DrivenDb.Tests.Framework
       [TestMethod]
       public void DBRecordCollection_IteratesSuppliedValues()
       {
-         var values = new List<DbRecord2<string>>()
+         var values = new List<DbRecord<string>>()
             {
-               new DbRecord2<string>(new[] {"n"}, new object[] {"a"}),
-               new DbRecord2<string>(new[] {"n"}, new object[] {"b"}),
-               new DbRecord2<string>(new[] {"n"}, new object[] {"c"}),
+               new DbRecord<string>(new[] {"n"}, new object[] {"a"}),
+               new DbRecord<string>(new[] {"n"}, new object[] {"b"}),
+               new DbRecord<string>(new[] {"n"}, new object[] {"c"}),
             };
 
-         var sut = new DbRecordCollection<string>(values);
+         var sut = new DbRecordList<string>(values);
 
          Assert.AreEqual(3, sut.Count);         
       }

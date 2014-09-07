@@ -19,7 +19,7 @@ namespace Fastlite.DrivenDb.Tests.Framework
       public void Resultset_IsContainsPassedValueWhenValueIsPassed()
       {
          var values = new[] {"test"};
-         var sut = (new DbResultCollection<string>(values) as IEnumerable)
+         var sut = (new DbResultList<string>(values) as IEnumerable)
             .GetEnumerator();
 
          Assert.IsTrue(sut.MoveNext());

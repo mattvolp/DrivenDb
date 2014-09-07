@@ -77,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Fastlite.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

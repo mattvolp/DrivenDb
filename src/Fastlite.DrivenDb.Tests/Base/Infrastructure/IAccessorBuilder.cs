@@ -2,6 +2,6 @@
 {
    public interface IAccessorBuilder
    {
-      IDbAccessor2 Build();
+      IDbAccessor Build();
    }
 }

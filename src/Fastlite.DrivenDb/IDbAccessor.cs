@@ -1,7 +1,7 @@
 ﻿
 namespace Fastlite.DrivenDb
 {
-   public interface IDbAccessor2
+   public interface IDbAccessor
    {
       IDbReaderBuilder Read(string query, params object[] parameters);
    }

@@ -5,10 +5,10 @@ namespace Fastlite.DrivenDb
 {
    internal sealed class DbReaderBuilder : IDbReaderBuilder
    {
-      private readonly MapperStore _mappers;
+      private readonly IDbMapperLoader _mappers;
       private readonly DbQuery _query;
 
-      public DbReaderBuilder(MapperStore mappers, DbQuery query)
+      public DbReaderBuilder(IDbMapperLoader mappers, DbQuery query)
       {
          if (mappers == null)
             throw new ArgumentNullException("mappers");
@@ -20,10 +20,10 @@ namespace Fastlite.DrivenDb
          _query = query;
       }
 
-      public DbResultCollection<T> As<T>()
-      {
-         var mapper = _mappers.Get<T>(_query);
+      public DbResultList<T> As<T>()
+      {         
          var recordset = _query.Execute<T>();
+         var mapper = _mappers.Load<T>(recordset);
          
          mapper.Map<T>(recordset);
          
@@ -31,7 +31,7 @@ namespace Fastlite.DrivenDb
             .Select(r => r.Entity)
             .ToList();
 
-         return new DbResultCollection<T>(entities);
+         return new DbResultList<T>(entities);
       }
    }
 }   

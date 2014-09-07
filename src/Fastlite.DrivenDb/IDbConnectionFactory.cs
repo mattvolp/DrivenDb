@@ -2,7 +2,7 @@
 
 namespace Fastlite.DrivenDb
 {
-   internal interface IDbConnectionFactory
+   public interface IDbConnectionFactory
    {
       IDbConnection Create();
    }

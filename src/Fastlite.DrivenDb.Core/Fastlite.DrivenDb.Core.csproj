@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <SignAssembly>true</SignAssembly>
-	<AssemblyOriginatorKeyFile>Fastlite.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Fastlite.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - All Tests|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="Fastlite.pfx" />
+    <None Include="Properties\Fastlite.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Attributes\DbColumnAttribute.cs" />

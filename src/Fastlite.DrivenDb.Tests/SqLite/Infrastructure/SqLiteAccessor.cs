@@ -2,10 +2,10 @@
 
 namespace Fastlite.DrivenDb.Tests.SqLite.Infrastructure
 {
-   public sealed class SqLiteAccessor : DbAccessor2
+   public sealed class SqLiteAccessor : DbAccessor
    {
       public SqLiteAccessor(string cstring)
-         : base(DbAccessorType2.SqLite, () => new SQLiteConnection(cstring))
+         : base(new DbMapperCache(new DbMapperFactory()), () => new SQLiteConnection(cstring))
       {
          
       }

@@ -2,6 +2,6 @@
 {
    public interface IDbReaderBuilder
    {
-      DbResultCollection<T> As<T>();
+      DbResultList<T> As<T>();
    }
 }

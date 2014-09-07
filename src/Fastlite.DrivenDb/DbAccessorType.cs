@@ -1,6 +1,6 @@
 ﻿namespace Fastlite.DrivenDb
 {
-   public enum DbAccessorType2
+   public enum DbAccessorType
    {
       SqLite,
    }

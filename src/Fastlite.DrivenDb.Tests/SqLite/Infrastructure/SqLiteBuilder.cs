@@ -11,7 +11,7 @@ namespace Fastlite.DrivenDb.Tests.SqLite.Infrastructure
          _cstring = cstring;
       }
 
-      public IDbAccessor2 Build()
+      public IDbAccessor Build()
       {
          return new SqLiteAccessor(_cstring);
       }

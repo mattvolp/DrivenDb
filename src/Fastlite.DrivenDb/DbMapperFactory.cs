@@ -2,9 +2,9 @@
 
 namespace Fastlite.DrivenDb
 {
-   internal sealed class MapperStore
+   internal sealed class DbMapperFactory : IDbMapperLoader
    {
-      public Mapper Get<T>(DbQuery query)
+      public IDbMapper Load<T>(DbRecordSet<T> recordset)
       {
          throw new NotImplementedException();
       }

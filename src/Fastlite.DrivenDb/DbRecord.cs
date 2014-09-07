@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Fastlite.DrivenDb
 {
-   public sealed class DbRecord2<T>
+   public sealed class DbRecord<T>
    {      
       private readonly string[] _names;
       private readonly object[] _values;
 
-      public DbRecord2(string[] names, object[] values)
+      public DbRecord(string[] names, object[] values)
       {
          if (names == null)
             throw new ArgumentNullException("names");
@@ -22,6 +23,16 @@ namespace Fastlite.DrivenDb
       public T Entity
       {
          get; set;
+      }
+
+      public IReadOnlyList<string> Names
+      {
+         get { return _names; }
+      }
+
+      public IReadOnlyList<object> Values
+      {
+         get { return _values; }
       }
    }
 }

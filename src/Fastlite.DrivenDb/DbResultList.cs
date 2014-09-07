@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Fastlite.DrivenDb
 {
-   public sealed class DbResultCollection<T> : IReadOnlyList<T>
+   public sealed class DbResultList<T> : IReadOnlyList<T>
    {
       private readonly IReadOnlyList<T> _results;
 
-      public DbResultCollection(IReadOnlyList<T> results)
+      public DbResultList(IReadOnlyList<T> results)
       {
          if (results == null)
             throw new ArgumentNullException("results");

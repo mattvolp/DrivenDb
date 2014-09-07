@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Fastlite.DrivenDb
 {
-   internal class DbQuery 
+   public class DbQuery 
    {
       private readonly IDbConnectionFactory _connections;
       private readonly string _sql;
@@ -108,20 +108,20 @@ namespace Fastlite.DrivenDb
          }
       }
 
-      private static DbRecordCollection<T> CreateRecords<T>(IDataReader reader)
+      private static DbRecordList<T> CreateRecords<T>(IDataReader reader)
       {
-         var records = new List<DbRecord2<T>>();
+         var records = new List<DbRecord<T>>();
          var names = ExtractNames(reader);
 
          while (reader.Read())
          {
             var values = ExtractValues(reader);
-            var record = new DbRecord2<T>(names, values);
+            var record = new DbRecord<T>(names, values);
 
             records.Add(record);
          }
 
-         return new DbRecordCollection<T>(records);
+         return new DbRecordList<T>(records);
       }
 
       private static void BuildParameters(IDbCommand command, object[] arguments)
