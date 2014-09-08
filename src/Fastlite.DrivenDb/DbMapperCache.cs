@@ -6,7 +6,7 @@ namespace Fastlite.DrivenDb
 {
    internal sealed class DbMapperCache : IDbMapperLoader
    {
-      private readonly ConcurrentDictionary<string, IDbMapper> _cached = new ConcurrentDictionary<string, IDbMapper>();
+      private readonly ConcurrentDictionary<string, object> _cached = new ConcurrentDictionary<string, object>();
       private readonly IDbMapperLoader _loader;
 
       public DbMapperCache(IDbMapperLoader loader)
@@ -17,16 +17,16 @@ namespace Fastlite.DrivenDb
          _loader = loader;
       }
 
-      public IDbMapper Load<T>(DbRecordSet<T> recordset)
+      public IDbMapper<T> Load<T>(DbRecordList<T> records)
       {
-         if (recordset.Records.Any())
+         if (!records.Any())
          {
             throw new InvalidOperationException("Empty record list cannot be cached");
          }
 
-         var key = DbSignature.Create(recordset.Records[0]);
+         var key = DbSignature.Create(records[0]);
 
-         return _cached.GetOrAdd(key, (sql) => _loader.Load<T>(recordset));
+         return (IDbMapper<T>) _cached.GetOrAdd(key, (sql) => (object) _loader.Load<T>(records));
       }
    }
 }

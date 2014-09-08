@@ -2,6 +2,6 @@
 {
    public interface IDbMapperLoader
    {
-      IDbMapper Load<T>(DbRecordSet<T> recordset);
+      IDbMapper<T> Load<T>(DbRecordList<T> recordset);
    }
 }

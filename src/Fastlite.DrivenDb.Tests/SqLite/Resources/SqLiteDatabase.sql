@@ -1,7 +1,7 @@
 ﻿
 CREATE TABLE TableInt32
 (
-	[Column1] INTEGER
+	[ColumnA] INTEGER
 );
 
 INSERT INTO [TableInt32] VALUES (1);

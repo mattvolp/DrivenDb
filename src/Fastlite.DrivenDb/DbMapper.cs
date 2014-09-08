@@ -1,11 +1,23 @@
 ﻿
+using System;
+
 namespace Fastlite.DrivenDb
 {
-   internal sealed class DbMapper : IDbMapper
+   internal sealed class DbMapper<T> : IDbMapper<T>
    {
-      public void Map<T>(DbRecordSet<T> record)
+      private readonly Action<DbRecord<T>> _action;
+
+      public DbMapper(Action<DbRecord<T>> action)
       {
-         
+         _action = action;
+      }
+
+      public void Map(DbRecordList<T> records)
+      {
+         foreach (var record in records)
+         {
+            _action(record);
+         }
       }
    }
 }

@@ -11,9 +11,9 @@ namespace Fastlite.DrivenDb.Tests.Framework
       {
          var values = new List<DbRecord<string>>()
             {
-               new DbRecord<string>(new[] {"n"}, new object[] {"a"}),
-               new DbRecord<string>(new[] {"n"}, new object[] {"b"}),
-               new DbRecord<string>(new[] {"n"}, new object[] {"c"}),
+               new DbRecord<string>("", new[] {"n"}, new object[] {"a"}),
+               new DbRecord<string>("", new[] {"n"}, new object[] {"b"}),
+               new DbRecord<string>("", new[] {"n"}, new object[] {"c"}),
             };
 
          var sut = new DbRecordList<string>(values);

@@ -21,11 +21,12 @@ namespace Fastlite.DrivenDb
       }
 
       public DbResultList<T> As<T>()
+         where T : new()
       {         
          var recordset = _query.Execute<T>();
-         var mapper = _mappers.Load<T>(recordset);
+         var mapper = _mappers.Load<T>(recordset.Records);
          
-         mapper.Map<T>(recordset);
+         mapper.Map(recordset.Records);
          
          var entities = recordset.Records
             .Select(r => r.Entity)

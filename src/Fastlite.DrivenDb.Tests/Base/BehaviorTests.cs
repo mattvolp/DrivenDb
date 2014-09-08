@@ -15,11 +15,11 @@ namespace Fastlite.DrivenDb.Tests.Base
             var sut = fixture.CreateAccessor()
                .Build();
 
-            var actual = sut.Read(@"SELECT * FROM [TableInt32] WHERE [Column1] = 2")
+            var actual = sut.Read(@"SELECT * FROM [TableInt32] WHERE [ColumnA] = 2")
                .As<TableInt32>()
                .Single();
             
-            Assert.IsTrue(false);  
+            Assert.AreEqual(2, actual.ColumnA);  
          }
       }
 

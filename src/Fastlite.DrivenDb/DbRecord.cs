@@ -4,11 +4,12 @@ using System.Collections.Generic;
 namespace Fastlite.DrivenDb
 {
    public sealed class DbRecord<T>
-   {      
+   {
+      private readonly T _entity;
       private readonly string[] _names;
       private readonly object[] _values;
 
-      public DbRecord(string[] names, object[] values)
+      public DbRecord(T entity, string[] names, object[] values)
       {
          if (names == null)
             throw new ArgumentNullException("names");
@@ -16,13 +17,14 @@ namespace Fastlite.DrivenDb
          if (values == null)
             throw new ArgumentNullException("values");
 
+         _entity = entity;
          _names = names;
          _values = values;
       }
 
       public T Entity
       {
-         get; set;
+         get { return _entity; }
       }
 
       public IReadOnlyList<string> Names

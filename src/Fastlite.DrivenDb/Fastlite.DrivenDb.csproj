@@ -58,6 +58,7 @@
     <Compile Include="IDbMapper.cs" />
     <Compile Include="IDbMapperLoader.cs" />
     <Compile Include="DbMapper.cs" />
+    <Compile Include="ExtraResultException.cs" />
     <Compile Include="MissingResultException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

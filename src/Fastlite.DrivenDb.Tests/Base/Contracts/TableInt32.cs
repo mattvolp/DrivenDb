@@ -2,7 +2,7 @@
 {
    public class TableInt32
    {
-      public int Column1
+      public int ColumnA
       {
          get; set;
       }

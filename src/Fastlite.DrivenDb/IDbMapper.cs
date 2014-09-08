@@ -1,7 +1,7 @@
 ﻿namespace Fastlite.DrivenDb
 {
-   public interface IDbMapper
+   public interface IDbMapper<T>
    {
-      void Map<T>(DbRecordSet<T> record);
+      void Map(DbRecordList<T> records);
    }
 }

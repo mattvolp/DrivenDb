@@ -2,6 +2,7 @@
 {
    public interface IDbReaderBuilder
    {
-      DbResultList<T> As<T>();
+      DbResultList<T> As<T>()
+         where T : new();
    }
 }
