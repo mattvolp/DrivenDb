@@ -123,3 +123,71 @@ accessor.Read(
    .ParameterIntercept(DrivenDb.EnumInIntercept)	
    .As<T>()	
    .Go();
+
+------------------------
+
+
+commands	
+	requestId
+
+command bus
+
+command queue
+
+command handlers []
+
+events
+
+event handlers []
+
+
+
+CreateEntityCommand<T>
+	T Entity
+ReadEntityCommand<T> // interface with many implementations?
+	T Entity
+UpdateEntityCommand<T>
+	T Entity
+DeleteEntityCommand<T>
+	T Entity
+
+EntityCreatedEvent<T>
+	T Entity
+EntityReadEvent<T>
+	T Entity
+EntityUpdatedEvent<T>
+	T Entity
+	Changes
+EntityDeletedEvent<T>
+	T Entity
+
+
+
+class MyViewModel
+
+	public void DoCommand()
+	{
+		var command = new CreateThingCommand("abc");
+		var receipt = commandBus.Send(command)  		// receipt has a unique requestId in it
+			{
+				commandQueue.Add(command)
+			}		
+	}
+	
+	private void OnThingCreated(ThingCreatedEvent event)
+	{
+		if (event.SourceId == receipt.SourceId)
+		{
+			do crap...
+		}
+	}	
+	
+commandHandler -- running
+{
+	var command = commandQueue.Dequeue();
+	
+	command.Execute()
+		{
+			events fired...
+		}
+}
