@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DrivenDb</id>
+    <version>1.12.0.0</version>
+    <authors>aleatherwood</authors>
+    <owners>aleatherwood</owners>
+    <licenseUrl>http://drivendb.codeplex.com/license</licenseUrl>
+    <projectUrl>http://drivendb.codeplex.com/</projectUrl>
+    <!--<iconUrl></iconUrl>-->
+    <description>DrivenDb is a better microORM.  Unique features, excellent performance, and cleaner code in as few trips to the database as possible.</description>
+	 <summary>Features Include: 
+* Self-Tracking entities that maintain their state through WCF serialization.
+* Bulk reads / writes to the database reducing round trips.
+* Parallel reads for decreasing load time of large result sets.
+* Easily use your current Linq classes or the included entity generator.
+* Support classes provide easy caching and filtered in-memory views that are always up-to-date.
+* Weak event model reduces memory leaks and eliminates the need for IDisposable implementations.
+	 </summary>
+    <releaseNotes>Please visit the codeplex site for release notes.</releaseNotes>
+    <!--<copyright>Copyright 2012</copyright>-->
+    <tags>microorm db database micro orm database dal sql mysql sqlite mapping cache petapoco dapper self-tracking entity ddd repository nhibernate napper microlite entityframework</tags>    
+  </metadata>  
+  <files>
+			 <file src="Build\*.dll" target="lib\net40" /> 
+			 <file src="Build\*.exe" target="lib\net40" /> 
+			 <file src="Build\*.pdb" target="lib\net40" /> 			 
+		  </files>
+</package>
