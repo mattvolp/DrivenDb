@@ -61,10 +61,12 @@
 	
 	<Target Name="Clean" DependsOnTargets="Create">
         <MSBuild Projects="@(ProjectToBuild)" Targets="Clean" Properties="Configuration=Release;Platform=Any CPU" />
+		<MSBuild Projects="@(ProjectToBuild)" Targets="Clean" Properties="Configuration=Debug;Platform=Any CPU" />
     </Target>
 	
 	<Target Name="Build" DependsOnTargets="Clean">
         <MSBuild Projects="@(ProjectToBuild)" Properties="Configuration=Release;Platform=Any CPU" />
+		<MSBuild Projects="@(ProjectToBuild)" Properties="Configuration=Debug;Platform=Any CPU" />
     </Target>
 	
 	<Target Name="Copy" DependsOnTargets="Build">
