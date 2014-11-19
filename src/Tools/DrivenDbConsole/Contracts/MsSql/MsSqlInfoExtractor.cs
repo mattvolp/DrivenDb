@@ -122,14 +122,19 @@ namespace DrivenDbConsole.Contracts.MsSql
 
       #region PRIVATE METHODS ---------------------------------------------------------------------
 
-      private IEnumerable<Tuple<string, string>> GetTableNames(IEnumerable<string> tableExpressions)
+      private IEnumerable<Tuple<string, string, bool>> GetTableNames(IEnumerable<string> tableExpressions)
       {
          var likes = String.Join(" ", tableExpressions.Select(i => String.Format("(t.TABLE_SCHEMA = '{0}' AND t.TABLE_NAME LIKE '{1}') OR", Split(i))));
-         var result = _model.ReadAnonymous(new { Schema = "", Table = "" },
-            String.Format(@"SELECT t.TABLE_SCHEMA, t.TABLE_NAME FROM INFORMATION_SCHEMA.TABLES t WHERE {0} AND t.TABLE_TYPE = 'BASE TABLE' ORDER BY t.TABLE_NAME", likes.Substring(0, likes.Length - 2))
+         var result = _model.ReadAnonymous(new { Schema = "", Table = "", HasTriggers = false },
+            String.Format(
+               @"SELECT t.TABLE_SCHEMA, t.TABLE_NAME, ISNULL(tr.HasTriggers, 0) AS [HasTriggers]
+                  FROM INFORMATION_SCHEMA.TABLES t 
+                  INNER JOIN (SELECT parent_id, CONVERT(BIT, COUNT(*)) AS [HasTriggers] FROM sys.triggers GROUP BY parent_id) tr ON tr.parent_id = object_id(t.TABLE_SCHEMA + '.' + t.TABLE_NAME, 'U')
+                  WHERE {0} AND t.TABLE_TYPE = 'BASE TABLE' 
+                  ORDER BY t.TABLE_NAME", likes.Substring(0, likes.Length - 2))
             );
 
-         return result.Select(i => new Tuple<string, string>(i.Schema, i.Table));
+         return result.Select(i => new Tuple<string, string, bool>(i.Schema, i.Table, i.HasTriggers));
       }
 
       private static object[] Split(string s)
@@ -146,22 +151,22 @@ namespace DrivenDbConsole.Contracts.MsSql
          }
       }
 
-      private IEnumerable<ITableInfo> GetTableDefs(IEnumerable<Tuple<string, string>> tableNames)
+      private IEnumerable<ITableInfo> GetTableDefs(IEnumerable<Tuple<string, string, bool>> tables)
       {
          var result = new List<ITableInfo>();
 
-         foreach (var tableName in tableNames)
+         foreach (var table in tables)
          {
-            var gnu = GetTableDef(tableName.Item1, tableName.Item2);
+            var gnu = GetTableDef(table.Item1, table.Item2, table.Item3);
             result.Add(gnu);
          }
 
          return result;
       }
 
-      private ITableInfo GetTableDef(string schemaName, string tableName)
+      private ITableInfo GetTableDef(string schemaName, string tableName, bool hasTriggers)
       {
-         return new TableInfo(schemaName, tableName, GetFieldDefs(schemaName, tableName));
+         return new TableInfo(schemaName, tableName, hasTriggers, GetFieldDefs(schemaName, tableName));
       }
 
       private IEnumerable<IColumnInfo> GetFieldDefs(string schemaName, string tableName)

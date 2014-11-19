@@ -48,6 +48,7 @@ namespace DrivenDb.MsSql
             );
       }
 
+      [Obsolete("Method fails if a trigger exists on the target table.")]
       public Tuple<T, D> WriteEntityAndOutputDeleted<T, D>(T entity, D deleted)
          where T : IDbEntity, new()
          where D : class
@@ -55,6 +56,7 @@ namespace DrivenDb.MsSql
          return WriteEntitiesAndOutputDeleted(new[] { entity }, deleted).First();
       }
 
+      [Obsolete("Method fails if a trigger exists on the target table.")]
       public IEnumerable<Tuple<T, D>> WriteEntitiesAndOutputDeleted<T, D>(IEnumerable<T> entities, D deleted)
          where T : IDbEntity, new()
          where D : class

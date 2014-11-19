@@ -28,5 +28,11 @@ namespace DrivenDb
          get;
          set;
       }
+
+      public bool HasTriggers
+      {
+         get;
+         set;
+      }
    }
 }

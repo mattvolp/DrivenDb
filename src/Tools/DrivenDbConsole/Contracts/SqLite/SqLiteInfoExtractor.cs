@@ -81,7 +81,8 @@ namespace DrivenDbConsole.Contracts.SqLite
 
       private ITableInfo GetTableDef(string schemaName, string tableName)
       {
-         return new TableInfo(schemaName, tableName, GetFieldDefs(tableName));
+         // TODO support for SQLite triggers
+         return new TableInfo(schemaName, tableName, false, GetFieldDefs(tableName));
       }
 
       private IEnumerable<IColumnInfo> GetFieldDefs(string tableName)

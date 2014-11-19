@@ -1038,6 +1038,9 @@ namespace DrivenDb.Base
 
                      LogMessage(command.CommandText);
 
+                     m_Scripter.InsertWriteInitializer(command);
+                     m_Scripter.AppendWriteFinalizer(command);
+
                      if (returnIds)
                      {
                         using (var reader = command.ExecuteReader())

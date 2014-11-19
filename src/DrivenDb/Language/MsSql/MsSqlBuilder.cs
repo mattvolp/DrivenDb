@@ -18,6 +18,8 @@ namespace DrivenDb.MsSql
 {
    class MsSqlBuilder : SqlBuilder, IMsSqlBuilder
    {
+      private const string OUTPUT_TABLE = @"@Ouputs";
+
       private static readonly DateTime SQLMIN = new DateTime(1753, 1, 1);
       private static readonly DateTime SQLMAX = new DateTime(9999, 12, 31, 23, 59, 59);
       private static readonly TimeSpan ZERO = new TimeSpan(0);
@@ -26,19 +28,30 @@ namespace DrivenDb.MsSql
       {
       }
 
+      public string ToCreateIdTable()
+      {
+         return string.Format("DECLARE {0} TABLE ([Index] INT NOT NULL, [ID] BIGINT NOT NULL);", OUTPUT_TABLE);
+      }
+
+      public string ToSelectIdTable()
+      {
+         return string.Format("SELECT * FROM {0};", OUTPUT_TABLE);
+      }
+
       public override string ToInsert<T>(T entity, int index, bool returnId)
       {
          var output = returnId && entity.IdentityColumn != null
                          ? String.Format(" OUTPUT {0}, INSERTED.{1}", index, entity.IdentityColumn.Name)
                          : null;
+         var into = output != null && entity.Table.HasTriggers ?  String.Format(" INTO {0} ([Index], [ID])", OUTPUT_TABLE) : null;
 
-         return String.Format("INSERT INTO {0} ({1}){2} VALUES ({3});", GetFormattedTable(), GetFormattedSetterColumns(), output, GetFormattedSetterValues());
+         return String.Format("INSERT INTO {0} ({1}){2}{3} VALUES ({4});", GetFormattedTable(), GetFormattedSetterColumns(), output, into, GetFormattedSetterValues());
       }
 
       public string ToInsertWithScopeIdentity(int index, bool returnId)
       {
          var identity = returnId
-                           ? String.Format("SELECT {0}, CAST(SCOPE_IDENTITY() AS  BIGINT);", index)
+                           ? String.Format("SELECT {0}, CAST(SCOPE_IDENTITY() AS BIGINT);", index)
                            : null;
 
          return String.Format("INSERT INTO {0} ({1}) VALUES ({2}); {3}", GetFormattedTable(), GetFormattedSetterColumns(), GetFormattedSetterValues(), identity);
@@ -55,7 +68,7 @@ namespace DrivenDb.MsSql
       //   return String.Format("INSERT INTO {0} ({1}){2} VALUES ({3});", GetFormattedTable(), GetFormattedSetterColumns(), output, GetFormattedSetterValues());
       //}
 
-      public string ToUpdateOutputDeleted(int index, string[] columns)         
+      public string ToUpdateOutputDeleted(int index, string[] columns)
       {
          if (String.IsNullOrWhiteSpace(Table))
          {
