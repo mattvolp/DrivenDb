@@ -129,7 +129,7 @@ namespace DrivenDbConsole.Contracts.MsSql
             String.Format(
                @"SELECT t.TABLE_SCHEMA, t.TABLE_NAME, ISNULL(tr.HasTriggers, 0) AS [HasTriggers]
                   FROM INFORMATION_SCHEMA.TABLES t 
-                  INNER JOIN (SELECT parent_id, CONVERT(BIT, COUNT(*)) AS [HasTriggers] FROM sys.triggers GROUP BY parent_id) tr ON tr.parent_id = object_id(t.TABLE_SCHEMA + '.' + t.TABLE_NAME, 'U')
+                  LEFT JOIN (SELECT parent_id, CONVERT(BIT, COUNT(*)) AS [HasTriggers] FROM sys.triggers GROUP BY parent_id) tr ON tr.parent_id = object_id(t.TABLE_SCHEMA + '.' + t.TABLE_NAME, 'U')
                   WHERE {0} AND t.TABLE_TYPE = 'BASE TABLE' 
                   ORDER BY t.TABLE_NAME", likes.Substring(0, likes.Length - 2))
             );
