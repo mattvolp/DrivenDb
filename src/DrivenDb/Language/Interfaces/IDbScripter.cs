@@ -17,6 +17,10 @@ namespace DrivenDb
 {
    public interface IDbScripter
    {
+      void InsertWriteInitializer(IDbCommand command);
+
+      void AppendWriteFinalizer(IDbCommand command);
+
       void ScriptExecute(IDbCommand command, string query, params object[] parameters);
 
       void ScriptIdentitySelect<T>(IDbCommand command, params object[] parameters)

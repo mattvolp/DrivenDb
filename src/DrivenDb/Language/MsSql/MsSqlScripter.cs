@@ -25,6 +25,28 @@ namespace DrivenDb.MsSql
          m_Builders = builders;
       }
 
+      public override void InsertWriteInitializer(IDbCommand command)
+      {
+         if (!m_HasScriptedTriggeredEntity) return;
+
+         var builder = m_Builders();
+
+         var initializer = builder.ToCreateIdTable();
+
+         command.CommandText = initializer + Environment.NewLine + command.CommandText;
+      }
+
+      public override void AppendWriteFinalizer(IDbCommand command)
+      {
+         if(!m_HasScriptedTriggeredEntity) return;
+         
+         var builder = m_Builders();
+
+         var finalizer = builder.ToSelectIdTable();
+
+         command.CommandText += finalizer;
+      }
+
       public void ScriptInsertWithScopeIdentity<T>(IDbCommand command, T entity, int index, bool returnId)
          where T : IDbEntity, new()
       {

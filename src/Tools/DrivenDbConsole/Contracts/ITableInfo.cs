@@ -26,6 +26,11 @@ namespace DrivenDbConsole.Contracts
          get;
       }
 
+      bool HasTriggers
+      {
+         get;
+      }
+
       IEnumerable<IColumnInfo> Fields
       {
          get;

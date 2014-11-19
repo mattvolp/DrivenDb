@@ -26,6 +26,7 @@ namespace DrivenDb.Base
       private readonly IDb m_Db;
       private readonly IValueJoiner m_Joiner;
       protected readonly Func<ISqlBuilder> m_Builders;
+      protected bool m_HasScriptedTriggeredEntity;
 
       public DbScripter(IDb db, IValueJoiner joiner, Func<ISqlBuilder> builders)
       {
@@ -37,6 +38,16 @@ namespace DrivenDb.Base
       protected DateTime CorrectDateTime(DateTime dateTime)
       {
          return m_Builders().CorrectDateTime(dateTime);
+      }
+
+      public virtual void InsertWriteInitializer(IDbCommand command)
+      {
+         
+      }
+
+      public virtual void AppendWriteFinalizer(IDbCommand command)
+      {
+
       }
 
       public void ScriptExecute(IDbCommand command, string query, params object[] parameters)
@@ -193,6 +204,11 @@ namespace DrivenDb.Base
       {
          var builder = m_Builders();
          var parameters = InitializeBuilderForInsert(builder, entity);
+
+         if (entity.Table.HasTriggers)
+         {
+            m_HasScriptedTriggeredEntity = true;
+         }
 
          AppendQuery(command, index, builder.ToInsert(entity, index, returnId), parameters);         
       }

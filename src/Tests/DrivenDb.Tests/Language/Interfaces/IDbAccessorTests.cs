@@ -757,12 +757,50 @@ namespace DrivenDb.Tests.Language.Interfaces
       }
 
       [Fact]
+      public void WriteIdentity32WithTrigger()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var gnu = new MyFriendWithTrigger
+            {
+               MyNumber = 1,
+               MyString = "One"
+            };
+
+         accessor.WriteEntity(gnu);
+
+         Assert.True(gnu.MyIdentity == 1);
+
+         DestroyAccessor(key);
+      }
+
+      [Fact]
       public void WriteIdentity64()
       {
          string key;
 
          var accessor = CreateAccessor(out key);
          var gnu = new MyTable()
+            {
+               MyNumber = 4,
+               MyString = "Four"
+            };
+
+         accessor.WriteEntity(gnu);
+
+         Assert.True(gnu.MyIdentity == 4);
+
+         DestroyAccessor(key);
+      }
+
+      [Fact]
+      public void WriteIdentity64WithTrigger()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var gnu = new MyTableWithTrigger
             {
                MyNumber = 4,
                MyString = "Four"
@@ -808,6 +846,55 @@ namespace DrivenDb.Tests.Language.Interfaces
          Assert.True(gnufriend1.MyIdentity == 1);
          Assert.True(gnutable2.MyIdentity == 5);
          Assert.True(gnufriend2.MyIdentity == 2);
+
+         DestroyAccessor(key);
+      }
+
+      [Fact]
+      public void WriteIdentityMixedWithTriggers()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var gnutable1 = new MyTable()
+            {
+               MyNumber = 4,
+               MyString = "Four"
+            };
+         var gnufriend1 = new MyFriend()
+            {
+               MyNumber = 1,
+               MyString = "One"
+            };
+         var gnutrigger1 = new MyTableWithTrigger()
+         {
+            MyNumber = 6,
+            MyString = "Six"
+         };
+         var gnutable2 = new MyTable()
+            {
+               MyNumber = 5,
+               MyString = "Five"
+            };
+         var gnufriend2 = new MyFriend()
+            {
+               MyNumber = 2,
+               MyString = "Two"
+            };
+         var gnutrigger2 = new MyTableWithTrigger()
+            {
+               MyNumber = 7,
+               MyString = "Seven"
+            };
+
+         accessor.WriteEntities(new IDbEntity[] { gnutable1, gnufriend1, gnutable2, gnutrigger1, gnufriend2, gnutrigger2 });
+
+         Assert.True(gnutable1.MyIdentity == 4);
+         Assert.True(gnufriend1.MyIdentity == 1);
+         Assert.True(gnutable2.MyIdentity == 5);
+         Assert.True(gnufriend2.MyIdentity == 2);
+         Assert.True(gnutrigger1.MyIdentity == 6);
+         Assert.True(gnutrigger2.MyIdentity == 7);
 
          DestroyAccessor(key);
       }
@@ -1506,6 +1593,67 @@ namespace DrivenDb.Tests.Language.Interfaces
       }
 
       [DataContract]
+      [DbTable(Name = "MyTable", HasTriggers = true)]
+      protected class MyTableWithTrigger : DbEntity<MyTableWithTrigger>, INotifyPropertyChanged
+      {
+         [DataMember]
+         private long m_MyIdentity;
+
+         [DataMember]
+         private string m_MyString;
+
+         [DataMember]
+         private long m_MyNumber;
+
+         private int m_PartialValue;
+
+         [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity")]
+         public long MyIdentity
+         {
+            get { return m_MyIdentity; }
+            set
+            {
+               m_MyIdentity = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyIdentity"));
+            }
+         }
+
+         [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
+         public string MyString
+         {
+            get { return m_MyString; }
+            set
+            {
+               m_MyString = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
+            }
+         }
+
+         [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyNumber")]
+         public long MyNumber
+         {
+            get { return m_MyNumber; }
+            set
+            {
+               m_MyNumber = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyNumber"));
+            }
+         }
+
+         public int PartialValue
+         {
+            get { return m_PartialValue; }
+            set
+            {
+               m_PartialValue = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("PartialValue"));
+            }
+         }
+
+         public event PropertyChangedEventHandler PropertyChanged;
+      }
+
+      [DataContract]
       [DbTable(Name = "MyTable")]
       private class MyTableSlim : DbEntity<MyTableSlim>, INotifyPropertyChanged
       {
@@ -1578,6 +1726,55 @@ namespace DrivenDb.Tests.Language.Interfaces
       [DataContract]
       [DbTable(Name = "MyFriend")]
       private class MyFriend : DbEntity<MyFriend>, INotifyPropertyChanged
+      {
+         [DataMember]
+         private int m_MyIdentity;
+
+         [DataMember]
+         private string m_MyString;
+
+         [DataMember]
+         private int m_MyNumber;
+
+         [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity")]
+         public int MyIdentity
+         {
+            get { return m_MyIdentity; }
+            set
+            {
+               m_MyIdentity = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyIdentity"));
+            }
+         }
+
+         [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
+         public string MyString
+         {
+            get { return m_MyString; }
+            set
+            {
+               m_MyString = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
+            }
+         }
+
+         [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyNumber")]
+         public int MyNumber
+         {
+            get { return m_MyNumber; }
+            set
+            {
+               m_MyNumber = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyNumber"));
+            }
+         }
+
+         public event PropertyChangedEventHandler PropertyChanged;
+      }
+
+      [DataContract]
+      [DbTable(Name = "MyFriend")]
+      private class MyFriendWithTrigger : DbEntity<MyFriendWithTrigger>, INotifyPropertyChanged
       {
          [DataMember]
          private int m_MyIdentity;

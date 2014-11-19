@@ -16,10 +16,11 @@ namespace DrivenDbConsole.Contracts.Base
 {
    class TableInfo : ITableInfo
    {
-      public TableInfo(string schema, string name, IEnumerable<IColumnInfo> fields)
+      public TableInfo(string schema, string name, bool hasTriggers, IEnumerable<IColumnInfo> fields)
       {
          Schema = schema;
          Name = name;
+         HasTriggers = hasTriggers;
          Fields = fields;
       }
 
@@ -30,6 +31,12 @@ namespace DrivenDbConsole.Contracts.Base
       }
 
       public string Name
+      {
+         get;
+         protected set;
+      }
+
+      public bool HasTriggers
       {
          get;
          protected set;

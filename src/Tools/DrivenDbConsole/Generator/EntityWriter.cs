@@ -103,13 +103,15 @@ namespace DrivenDbConsole.Generator
             }
             else
             {
+               var triggers = table.HasTriggers ? ", HasTriggers = true" : string.Empty;
+
                if (!String.IsNullOrWhiteSpace(table.Schema))
                {
-                  WriteLine("\t[DbTable(Schema=\"" + table.Schema + "\", Name=\"" + table.Name + "\")]");
+                  WriteLine("\t[DbTable(Schema=\"" + table.Schema + "\", Name=\"" + table.Name + "\"" + triggers + ")]");
                }
                else
                {
-                  WriteLine("\t[DbTable(Name=\"" + table.Name + "\")]");
+                  WriteLine("\t[DbTable(Name=\"" + table.Name + "\"" + triggers + ")]");
                }
             }
 

@@ -14,6 +14,9 @@ namespace DrivenDb.MsSql
 {
    internal interface IMsSqlBuilder : ISqlBuilder
    {
+      string ToCreateIdTable();
+      string ToSelectIdTable();
+
       string ToInsertWithScopeIdentity(int index, bool returnId);
 
       //string ToInsertOutputDeleted<T>(T entity, int index, string[] columns)
