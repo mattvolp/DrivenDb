@@ -1,6 +1,6 @@
 @ECHO off
 
-SET VERSION=1.15
+SET VERSION=1.16
 SET PATH=3rd\Ploeh;3rd\Ssed
 
 ECHO.
@@ -15,7 +15,7 @@ IF EXIST ".\release.msbuild.bak" del /F /Q ".\release.msbuild.bak"
 
 ssed.exe -i.bak "s/<version>.*<\/version>/<version>%VERSION%<\/version>/g" ".\3rd\NuGet\DrivenDb.nuspec"
 ssed.exe -i.bak "s/DrivenDb\..*\.nupkg/DrivenDb\.%VERSION%\.nupkg/g" ".\build-nuget.bat"
-ssed.exe -i.bak "s/DrivenDb\..*\.zip/DrivenDb\.%VERSION%\.zip/g" ".\release.msbuild"
+ssed.exe -i.bak "s/DrivenDb\..*\.zip/DrivenDb\.%VERSION%\.zip/g" ".\build-all.msbuild"
 
 DEL /F /Q ".\3rd\NuGet\DrivenDb.nuspec.bak"
 DEL /F /Q ".\build-nuget.bat.bak"
