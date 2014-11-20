@@ -1,8 +1,8 @@
 #DrivenDb
 
-###Version 1.15 - Released Notes
+###Description
 
-* Added a custom build tool for VS 2013.  This will auto generate schema contracts.
+A better micro ORM designed for ease of use and performance with fewer round trips to the database.
 
 Special thanks to:
 
