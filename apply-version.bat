@@ -19,7 +19,7 @@ ssed.exe -i.bak "s/DrivenDb\..*\.zip/DrivenDb\.%VERSION%\.zip/g" ".\build-all.ms
 
 DEL /F /Q ".\3rd\NuGet\DrivenDb.nuspec.bak"
 DEL /F /Q ".\build-nuget.bat.bak"
-DEL /F /Q ".\release.msbuild.bak"
+DEL /F /Q ".\build-all.msbuild.bak"
 
 ECHO.
 PAUSE
