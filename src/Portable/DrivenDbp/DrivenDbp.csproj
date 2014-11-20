@@ -70,6 +70,9 @@
     <Compile Include="..\..\DrivenDb\Language\Interfaces\IDbRecord.cs">
       <Link>Language\Interfaces\IDbRecord.cs</Link>
     </Compile>
+    <Compile Include="..\..\DrivenDb\Language\Interfaces\IParamConvertible.cs">
+      <Link>Language\Interfaces\IParamConvertible.cs</Link>
+    </Compile>
     <Compile Include="..\..\DrivenDb\Utility\EntityAccessor.cs">
       <Link>Utility\EntityAccessor.cs</Link>
     </Compile>

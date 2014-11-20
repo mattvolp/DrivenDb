@@ -1,4 +1,5 @@
-﻿using DrivenDb.Tests.Language.Interfaces;
+﻿using System.Data;
+using DrivenDb.Tests.Language.Interfaces;
 using System;
 using System.Data.SQLite;
 using System.IO;
@@ -72,6 +73,11 @@ namespace DrivenDb.Tests.Language.SqLite
          //accessor.Log = Console.Out;
 
          return accessor;
+      }
+
+      protected override IDbDataParameter CreateParam<T>(string name, T value)
+      {
+         return new SQLiteParameter(name, value);
       }
 
       protected override void DestroyAccessor(string key)

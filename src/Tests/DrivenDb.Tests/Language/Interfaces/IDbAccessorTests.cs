@@ -1,18 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Transactions;
 using System.Xml;
+using DrivenDb.Language.Interfaces;
 using Xunit;
 
 namespace DrivenDb.Tests.Language.Interfaces
 {
    public abstract class IDbAccessorTests
    {
+      [Fact]
+      public void ReadEntities_WithIParamConvertibleWorksWithIDbDataParameter()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var param = CreateParam("@0", 2);
+         var entity = accessor.ReadEntities<MyTable>(
+            "SELECT * FROM MyTable WHERE MyIdentity = @0"
+            , param
+            ).Single();
+
+         Assert.True(entity.MyIdentity == 2);
+
+         DestroyAccessor(key);
+      }
+
+      [Fact]
+      public void ReadEntities_WithIParamConvertibleWorksWithPrimitiveValue()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var param = new PrimitiveParam(2);
+         var entity = accessor.ReadEntities<MyTable>(
+            "SELECT * FROM MyTable WHERE MyIdentity = @0"
+            , param
+            ).Single();
+
+         Assert.True(entity.MyIdentity == 2);
+         
+         DestroyAccessor(key);
+      }
+
       [Fact]
       public void Undelete_RestoresPreviousNewState()
       {
@@ -1499,6 +1535,8 @@ namespace DrivenDb.Tests.Language.Interfaces
 
       protected abstract IDbAccessor CreateAccessor(out string filename, AccessorExtension extensions);
 
+      protected abstract IDbDataParameter CreateParam<T>(string name, T value);
+
       protected abstract void DestroyAccessor(string key);
 
       #endregion --- PROTECTED -----------------------------------------------------------------------
@@ -2276,6 +2314,36 @@ namespace DrivenDb.Tests.Language.Interfaces
          }
 
          public event PropertyChangedEventHandler PropertyChanged;
+      }
+
+      protected class PrimitiveParam : IParamConvertible
+      {
+         private readonly int _value;
+
+         public PrimitiveParam(int value)
+         {
+            _value = value;
+         }
+
+         public object ToParameterValue()
+         {
+            return _value;
+         }
+      }
+
+      protected class DbParam : IParamConvertible
+      {
+         private readonly IDbDataParameter _parameter;
+
+         public DbParam(IDbDataParameter parameter)
+         {
+            _parameter = parameter;
+         }
+
+         public object ToParameterValue()
+         {
+            return _parameter;
+         }
       }
 
       #endregion --- NESTED --------------------------------------------------------------------------

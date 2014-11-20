@@ -17,6 +17,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DrivenDb.Language.Interfaces;
 
 namespace DrivenDb.Base
 {
@@ -258,6 +259,16 @@ namespace DrivenDb.Base
             if (decrement > 0)
             {
                inputQuery = Regex.Replace(inputQuery, name + "($|[^0-9])", gnuname + "$1");
+            }
+
+            //
+            // convert convertable parameters
+            //
+            var convertable = parameters[i] as IParamConvertible;
+
+            if (convertable != null)
+            {
+               parameters[i] = convertable.ToParameterValue();
             }
 
             //

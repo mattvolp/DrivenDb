@@ -1,4 +1,5 @@
-﻿using DrivenDb.MsSql;
+﻿using System.Data;
+using DrivenDb.MsSql;
 using DrivenDb.MsSql.Tests.Language.MsSql;
 using DrivenDb.Tests.Language.Interfaces;
 using System;
@@ -343,6 +344,11 @@ namespace DrivenDb
                ");
 
          return accessor;
+      }
+
+      protected override IDbDataParameter CreateParam<T>(string name, T value)
+      {
+         return new SqlParameter(name, value);
       }
 
       protected override void DestroyAccessor(string key)

@@ -1,4 +1,5 @@
-﻿using DrivenDb.Tests.Language.Interfaces;
+﻿using System.Data;
+using DrivenDb.Tests.Language.Interfaces;
 using MySql.Data.MySqlClient;
 using System;
 
@@ -80,6 +81,11 @@ namespace DrivenDb.Tests.Language.MySql
          //accessor.Log = Console.Out;
 
          return accessor;
+      }
+
+      protected override IDbDataParameter CreateParam<T>(string name, T value)
+      {
+         return new MySqlParameter(name, value);
       }
 
       protected override void DestroyAccessor(string key)
