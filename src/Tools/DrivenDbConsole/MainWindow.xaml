@@ -29,6 +29,11 @@
                  Text="{Binding Path=TableFilter, UpdateSourceTrigger=PropertyChanged}"
  />
 
+      <TextBlock DockPanel.Dock="Top" Text="Read Only Table Filter:" Margin="2" />
+      <TextBox DockPanel.Dock="Top" Margin="2"
+                 Text="{Binding Path=ReadOnlyTableFilter, UpdateSourceTrigger=PropertyChanged}"
+ />
+
       <GroupBox DockPanel.Dock="Top" Header="Options:" Margin="2" Padding="4">
          <UniformGrid Columns="2" DockPanel.Dock="Top">
             <CheckBox Content="Unspecified DateTimes" IsChecked="{Binding Path=UseUnspecified, UpdateSourceTrigger=PropertyChanged}" />

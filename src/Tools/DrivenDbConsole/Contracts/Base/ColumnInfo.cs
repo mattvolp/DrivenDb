@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************
  * Original Author : Anthony Leatherwood (adleatherwood@gmail.com)
- * Source Location : http://drivendb.codeplex.com
+ * Source Location : https://github.com/Fastlite/DrivenDb
  *
  * This source is subject to the Microsoft Public License.
  * Link: http://www.microsoft.com/en-us/openness/licenses.aspx

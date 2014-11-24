@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************
  * Original Author : Anthony Leatherwood (adleatherwood@gmail.com)
- * Source Location : http://drivendb.codeplex.com
+ * Source Location : https://github.com/Fastlite/DrivenDb
  *
  * This source is subject to the Microsoft Public License.
  * Link: http://www.microsoft.com/en-us/openness/licenses.aspx
@@ -58,6 +58,11 @@ namespace DrivenDbConsole.Contracts.SqLite
 
       private IEnumerable<Tuple<string, string>> GetTableNames(IEnumerable<string> tableExpressions)
       {
+         if (!tableExpressions.Any())
+         {
+            return new Tuple<string, string>[0];
+         }
+
          var likes = String.Join(" ", tableExpressions.Select(i => String.Format("[name] LIKE '{0}' OR", i)));
          var result = _model.ReadAnonymous(new { Schema = "", Table = "" },
             String.Format(@"SELECT '' AS 'Schema', [name] AS 'Table' FROM [sqlite_master] WHERE {0} AND [type] = 'table'", likes.Substring(0, likes.Length - 2))

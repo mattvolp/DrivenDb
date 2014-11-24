@@ -104,6 +104,8 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\Base\ColumnInfo.cs" />
     <Compile Include="Contracts\SqLite\SqLiteInfoExtractor.cs" />
+    <Compile Include="Generator\FileWriter.cs" />
+    <Compile Include="Generator\TypeWriterHa.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
     <Page Include="MainWindow.xaml">

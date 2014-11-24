@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************
  * Original Author : Anthony Leatherwood (adleatherwood@gmail.com)
- * Source Location : http://drivendb.codeplex.com
+ * Source Location : https://github.com/Fastlite/DrivenDb
  *
  * This source is subject to the Microsoft Public License.
  * Link: http://www.microsoft.com/en-us/openness/licenses.aspx
@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
  **************************************************************************************/
 
+#if !BUILD_TOOL
+using System.Windows;
+#endif
 using DrivenDb;
 using DrivenDbConsole.Contracts;
 using DrivenDbConsole.Contracts.MsSql;
@@ -21,7 +24,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Input;
 
 namespace DrivenDbConsole
@@ -34,6 +36,7 @@ namespace DrivenDbConsole
          AppName = "MyApp";
          Namespace = "MyApp.Contracts";
          TableFilter = "%";
+         ReadOnlyTableFilter = "%";
 
          Generate = new RelayCommand(o => OnGenerate(), o => CanGenerate());
          Clip = new RelayCommand(o => OnClip(), o => CanClip());
@@ -78,6 +81,12 @@ namespace DrivenDbConsole
       }
 
       public string TableFilter
+      {
+         get;
+         set;
+      }
+
+      public string ReadOnlyTableFilter
       {
          get;
          set;
@@ -137,7 +146,7 @@ namespace DrivenDbConsole
             && !String.IsNullOrWhiteSpace(AppName)
             && !String.IsNullOrWhiteSpace(Namespace)
             && !String.IsNullOrWhiteSpace(SelectedAccessorType) && (SelectedAccessorType == "MsSql" || SelectedAccessorType == "SqLite")
-            && !String.IsNullOrWhiteSpace(TableFilter);
+            && (!String.IsNullOrWhiteSpace(TableFilter) || !String.IsNullOrWhiteSpace(ReadOnlyTableFilter));
       }
 
       public void OnGenerate()
@@ -159,15 +168,28 @@ namespace DrivenDbConsole
 
             if (extractor != null)
             {
-               var filters = TableFilter.Split(',')
+               var writables = (TableFilter ?? "").Split(',')
                   .Where(f => !String.IsNullOrWhiteSpace(f))
                   .Select(f => f.Trim())
                   .ToArray();
 
-               var info = extractor.GetDatabaseMetadata(filters);
-               var writer = new EntityWriter();
+               var readables = (ReadOnlyTableFilter ?? "").Split(',')
+                  .Where(f => !String.IsNullOrWhiteSpace(f))
+                  .Select(f => f.Trim())
+                  .ToArray();
 
-               Output = writer.Execute(AppName, Namespace, UseLinq, LessChanges, WriteSchema, ScriptDefaults, UseUnspecified, info);
+               var writableInfo = extractor.GetDatabaseMetadata(writables);
+               var readableInfo = extractor.GetDatabaseMetadata(readables);
+               var fileWriter = new FileWriter();
+               var entityWriter = new EntityWriter();
+               var typeWriter = new TypeWriter();
+
+               var output = fileWriter.WriteHeader(Namespace);
+               output += entityWriter.Execute(AppName, Namespace, UseLinq, LessChanges, WriteSchema, ScriptDefaults, UseUnspecified, writableInfo);
+               output += typeWriter.Execute(readableInfo);
+               output += fileWriter.WriteFooter();
+
+               Output = output;
 
                OnPropertyChanged("Output");
             }

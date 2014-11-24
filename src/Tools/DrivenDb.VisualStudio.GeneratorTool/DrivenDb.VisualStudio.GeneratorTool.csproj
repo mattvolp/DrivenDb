@@ -94,6 +94,12 @@
     <Compile Include="..\DrivenDbConsole\Generator\EntityWriter.cs">
       <Link>Generator\EntityWriter.cs</Link>
     </Compile>
+    <Compile Include="..\DrivenDbConsole\Generator\FileWriter.cs">
+      <Link>Generator\FileWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\DrivenDbConsole\Generator\TypeWriterHa.cs">
+      <Link>Generator\TypeWriterHa.cs</Link>
+    </Compile>
     <Compile Include="..\DrivenDbConsole\MainWindowViewModel.cs">
       <Link>MainWindowViewModel.cs</Link>
     </Compile>

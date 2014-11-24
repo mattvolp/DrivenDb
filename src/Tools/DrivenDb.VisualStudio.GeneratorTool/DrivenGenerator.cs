@@ -71,6 +71,7 @@ namespace DrivenDb.VisualStudio.GeneratorTool
                : defaultNamespace;
 
             viewModel.TableFilter = config.TableFilter;
+            viewModel.ReadOnlyTableFilter = config.ReadOnlyTableFilter;
 
             var canExecute = viewModel.Generate.CanExecute(null);
 
@@ -102,7 +103,7 @@ namespace DrivenDb.VisualStudio.GeneratorTool
          File.AppendAllText(@"d:\DrivenGenerator.log", string.Format(header, parameters));
       }
 
-      private void GenerateDefaultContent(string filename, string defaultNamespace)
+      private static void GenerateDefaultContent(string filename, string defaultNamespace)
       {
          var serializer = new XmlSerializer(typeof(GeneratorConfig));
 
