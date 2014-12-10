@@ -190,7 +190,7 @@ namespace DrivenDbConsole.Contracts.MsSql
          var pknames = _model.ReadValues<string>(
             @"SELECT c.name
                 FROM sys.index_columns ic  
-                JOIN sys.indexes i ON i.index_id = ic.index_id AND i.object_id = ic.object_id AND i.type = 1
+                JOIN sys.indexes i ON i.index_id = ic.index_id AND i.object_id = ic.object_id AND i.is_primary_key = 1
                 JOIN sys.tables t ON i.object_id = t.object_id  
                 JOIN sys.schemas s ON s.schema_id = t.schema_id  
                 JOIN sys.columns c ON ic.column_id = c.column_id AND c.object_id = t.object_id
