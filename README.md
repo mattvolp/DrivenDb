@@ -4,7 +4,7 @@
 
 A better micro ORM designed for ease of use and performance with fewer round trips to the database.
 
-Special thanks to:
+Special thanks to: 
 
 ![JetBrains](https://www.jetbrains.com/company/docs/logo_jetbrains.png)
 
