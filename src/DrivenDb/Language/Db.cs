@@ -87,6 +87,11 @@ namespace DrivenDb
          get { return (m_Extensions & AccessorExtension.PrivateMemberColumnMapping) == AccessorExtension.PrivateMemberColumnMapping; }
       }
 
+      public bool DefaultStringParametersToAnsiString
+      {
+         get { return (m_Extensions & AccessorExtension.DefaultStringParametersToAnsiString) == AccessorExtension.DefaultStringParametersToAnsiString; }
+      }
+
       public IDbConnection CreateConnection()
       {
          return m_Connections();

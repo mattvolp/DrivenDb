@@ -357,7 +357,7 @@ namespace DrivenDb.Base
          return values;
       }
 
-      private static void AppendParameters(IDbCommand command, int index, IEnumerable<object> parameters)
+      private void AppendParameters(IDbCommand command, int index, IEnumerable<object> parameters)
       {
          var i = -1;
          var prefix = index > -1 ? ToPrefix(index) : null;
@@ -376,6 +376,11 @@ namespace DrivenDb.Base
 
                gnu.ParameterName = "@" + prefix + i;
                gnu.Value = parameter;
+
+               if (m_Db.DefaultStringParametersToAnsiString && parameter is string)               
+               {
+                  gnu.DbType = DbType.AnsiString;
+               }
 
                command.Parameters.Add(gnu);
             }

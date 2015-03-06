@@ -51,6 +51,11 @@ namespace DrivenDb
           get;
        }
 
+       bool DefaultStringParametersToAnsiString
+       {
+          get;
+       }
+
        IDbConnection CreateConnection();
     }
 }

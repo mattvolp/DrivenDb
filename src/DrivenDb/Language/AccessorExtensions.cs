@@ -23,6 +23,7 @@ namespace DrivenDb
       AllowUnmappedColumns = 4,
       CaseInsensitiveColumnMapping = 8,
       PrivateMemberColumnMapping = 16,
+      DefaultStringParametersToAnsiString = 32,
 
       Common = AllowEnumerableParameters
          | LimitDateParameters
@@ -33,6 +34,7 @@ namespace DrivenDb
          | LimitDateParameters
          | AllowUnmappedColumns
          | CaseInsensitiveColumnMapping
-         | PrivateMemberColumnMapping,
+         | PrivateMemberColumnMapping
+         | DefaultStringParametersToAnsiString
    }
 }
