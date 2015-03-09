@@ -1,6 +1,6 @@
 @ECHO off
 
-SET VERSION=1.19
+SET VERSION=1.20
 SET PATH=3rd\Ploeh;3rd\Ssed
 
 ECHO.
