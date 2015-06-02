@@ -219,6 +219,124 @@ namespace DrivenDb.Base
          }
       }
 
+      public DbSet<T1, T2> ReadType<T1, T2>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+      {
+         using (var connection = m_Db.CreateConnection())
+         using (var command = connection.CreateCommand())
+         {
+            connection.Open();
+            command.CommandTimeout = CommandTimeout;
+
+            m_Scripter.ScriptSelect(command, query, parameters);
+
+            LogMessage(command.CommandText);
+
+            using (var reader = command.ExecuteReader())
+            {
+               var set1 = m_Mapper.MapType<T1>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 1);
+               var set2 = m_Mapper.MapType<T2>(command.CommandText, reader);
+               
+               return new DbSet<T1, T2>(set1, set2);
+            }
+         }
+      }
+
+      public DbSet<T1, T2, T3> ReadType<T1, T2, T3>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+      {
+         using (var connection = m_Db.CreateConnection())
+         using (var command = connection.CreateCommand())
+         {
+            connection.Open();
+            command.CommandTimeout = CommandTimeout;
+
+            m_Scripter.ScriptSelect(command, query, parameters);
+
+            LogMessage(command.CommandText);
+
+            using (var reader = command.ExecuteReader())
+            {
+               var set1 = m_Mapper.MapType<T1>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 1);
+               var set2 = m_Mapper.MapType<T2>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 2);
+               var set3 = m_Mapper.MapType<T3>(command.CommandText, reader);
+               
+               return new DbSet<T1, T2, T3>(set1, set2, set3);
+            }
+         }
+      }
+
+      public DbSet<T1, T2, T3, T4> ReadType<T1, T2, T3, T4>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new()
+      {
+         using (var connection = m_Db.CreateConnection())
+         using (var command = connection.CreateCommand())
+         {
+            connection.Open();
+            command.CommandTimeout = CommandTimeout;
+
+            m_Scripter.ScriptSelect(command, query, parameters);
+
+            LogMessage(command.CommandText);
+
+            using (var reader = command.ExecuteReader())
+            {
+               var set1 = m_Mapper.MapType<T1>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 1);
+               var set2 = m_Mapper.MapType<T2>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 2);
+               var set3 = m_Mapper.MapType<T3>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 3);
+               var set4 = m_Mapper.MapType<T4>(command.CommandText, reader);
+               
+               return new DbSet<T1, T2, T3, T4>(set1, set2, set3, set4);
+            }
+         }
+      }
+
+      public DbSet<T1, T2, T3, T4, T5> ReadType<T1, T2, T3, T4, T5>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new()
+         where T5 : new()
+      {
+         using (var connection = m_Db.CreateConnection())
+         using (var command = connection.CreateCommand())
+         {
+            connection.Open();
+            command.CommandTimeout = CommandTimeout;
+
+            m_Scripter.ScriptSelect(command, query, parameters);
+
+            LogMessage(command.CommandText);
+
+            using (var reader = command.ExecuteReader())
+            {
+               var set1 = m_Mapper.MapType<T1>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 1);
+               var set2 = m_Mapper.MapType<T2>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 2);
+               var set3 = m_Mapper.MapType<T3>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 3);
+               var set4 = m_Mapper.MapType<T4>(command.CommandText, reader);
+               if (!reader.NextResult()) throw new MissingResultException(5, 4);
+               var set5 = m_Mapper.MapType<T5>(command.CommandText, reader);
+
+               return new DbSet<T1, T2, T3, T4, T5>(set1, set2, set3, set4, set5);
+            }
+         }
+      }
+
       public IEnumerable<T> ReadType<T>(Func<T> factory, string query, params object[] parameters)
       {
          using (var connection = m_Db.CreateConnection())

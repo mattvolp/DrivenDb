@@ -103,6 +103,40 @@ namespace DrivenDb.Wrappers
          return m_Accessor.ReadType<T>(query, parameters);
       }
 
+      public DbSet<T1, T2> ReadType<T1, T2>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+      {
+         return m_Accessor.ReadType<T1, T2>(query, parameters);
+      }
+
+      public DbSet<T1, T2, T3> ReadType<T1, T2, T3>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+      {
+         return m_Accessor.ReadType<T1, T2, T3>(query, parameters);
+      }
+
+      public DbSet<T1, T2, T3, T4> ReadType<T1, T2, T3, T4>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new()
+      {
+         return m_Accessor.ReadType<T1, T2, T3, T4>(query, parameters);
+      }
+
+      public DbSet<T1, T2, T3, T4, T5> ReadType<T1, T2, T3, T4, T5>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new()
+         where T5 : new()
+      {
+         return m_Accessor.ReadType<T1, T2, T3, T4, T5>(query, parameters);
+      }
+
       public IEnumerable<T> ReadType<T>(Func<T> factory, string query, params object[] parameters)
       {
          return m_Accessor.ReadType(factory, query, parameters);

@@ -16,6 +16,51 @@ namespace DrivenDb.Tests.Language.Interfaces
    public abstract class IDbAccessorTests
    {
       [Fact]
+      public void ReadMultipleTypesTest()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var entities = accessor.ReadType<MyTableType, MyTableType2, MyTableType, MyTableType2, MyTableType>(
+            @"SELECT * FROM MyTable;
+              SELECT * FROM MyTable;
+              SELECT * FROM MyTable;
+              SELECT * FROM MyTable;
+              SELECT * FROM MyTable;");
+
+         var set1 = entities.Set1.ToArray();
+         var set4 = entities.Set4.ToArray();
+
+         Assert.True(set1.Count() == 3);
+         Assert.True(set1[0].MyIdentity == 1);
+         Assert.True(set1[0].MyNumber == 1);
+         Assert.True(set1[0].MyString == "One");
+         Assert.True(set1[1].MyIdentity == 2);
+         Assert.True(set1[1].MyNumber == 2);
+         Assert.True(set1[1].MyString == "Two");
+         Assert.True(set1[2].MyIdentity == 3);
+         Assert.True(set1[2].MyNumber == 3);
+         Assert.True(set1[2].MyString == "Three");
+
+         Assert.True(set4.Count() == 3);
+         Assert.True(set4[0].MyIdentity == 1);
+         Assert.True(set4[0].MyNumber == 1);
+         Assert.True(set4[0].MyString == "One");
+         Assert.True(set4[1].MyIdentity == 2);
+         Assert.True(set4[1].MyNumber == 2);
+         Assert.True(set4[1].MyString == "Two");
+         Assert.True(set4[2].MyIdentity == 3);
+         Assert.True(set4[2].MyNumber == 3);
+         Assert.True(set4[2].MyString == "Three");
+
+         Assert.True(entities.Set2.Count() == 3);
+         Assert.True(entities.Set3.Count() == 3);         
+         Assert.True(entities.Set5.Count() == 3);
+
+         DestroyAccessor(key);
+      }
+
+      [Fact]
       public void ReadEntities_WithIParamConvertibleWorksWithIDbDataParameter()
       {
          string key;

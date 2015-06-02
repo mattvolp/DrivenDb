@@ -88,6 +88,28 @@ namespace DrivenDb
          where T9 : IDbRecord, new()
          where T10 : IDbRecord, new();
 
+      DbSet<T1, T2> ReadType<T1, T2>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new();
+
+      DbSet<T1, T2, T3> ReadType<T1, T2, T3>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new();
+
+      DbSet<T1, T2, T3, T4> ReadType<T1, T2, T3, T4>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new();
+
+      DbSet<T1, T2, T3, T4, T5> ReadType<T1, T2, T3, T4, T5>(string query, params object[] parameters)
+         where T1 : new()
+         where T2 : new()
+         where T3 : new()
+         where T4 : new()
+         where T5 : new();
+
       new IParallelAccessor Parallel
       {
          get;
