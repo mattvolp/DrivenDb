@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DrivenDb</id>
-		<version>1.30</version>
+		<version>1.31</version>
 		<authors>Anthony Leatherwood</authors>
 		<owners>aleatherwood</owners>
 		<licenseUrl>https://github.com/Fastlite/DrivenDb/blob/master/LICENSE</licenseUrl>
@@ -17,12 +17,15 @@
 			</summary>
 		<releaseNotes>Please visit the github site for release notes.</releaseNotes>
 		<!--<copyright>Copyright 2012</copyright>-->
-		<tags>microorm db database micro orm database dal sql mysql sqlite mapping cache petapoco dapper self-tracking entity ddd repository nhibernate napper microlite entityframework</tags>    
+		<tags>microorm db database micro orm database dal sql mysql sqlite mapping cache petapoco dapper self-tracking entity ddd repository nhibernate napper microlite entityframework</tags>
+		<references>
+			<reference file="DrivenDb.dll" />
+		</references>    
 	</metadata>  
 	<files>
 		<file src="..\..\Release\*.dll" target="lib\net40" /> 
 		<file src="..\..\Release\*.exe" target="lib\net40" /> 
 		<file src="..\..\Release\*.pdb" target="lib\net40" /> 			 
 		<file src="..\..\Release\*.xml" target="lib\net40" /> 			 
-	</files>
+	</files>	
 </package>
