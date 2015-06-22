@@ -1,0 +1,95 @@
+SCRIPTER GOALS
+
+X script validate method that can check if all non-nullable columns have values or not etc...
+
+X entities without inheritance
+	- could generate them with private members that track state
+	- could implement an interface that identifies him as a state tracker
+	- state tracking can be optional
+	
+X entities can have optionally scripted PrimaryKey type that is usable as a dictionary key
+	- this is not inherited, but a private member... maybe serializable?
+	
+X only read/write to fields?
+	- this will eliminate the possibility of code firing off when getting/setting values
+	- removes the need to clear the tracking state 
+	- make room for this to be hated and expanded to properties too
+
+X keep attributes, only apply them to fields though 
+
+X need to better translate primitives to enum typs
+	- entity generator has to somehow know how to do this. perhaps, takes patterns to identify enums
+	  e.g. "(.*Type)" group[0] of the name of the column is the same as the enum type in code
+	       this leaves room for adjact type language "ValueType", "PreviousValueType", "CurrentValueType"	
+	- perhaps a naming convention is the best bet
+	- or just a straight up mapping table/column -> type name
+
+X better translation from primitives to custom types
+
+X attempt to handle column defaults?  make optional for sure
+	- will never be able to handle everything, only primitives and GETDATE() probably.
+	- option to script out uncompilable code when something can't be defaulted?
+	
+X sql date properties have their times nixed
+
+ACCESSOR
+	
+* read type/entity will be the same methods
+	- perhaps a builder style syntax can help anonymous types fit these methods too
+	  e.g. accessor.Anon(() => new {Id = 0}).Load("SELECT", params);
+	- same for save, possibly?
+	- be able to stack Load calls to read out multiple results
+	  e.g. accessor.Read<T>("SELECT 1; SELECT 2").Read<T>() // ReadNext, ThenRead, AlsoRead, ReadAlso, ReadCont, ContRead, Continue, Also, Next
+	- do reads need to be within a using so last dataset can be collected if missed, and not read by another method?
+	
+* remove singleton instance requirement?
+	- possibly separate the caching from the accessor and make the use more explicit
+	- hard to get around this
+	
+* keep accessor events concept
+
+* keep log guy?  more configurable? debug only?
+
+* i like the fallback guy, but the implementation needs to be better
+	- perhaps params can be wrapped with fallback rules
+	  e.g. accessor.Read<T>("SELECT @0", Fallthrough.When(value, v => v < 1) <- awesome sauce
+	  
+* just like the fallback/through/out, 
+	- boundry check sql datetimes, maybe this is something you only define once on accessor creation, a type inspector
+	  e.g. accessor.Read<T>("SELECT @0", MsSql.Conform(date) <- awesome sauce 
+	- rescript enumerables
+	  e.g. accessor.Read<T>("SELECT @0", Script.Enumerable("@0", values) <- awesome sauce, 
+	       extension methods? or interface?  make extensable somehow.. probably interface
+	- make configurable to disable rescripting and conforming? 
+	  
+* keep scope guy, it's all i've got for now.  the interface/usage is confusing though
+	- perhaps writes can have a scope passed in
+	  e.g. using (var scope = accessor.CreateScope()){ accessor.write(scope, values); }
+
+* keep database specific accessor extensions, but without casting parhaps?
+	- still needs to be explicit, and fail if it's the wrong database type
+
+* keep the DbWrapper (DbProxy) concrete type for extending
+	- perhaps create a factory method for this guy to make him easier to setup
+	- maybe don't make the accessor types private? but still use an interface
+	
+* perhaps add IDbCommand factory option?  for command timeout settings?
+	- same for DbTransaction?
+
+BOTH
+
+X being able to use linq queries
+	- maybe generate a non-aggregated entity framework context to query against
+	- should be in a secondary assembly to mitigate dependencies
+	- https://msdn.microsoft.com/en-us/library/system.data.linq.datacontext.getcommand(v=vs.110).aspx
+	
+ARCHITECTURE
+	
+X keep pcl version
+	- separate data backends into separate assemblies 
+	
+TESTING
+
+* be able to deploy schema to individual tables, relationships is too much overhead for me right now
+
+	
