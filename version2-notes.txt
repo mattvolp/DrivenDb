@@ -34,7 +34,7 @@ X sql date properties have their times nixed
 
 ACCESSOR
 	
-* read type/entity will be the same methods
+X read type/entity will be the same methods
 	- perhaps a builder style syntax can help anonymous types fit these methods too
 	  e.g. accessor.Anon(() => new {Id = 0}).Load("SELECT", params);
 	- same for save, possibly?
@@ -73,8 +73,7 @@ ACCESSOR
 	- perhaps create a factory method for this guy to make him easier to setup
 	- maybe don't make the accessor types private? but still use an interface
 	
-* perhaps add IDbCommand factory option?  for command timeout settings?
-	- same for DbTransaction?
+* logs sql with parameters
 
 BOTH
 
