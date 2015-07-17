@@ -113,7 +113,7 @@ namespace DrivenDb.Core.Tests
       private class DbEntityLikeness
          : DbEntity
       {
-         public EntityState State
+         public new EntityState State
          {
             get { return _state; }
             set { _state = value; }

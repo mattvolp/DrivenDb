@@ -41,6 +41,7 @@
     <AssemblyOriginatorKeyFile>DrivenDb.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>

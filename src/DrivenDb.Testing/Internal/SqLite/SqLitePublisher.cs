@@ -5,9 +5,9 @@ using System.Reflection;
 using DrivenDb.Core;
 using DrivenDb.Data;
 
-namespace DrivenDb.Testing
+namespace DrivenDb.Testing.Internal.SqLite
 {
-   public class SqLitePublisher
+   internal class SqLitePublisher
       : IEntityPublisher
    {
       private readonly IDbWriter _writer;
@@ -17,20 +17,17 @@ namespace DrivenDb.Testing
          _writer = writer;
       }
 
-      public void Publish<T>(T item)
-         where T : IDbEntityProvider
+      public void Publish<T>(T item)         
       {
          Publish(new T[] {item});
       }
 
-      public void Publish<T>(params T[] items)
-         where T : IDbEntityProvider
+      public void Publish<T>(params T[] items)         
       {
          Publish(items.AsEnumerable());
       }
 
-      public void Publish<T>(IEnumerable<T> items)
-         where T : IDbEntityProvider
+      public void Publish<T>(IEnumerable<T> items)         
       {         
          var tables = items.Select(e => e.GetType())
             .Select(t => new TableDef(t))

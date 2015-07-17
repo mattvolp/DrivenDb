@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
-using DrivenDb.VisualStudio.Generator.Internal;
 
 namespace DrivenDb.Testing
 {

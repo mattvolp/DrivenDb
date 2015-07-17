@@ -11,6 +11,7 @@ namespace DrivenDb.Data
    {      
    }
 
+   // TODO: not really necessary to have the slim
    public interface IDbAccessorSlim
       : IDbMonitor
       , IDbWriter
@@ -53,6 +54,7 @@ namespace DrivenDb.Data
    public interface IDbExecution
       : IDisposable
    {
+      // TODO: needs optional return type
       DbResult<T> ReadSingle<T>();
       DbResultSet<T> Read<T>();
    }

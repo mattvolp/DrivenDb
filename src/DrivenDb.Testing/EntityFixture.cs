@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace DrivenDb.Testing
 {
-   internal class EntityFixture
+   public class EntityFixture
       : IDisposable
    {
       private readonly EntityFactory _factory;
