@@ -10,6 +10,8 @@ namespace DrivenDb.Data.Tests
       [TestMethod]
       public void DbReaderReadsSuccessfullyFireTest()
       {
+         // TODO: forget all this.  i dont need to test with generated entities.  there are tests specifically for that now.  
+         //       this can be custom classes etc...
          var records = new[]
             {
                new {Table = "TestTable", Id = 1, Value = "one"},
