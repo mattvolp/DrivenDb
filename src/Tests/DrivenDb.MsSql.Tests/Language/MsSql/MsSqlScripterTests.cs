@@ -1,10 +1,34 @@
 ﻿using System.ComponentModel;
 using System.Data.Linq.Mapping;
+using System.Data.SqlClient;
+using System.Runtime.Serialization;
+using DrivenDb.MsSql;
+using Xunit;
 
 namespace DrivenDb.Tests.Language.MsSql
 {
     public class MsSqlScripterTests 
     {
+       [Fact]
+       public void ColumnsWithTrailingSpacesInTheNameUpdateWithoutError()
+       {
+          var sut = new MySpacedIndentityClass();
+          var joiner = new MsSqlValueJoiner();          
+          var db = new Db(AccessorExtension.Common, () => null);
+          var scripter = new MsSqlScripter(db, joiner, () => new MsSqlBuilder());
+
+          sut.Entity.SetIdentity(1);
+          sut.Entity.Reset();
+          sut.MyValue = "TEST";
+
+          using (var command = new SqlCommand())
+          {
+             scripter.ScriptUpdate(command, 0, sut);
+
+             Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
+          }
+       }
+
         //[Test]
         //public void ScriptDeleteTest()
         //{
@@ -241,6 +265,37 @@ namespace DrivenDb.Tests.Language.MsSql
             }
 
             public event PropertyChangedEventHandler PropertyChanged;
+        }
+
+        [DbTable(Name = "MyTable")]
+        [DataContract]
+        private class MySpacedIndentityClass : DbEntity<MySpacedIndentityClass>, INotifyPropertyChanged
+        {
+           [DataMember]
+           private int m_MyIdentity;
+
+           [DataMember]
+           private string m_MyValue;
+
+           [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity ")] // note: space on the end is on purpose
+           public int MyIdentity
+           {
+              get { return m_MyIdentity; }
+              set { m_MyIdentity = value; }
+           }
+
+           [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyValue")]
+           public string MyValue
+           {
+              get { return m_MyValue; }
+              set
+              {
+                 m_MyValue = value;
+                 PropertyChanged(this, new PropertyChangedEventArgs("MyValue"));
+              }
+           }
+
+           public event PropertyChangedEventHandler PropertyChanged;
         }
 
         #endregion

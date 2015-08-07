@@ -130,7 +130,7 @@ namespace DrivenDb.Base
          return entity.Changes.Select(entity.GetProperty)
             .Concat(
                entity.PrimaryColumns
-                  .Select(p => entity.GetProperty(p.Name))
+                  .Select(p => entity.GetProperty(p.Name.Trim())) // todo: this trim here is a fix to a sql column have training space in it's name.  it's not optimal, but no other solution is presenting itself to me.
             );
       }
 

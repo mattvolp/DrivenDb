@@ -14,7 +14,7 @@ using Xunit;
 namespace DrivenDb.Tests.Language.Interfaces
 {
    public abstract class IDbAccessorTests
-   {
+   {      
       [Fact]
       public void ReadMultipleTypesTest()
       {
@@ -2390,7 +2390,7 @@ namespace DrivenDb.Tests.Language.Interfaces
             return _parameter;
          }
       }
-
+      
       #endregion --- NESTED --------------------------------------------------------------------------
    }
 }
