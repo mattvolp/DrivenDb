@@ -308,11 +308,11 @@ namespace DrivenDb
          {
             if (m_IsIdentity32.Value)
             {
-               m_Accessor.SetPropertyValue(m_Instance, m_IdentityColumn.Value.Name, (int) identity);
+               m_Accessor.SetPropertyValue(m_Instance, m_IdentityColumn.Key, (int) identity);
             }
             else
             {
-               m_Accessor.SetPropertyValue(m_Instance, m_IdentityColumn.Value.Name, identity);
+               m_Accessor.SetPropertyValue(m_Instance, m_IdentityColumn.Key, identity);
             }
          }
       }

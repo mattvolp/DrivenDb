@@ -13,6 +13,13 @@ namespace DrivenDb.Tests.Language
    public class DbEntityTests
    {
       [Fact]
+      public void ColumnsWithSpacesAtTheEndOfTheirNamesStillGetACompiledSetter()
+      {
+         var sut = new MySpacedIndentityClass();
+
+         Assert.DoesNotThrow(() => sut.Entity.SetIdentity(1));
+      }
+      [Fact]
       public void BeforeAfterSerialized_WorksProperly()
       {
          var before = new MySerializationClass()
@@ -553,8 +560,7 @@ namespace DrivenDb.Tests.Language
             }
          }
 
-         public event PropertyChangedEventHandler PropertyChanged;
-      }
+         public event PropertyChangedEventHandler PropertyChanged;      }
 
       [DbTable(Name = "MyNopkTable")]
       private class MyNopkTable : DbEntity<MyNopkTable>, INotifyPropertyChanged
@@ -622,6 +628,23 @@ namespace DrivenDb.Tests.Language
                m_MyNumber = 3;
             }
          }
+      }
+
+      [DbTable(Name = "MyTable")]
+      [DataContract]
+      private class MySpacedIndentityClass : DbEntity<MySpacedIndentityClass>, INotifyPropertyChanged
+      {
+         [DataMember]
+         private int m_MyNumber;
+
+         [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity ")] // note: space on the end is on purpose
+         public int MyIndentity
+         {
+            get { return m_MyNumber; }
+            set { m_MyNumber = value; }
+         }
+
+         public event PropertyChangedEventHandler PropertyChanged;
       }
 
       #endregion --- NESTED --------------------------------------------------------------------------

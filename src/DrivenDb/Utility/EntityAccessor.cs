@@ -79,7 +79,7 @@ namespace DrivenDb.Utility
 #if !PORTABLE
             throw new MissingFieldException(m_GenericType.Name, name);
 #else
-            throw new InvalidDataException(String.Format(@"Field {0} is missing", m_GenericType.Name));
+            throw new InvalidDataException(String.Format(@"Field '{0}' is missing for type '{1}'", name, m_GenericType.Name));
 #endif
          }
 
@@ -95,7 +95,7 @@ namespace DrivenDb.Utility
 #if !PORTABLE
             throw new MissingFieldException(m_GenericType.Name, name);
 #else
-            throw new InvalidDataException(String.Format(@"Field {0} is missing", m_GenericType.Name));
+            throw new InvalidDataException(String.Format(@"Field '{0}' is missing for type '{1}'", name, m_GenericType.Name));
 #endif
          }
 
@@ -111,7 +111,7 @@ namespace DrivenDb.Utility
 #if !PORTABLE
             throw new MissingFieldException(m_GenericType.Name, name);
 #else
-            throw new InvalidDataException(String.Format(@"Field {0} is missing", m_GenericType.Name));
+            throw new InvalidDataException(String.Format(@"Field '{0}' is missing for type '{1}'", name, m_GenericType.Name));
 #endif
          }
 
