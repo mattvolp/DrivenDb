@@ -158,11 +158,11 @@ namespace DrivenDb.Base
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          metadata.PrimaryColumns.ForEach(
-            k => builder.AddWhere(k.Name, count++)
+            k => builder.AddWhere(k.Name, count++) 
             );
 
          var parameters = entity.PrimaryColumns.Select(
-            p => entity.GetProperty(p.Name)
+            p => entity.GetProperty(p.Name.Trim()) // todo: this trim here is a fix to a sql column have training space in it's name.  it's not optimal, but no other solution is presenting itself to me.
             );
          return parameters;
       }

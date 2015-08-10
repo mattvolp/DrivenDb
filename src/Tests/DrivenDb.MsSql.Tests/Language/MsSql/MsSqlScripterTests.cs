@@ -10,6 +10,26 @@ namespace DrivenDb.Tests.Language.MsSql
     public class MsSqlScripterTests 
     {
        [Fact]
+       public void ColumnsWithTrailingSpacesInTheNameDeleteWithoutError()
+       {
+          var sut = new MySpacedIndentityClass();
+          var joiner = new MsSqlValueJoiner();
+          var db = new Db(AccessorExtension.Common, () => null);
+          var scripter = new MsSqlScripter(db, joiner, () => new MsSqlBuilder());
+
+          sut.Entity.SetIdentity(1);
+          sut.Entity.Reset();
+          sut.Entity.Delete();
+
+          using (var command = new SqlCommand())
+          {
+             scripter.ScriptDelete(command, 0, sut);
+
+             Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
+          }
+       }
+
+       [Fact]
        public void ColumnsWithTrailingSpacesInTheNameUpdateWithoutError()
        {
           var sut = new MySpacedIndentityClass();
@@ -284,7 +304,7 @@ namespace DrivenDb.Tests.Language.MsSql
               set { m_MyIdentity = value; }
            }
 
-           [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyValue")]
+           [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyValue")]
            public string MyValue
            {
               get { return m_MyValue; }
