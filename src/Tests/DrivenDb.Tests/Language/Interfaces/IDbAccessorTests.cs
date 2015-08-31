@@ -14,7 +14,68 @@ using Xunit;
 namespace DrivenDb.Tests.Language.Interfaces
 {
    public abstract class IDbAccessorTests
-   {      
+   {
+      [Fact]
+      public void DbScope_ReadsValuesEtcWithinTheGivenScope()
+      {
+         string key;
+
+         var accessor = CreateAccessor(out key);
+         var existing = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
+
+         Assert.Equal(3, existing.Count());
+
+         var inserts = new IDbEntity[]
+            {
+               new MyTable()
+                  {
+                     MyNumber = 4,
+                     MyString = "Four"
+                  },
+               new MyTable()
+                  {
+                     MyNumber = 5,
+                     MyString = "Five"
+                  },
+               new MyTable()
+                  {
+                     MyNumber = 6,
+                     MyString = "Six"
+                  }
+            };
+
+         using (var scope = accessor.CreateScope())
+         {
+            scope.WriteEntities(inserts);
+            
+            var added1 = scope.ReadEntities<MyTable>("SELECT * FROM MyTable");
+            var added2 = scope.ReadValues<long>("SELECT MyIdentity FROM MyTable");
+            var added3 = scope.ReadType<MyTable>("SELECT * FROM MyTable");
+            var added4 = scope.ReadAnonymous(
+               new {MyIdentity = 0L, MyString = "", MyNumber = 0L},
+               "SELECT * FROM MyTable");
+
+            Assert.Equal(6, added1.Count());
+            Assert.Equal(6, added2.Count());
+            Assert.Equal(6, added3.Count());
+            Assert.Equal(6, added4.Count());            
+         }
+
+         var removed1 = accessor.ReadEntities<MyTable>("SELECT * FROM MyTable");
+         var removed2 = accessor.ReadValues<long>("SELECT MyIdentity FROM MyTable");
+         var removed3 = accessor.ReadType<MyTable>("SELECT * FROM MyTable");
+         var removed4 = accessor.ReadAnonymous(
+            new { MyIdentity = 0L, MyString = "", MyNumber = 0L },
+            "SELECT * FROM MyTable");
+
+         Assert.Equal(3, removed1.Count());
+         Assert.Equal(3, removed2.Count());
+         Assert.Equal(3, removed3.Count());
+         Assert.Equal(3, removed4.Count());
+
+         DestroyAccessor(key);
+      }
+
       [Fact]
       public void ReadMultipleTypesTest()
       {

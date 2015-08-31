@@ -144,10 +144,23 @@ namespace DrivenDb.Base
 
       public IEnumerable<T> ReadValues<T>(string query, params object[] parameters)
       {
-         using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
+         using (var connection = m_Db.CreateConnection())         
          {
             connection.Open();
+
+            return ReadValues<T>(connection, null, query, parameters);            
+         }
+      }
+
+      public IEnumerable<T> ReadValues<T>(IDbConnection connection, IDbTransaction transaction, string query, params object[] parameters)
+      {         
+         using (var command = connection.CreateCommand())
+         {       
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -164,9 +177,22 @@ namespace DrivenDb.Base
       public T ReadValue<T>(string query, params object[] parameters)
       {
          using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
          {
             connection.Open();
+            
+            return ReadValue<T>(connection, null, query, parameters);            
+         }
+      }
+
+      public T ReadValue<T>(IDbConnection connection, IDbTransaction transaction, string query, params object[] parameters)
+      {
+         using (var command = connection.CreateCommand())
+         {            
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -183,9 +209,22 @@ namespace DrivenDb.Base
       public IEnumerable<T> ReadAnonymous<T>(T model, string query, params object[] parameters)
       {
          using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
          {
             connection.Open();
+
+            return ReadAnonymous(connection, null, model, query, parameters);            
+         }
+      }
+
+      public IEnumerable<T> ReadAnonymous<T>(IDbConnection connection, IDbTransaction transaction, T model, string query, params object[] parameters)
+      {         
+         using (var command = connection.CreateCommand())
+         {
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -203,9 +242,23 @@ namespace DrivenDb.Base
          where T : new()
       {
          using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
          {
             connection.Open();
+
+            return ReadType<T>(connection, null, query, parameters);            
+         }
+      }
+
+      public IEnumerable<T> ReadType<T>(IDbConnection connection, IDbTransaction transaction, string query, params object[] parameters)
+         where T : new()
+      {
+         using (var command = connection.CreateCommand())
+         {
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -339,10 +392,23 @@ namespace DrivenDb.Base
 
       public IEnumerable<T> ReadType<T>(Func<T> factory, string query, params object[] parameters)
       {
-         using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
+         using (var connection = m_Db.CreateConnection())         
          {
             connection.Open();
+
+            return ReadType(connection, null, factory, query, parameters);            
+         }
+      }
+
+      public IEnumerable<T> ReadType<T>(IDbConnection connection, IDbTransaction transaction, Func<T> factory, string query, params object[] parameters)
+      {         
+         using (var command = connection.CreateCommand())
+         {       
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -360,9 +426,23 @@ namespace DrivenDb.Base
          where T : IDbRecord, new()
       {
          using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
          {
             connection.Open();
+
+            return ReadEntity<T>(connection, null, query, parameters);
+         }
+      }
+
+      public T ReadEntity<T>(IDbConnection connection, IDbTransaction transaction, string query, params object[] parameters)
+         where T : IDbRecord, new()
+      {
+         using (var command = connection.CreateCommand())
+         {       
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);
@@ -380,9 +460,35 @@ namespace DrivenDb.Base
          where T : IDbRecord, new()
       {
          using (var connection = m_Db.CreateConnection())
-         using (var command = connection.CreateCommand())
+         //using (var command = connection.CreateCommand())
          {
             connection.Open();
+            return ReadEntities<T>(connection, null, query, parameters);
+            //command.CommandTimeout = CommandTimeout;
+
+            //m_Scripter.ScriptSelect(command, query, parameters);
+
+            //LogMessage(command.CommandText);
+
+            //using (var reader = command.ExecuteReader())
+            //{
+            //   return m_Mapper.MapEntities<T>(command.CommandText, reader);
+            //}
+         }
+      }
+
+      public IEnumerable<T> ReadEntities<T>(IDbConnection connection, IDbTransaction transaction, string query, params object[] parameters)
+         where T : IDbRecord, new()
+      {
+         //using (var connection = m_Db.CreateConnection())
+         using (var command = connection.CreateCommand())
+         {
+            //connection.Open();
+            if (transaction != null)
+            {
+               command.Transaction = transaction;
+            }
+
             command.CommandTimeout = CommandTimeout;
 
             m_Scripter.ScriptSelect(command, query, parameters);

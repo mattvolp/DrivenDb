@@ -17,6 +17,20 @@ namespace DrivenDb
 {
    public interface IDbScope : IDisposable
    {
+      IEnumerable<T> ReadValues<T>(string query, params object[] parameters);
+
+      T ReadValue<T>(string query, params object[] parameters);
+
+      IEnumerable<T> ReadAnonymous<T>(T model, string query, params object[] parameters);
+
+      IEnumerable<T> ReadType<T>(Func<T> factory, string query, params object[] parameters);
+
+      IEnumerable<T> ReadType<T>(string query, params object[] parameters)
+         where T : new();
+
+      IEnumerable<T> ReadEntities<T>(string query, params object[] parameters)
+         where T : IDbRecord, new();
+
       void WriteEntity<T>(T entity)
          where T : IDbEntity;
 
