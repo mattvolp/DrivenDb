@@ -261,6 +261,7 @@ namespace DrivenDb
          get { return m_State; }
       }
 
+      [Obsolete("Please get the schema information from the Table or TableOverride properties.")]
       string IDbRecord.Schema
       {
          get { return m_Table.Schema; }

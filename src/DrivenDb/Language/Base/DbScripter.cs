@@ -80,7 +80,7 @@ namespace DrivenDb.Base
          var count = 0;
          var builder = m_Builders();
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = (metadata.TableOverride ?? metadata.Table).Schema;
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          metadata.Columns.Values.ForEach(
@@ -113,8 +113,8 @@ namespace DrivenDb.Base
          }
 
          var count = 0;
-         
-         builder.Schema = metadata.Schema;
+
+         builder.Schema = (metadata.TableOverride ?? metadata.Table).Schema;
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          // ReSharper disable AccessToModifiedClosure
@@ -154,7 +154,7 @@ namespace DrivenDb.Base
 
          var count = 0;
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = (metadata.TableOverride ?? metadata.Table).Schema;
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          metadata.PrimaryColumns.ForEach(
@@ -181,7 +181,7 @@ namespace DrivenDb.Base
          var count = 0;
          var builder = m_Builders();
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = (metadata.TableOverride ?? metadata.Table).Schema;
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          metadata.Columns.Values.ForEach(c => builder.AddColumn(c.Name));
@@ -219,7 +219,7 @@ namespace DrivenDb.Base
          var count = 0;
          var metadata = entity;
 
-         builder.Schema = metadata.Schema;
+         builder.Schema = (metadata.TableOverride ?? metadata.Table).Schema;
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          entity.Changes.ForEach(c => builder.AddSetter(c, count++));

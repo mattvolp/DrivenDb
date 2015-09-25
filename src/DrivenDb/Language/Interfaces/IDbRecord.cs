@@ -35,6 +35,7 @@ namespace DrivenDb
          get;
       }
 
+      [Obsolete("Please get the schema information from the Table or TableOverride properties.")]
       string Schema
       {
          get;
