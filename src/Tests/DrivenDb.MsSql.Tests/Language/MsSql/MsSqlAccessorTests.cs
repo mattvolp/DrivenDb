@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Serialization;
 using Xunit;
 using Assert = Xunit.Assert;
 
@@ -13,6 +14,35 @@ namespace DrivenDb
 {
    public class MsSqlAccessorTests : IDbAccessorTests
    {
+      [Fact]
+      public void NullablePrimaryKeysCanUpdate()
+      {
+         var filename = "";
+         var accessor = CreateAccessor(out filename);
+
+         var one = new NullableKeyTest()
+            {
+               A = 1,
+               B = null,
+               Value = "one"
+            };
+
+         accessor.WriteEntity(one);
+
+         one.Value = "two";
+
+         accessor.WriteEntity(one);
+
+         var two = accessor.ReadEntities<NullableKeyTest>("SELECT * FROM [NullableKeyTest]")
+            .Single();
+
+         Assert.Equal(1, two.A);
+         Assert.Null(two.B);
+         Assert.Equal("two", two.Value);
+
+         DestroyAccessor(filename);
+      }
+
       [Fact]
       public void SchemaOverrideCanBeSwitchedAtRuntime()
       {
@@ -389,6 +419,12 @@ namespace DrivenDb
                   [Id] INT IDENTITY(1,1) NOT NULL,
                   [Text] VARCHAR(50)
                )
+
+               CREATE TABLE [dbo].[NullableKeyTest](
+                  [A] [int] NOT NULL,
+                  [B] [int] NULL,
+                  [Value] [varchar](50) NULL
+               ) ON [PRIMARY]
                ");
 
          return accessor;
@@ -441,6 +477,82 @@ namespace DrivenDb
          }
 
          public event PropertyChangedEventHandler PropertyChanged = delegate {};
+      }
+
+      [DataContract]
+      [DbTable(Schema = "dbo", Name = "NullableKeyTest")]
+      public partial class NullableKeyTest : DbEntity<NullableKeyTest>, INotifyPropertyChanged
+      {
+
+         [DataMember]
+         private int? _A;
+         [DataMember]
+         private int? _B;
+         [DataMember]
+         private string _Value;
+
+         public NullableKeyTest()
+         {
+         }
+
+         [DbColumn(Name = "A", IsPrimaryKey = true, IsDbGenerated = false)]
+         public int? A
+         {
+            get { return _A; }
+            set
+            {
+               BeforeAChanged(ref value);
+               _A = value;
+               AfterAChanged(value);
+               PropertyChanged(this, new PropertyChangedEventArgs("A"));
+            }
+         }
+
+         [DbColumn(Name = "B", IsPrimaryKey = true, IsDbGenerated = false)]
+         public int? B
+         {
+            get { return _B; }
+            set
+            {
+               BeforeBChanged(ref value);
+               _B = value;
+               AfterBChanged(value);
+               PropertyChanged(this, new PropertyChangedEventArgs("B"));
+            }
+         }
+
+         [DbColumn(Name = "Value", IsPrimaryKey = false, IsDbGenerated = false)]
+         public string Value
+         {
+            get { return _Value; }
+            set
+            {
+               
+               _Value = value;               
+               PropertyChanged(this, new PropertyChangedEventArgs("Value"));
+            }
+         }
+
+         public event PropertyChangedEventHandler PropertyChanged;
+
+         partial void BeforeAChanged(ref int? value);
+         partial void BeforeBChanged(ref int? value);
+
+         partial void AfterAChanged(int? value);
+         partial void AfterBChanged(int? value);
+
+         partial void OnSerialization();
+         partial void OnDeserialization();
+
+         protected override void BeforeSerialization()
+         {
+            OnSerialization();
+         }
+
+         protected override void AfterDeserialization()
+         {
+            OnDeserialization();
+         }
       }
    }
 }

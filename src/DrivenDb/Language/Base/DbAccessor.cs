@@ -15,6 +15,7 @@ using DrivenDb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 
@@ -1219,6 +1220,11 @@ namespace DrivenDb.Base
             disposables.Add(command);
 
             command.Transaction = transaction;
+
+            if (connection is SqlConnection)
+            {
+               command.CommandText = "SET ANSI_NULLS OFF" + Environment.NewLine;
+            }
 
             var array = entities.ToArray();
             var committed = false;
