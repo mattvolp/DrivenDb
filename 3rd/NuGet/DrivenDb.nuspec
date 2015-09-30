@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DrivenDb</id>
-		<version>1.41</version>
+		<version>1.42</version>
 		<authors>Anthony Leatherwood</authors>
 		<owners>aleatherwood</owners>
 		<licenseUrl>https://github.com/Fastlite/DrivenDb/blob/master/LICENSE</licenseUrl>

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using Xunit;
+using Assert = Xunit.Assert;
 
 namespace DrivenDb
 {

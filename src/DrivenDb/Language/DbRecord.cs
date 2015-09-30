@@ -69,9 +69,9 @@ namespace DrivenDb
             m_IsIdentity32 = m_Accessor.GetPropertyInfo(m_IdentityColumn.Key).PropertyType == typeof(int);
          }
 
-         m_CompareTo = EntityHelper.CompareTo<T>(m_PrimaryColumns.Select(p => p.Key)); // optional case sensitive?
-         m_Equals = EntityHelper.Equals<T>(m_PrimaryColumns.Select(p => p.Key)); // optional case sensitive?
-         m_Hasher = EntityHelper.GetHashCode<T>(m_PrimaryColumns.Select(p => p.Key));
+         m_CompareTo = EntityHelper.CompareTo<T>(m_PrimaryColumns.Select(p => p.Key).ToArray()); // optional case sensitive?
+         m_Equals = EntityHelper.Equals<T>(m_PrimaryColumns.Select(p => p.Key).ToArray()); // optional case sensitive?
+         m_Hasher = EntityHelper.GetHashCode<T>(m_PrimaryColumns.Select(p => p.Key).ToArray());
       }
 
       public event StateChangedEvent StateChanged;
