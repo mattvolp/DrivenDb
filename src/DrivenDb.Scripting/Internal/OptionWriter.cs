@@ -1,13 +1,45 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using DrivenDb.Data.Internal;
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal class OptionWriter      
+   public class OptionLine
    {
-      private static readonly Regex _args = new Regex(@"\$(\d)");
+      public OptionLine(string line, object[] args)
+      {
+         Line = line;
+         Args = args;
+      }
+
+      public readonly string Line;
+      public readonly object[] Args;
+   }
+
+   public class OptionLines 
+      : IEnumerable<OptionLine>
+   {
+      private readonly List<OptionLine> _lines = new List<OptionLine>();
+      
+      public void Add(string line, params object[] args)
+      {
+         _lines.Add(new OptionLine(line, args));
+      }
+      
+      public IEnumerator<OptionLine> GetEnumerator()
+      {
+         return _lines.GetEnumerator();
+      }
+
+      IEnumerator IEnumerable.GetEnumerator()
+      {
+         return GetEnumerator();
+      }
+   }
+
+   internal class OptionWriter      
+   {      
       private readonly ScriptingOptions _options;
       private readonly TextWriter _writer;  
 
@@ -16,41 +48,50 @@ namespace DrivenDb.Scripting.Internal
          _options = options;
          _writer = writer;         
       }
-
-      public void WriteText(string text, params object[] parameters)
+      
+      public OptionWriter WriteLines(OptionLines lines)
       {
-         var format = Reformat(text);
-         var formatted = String.Format(format, parameters);
+         //_writer.Write(
+         //   text.FromDollarToStringFormat()
+         //      .Format(parameters)
+         //   );
 
-         _writer.Write(formatted);
+         foreach (var scriptLine in lines)
+         {
+            WriteLine(scriptLine.Line, scriptLine.Args);
+         }
+
+         return this;
       }
 
-      public void WriteLine(string text, params object[] parameters)
+      public OptionWriter WriteText(string text, params object[] parameters)
       {
-         var format = Reformat(text);
-         var formatted = String.Format(format, parameters);
+         _writer.Write(
+            text.FromDollarToStringFormat()
+               .Format(parameters)
+            );
 
-         _writer.WriteLine(formatted);         
+         return this;
       }
 
-      public void WriteLine(string text, ScriptingOptions condition, params object[] parameters)
+      public OptionWriter WriteLine(string text, params object[] parameters)
+      {
+         _writer.WriteLine(
+            text.FromDollarToStringFormat()
+               .Format(parameters)
+            );
+
+         return this;
+      }
+
+      public OptionWriter WriteLine(string text, ScriptingOptions condition, params object[] parameters)
       {
          if ((_options & condition) == condition)
          {
-            var format = Reformat(text);
-            var formatted = String.Format(format, parameters);
-
-            _writer.WriteLine(formatted);
+            WriteLine(text, parameters);            
          }
-      }
-      
-      private static string Reformat(string input)
-      {
-         var escaped = input.Replace("{", @"\{").Replace("}", @"\}");
-         var format = _args.Replace(escaped, "{$1}");
-         var doubly = format.Replace(@"\{", "{{").Replace(@"\}", "}}");
 
-         return doubly;
-      }
+         return this;
+      }      
    }
 }

@@ -50,6 +50,7 @@
     <Compile Include="Internal\CsGenerator.cs" />
     <Compile Include="Internal\IEntityGenerator.cs" />
     <Compile Include="Internal\OptionWriter.cs" />
+    <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Todo\ColumnAlteration.cs" />
     <Compile Include="Todo\ColumnMappingCollection.cs" />

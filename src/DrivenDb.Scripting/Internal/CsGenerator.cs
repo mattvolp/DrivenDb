@@ -53,26 +53,32 @@ namespace DrivenDb.Scripting.Internal
        }
 
        protected void WriteContext(string contextName, IEnumerable<TableMap> tables)
-       {
+       {          
           if (_options.HasFlag(ScriptingOptions.ImplementLinqContext))
-          {
-             _writer.WriteLine("");
-             _writer.WriteLine("    public class $0 : DataContext", contextName);
-             _writer.WriteLine("    {");
-             _writer.WriteLine("        private static readonly MappingSource _mappingSource = new AttributeMappingSource();");
-             _writer.WriteLine("");
-             _writer.WriteLine("        public $0() : base(\"_\", _mappingSource)", contextName);
-             _writer.WriteLine("        {");
-             _writer.WriteLine("        }");             
-
-             foreach (var table in tables)
+          {            
+            _writer.WriteLines(new OptionLines()
              {
-                _writer.WriteLine("");
-                _writer.WriteLine("        public Table<$0> $0", table.Detail.Name);
-                _writer.WriteLine("        {");
-                _writer.WriteLine("            get { return this.GetTable<$0>(); }", table.Detail.Name);
-                _writer.WriteLine("        }");                
-             }
+                {""},
+                {"    public class $0 : DataContext", contextName},
+                {"    {"},
+                {"        private static readonly MappingSource _mappingSource = new AttributeMappingSource();"},
+                {""},
+                {"        public $0() : base(\"_\", _mappingSource)", contextName},
+                {"        {"},
+                {"        }"},
+             });
+
+            foreach (var table in tables)
+            {
+               _writer.WriteLines(new OptionLines()
+                  {
+                     {""},
+                     {"        public Table<$0> $0", table.Detail.Name},
+                     {"        {"},
+                     {"            get { return this.GetTable<$0>(); }", table.Detail.Name},
+                     {"        }"},
+                  });               
+            }
 
              _writer.WriteLine("    }");
           }
@@ -147,14 +153,17 @@ namespace DrivenDb.Scripting.Internal
           var typedParameters = String.Join(", ", primaries.Select(p => p.Detail.SqlType.ToCsString() + " @" + p.Detail.Name.ToLower()));
           var baseParameters = String.Join(", ", primaries.Select(p => "@" + p.Detail.Name.ToLower()));
 
-          _writer.WriteLine("");
-          _writer.WriteLine("    public class $0Key"        , table.Detail.Name);
-          _writer.WriteLine("        : Tuple<$0>"           , types);
-          _writer.WriteLine("    {");
-          _writer.WriteLine("        public $0Key($1)"      , table.Detail.Name, typedParameters);
-          _writer.WriteLine("            : base($0)"        , baseParameters);
-          _writer.WriteLine("        {");
-
+          _writer.WriteLines(new OptionLines()
+             {
+                {""},
+                {"    public class $0Key", table.Detail.Name},
+                {"        : Tuple<$0>", types},
+                {"    {"},
+                {"        public $0Key($1)", table.Detail.Name, typedParameters},
+                {"            : base($0)", baseParameters},
+                {"        {"},
+             });
+         
           foreach (var column in primaries)
           {
              _writer.WriteLine("            $0 = @$1;", column.Detail.Name, column.Detail.Name.ToLower());
@@ -283,17 +292,20 @@ namespace DrivenDb.Scripting.Internal
           var csType = column.HasCustomType
              ? column.CustomType
              : column.Detail.SqlType.ToCsString();
-          
-          _writer.WriteLine("");
-          _writer.WriteLine("        [Column]"                                                 , ScriptingOptions.ImplementLinqContext);
-          _writer.WriteLine("        public $0 $1"                                             , csType, column.Detail.Name);
-          _writer.WriteLine("        {");
-          _writer.WriteLine("            get { return _$0; }"                                  , column.Detail.Name);
-          _writer.WriteLine("            set");
-          _writer.WriteLine("            {");
-          _writer.WriteLine("                if (_$0 != value)"                                , ScriptingOptions.MinimizePropertyChanges, column.Detail.Name);
-          _writer.WriteLine("                {"                                                , ScriptingOptions.MinimizePropertyChanges);
 
+          _writer.WriteLines(new OptionLines()
+             {
+                {""},
+                {"        [Column]", ScriptingOptions.ImplementLinqContext},
+                {"        public $0 $1", csType, column.Detail.Name},
+                {"        {"},
+                {"            get { return _$0; }", column.Detail.Name},
+                {"            set"},
+                {"            {"},
+                {"                if (_$0 != value)", ScriptingOptions.MinimizePropertyChanges, column.Detail.Name},
+                {"                {", ScriptingOptions.MinimizePropertyChanges},
+             });
+         
           if (csType == "DateTime" || csType == "DateTime?")
           {
              _writer.WriteLine("                    if (!Equals(value, null))"                 , ScriptingOptions.UnspecifiedDateTimes);
@@ -320,15 +332,18 @@ namespace DrivenDb.Scripting.Internal
              _writer.WriteLine(""                                                              , ScriptingOptions.UnspecifiedDateTimes);
           }
 
-          _writer.WriteLine("                    On$0Changing(ref value);"                     , ScriptingOptions.ImplementPartialPropertyChanges, column.Detail.Name);
-          _writer.WriteLine("                    OnPropertyChanging();"                        , ScriptingOptions.ImplementNotifyPropertyChanging);
-          _writer.WriteLine("                    _$0 = value;"                                 , column.Detail.Name);
-          _writer.WriteLine("                    _entity.Change(\"$0\", value);"               , ScriptingOptions.ImplementStateTracking, column.Detail.Name);
-          _writer.WriteLine("                    OnPropertyChanged();"                         , ScriptingOptions.ImplementNotifyPropertyChanged);
-          _writer.WriteLine("                    On$0Changed();"                               , ScriptingOptions.ImplementPartialPropertyChanges, column.Detail.Name);
-          _writer.WriteLine("                }"                                                , ScriptingOptions.MinimizePropertyChanges, column.Detail.Name);
-          _writer.WriteLine("            }");
-          _writer.WriteLine("        }");
+          _writer.WriteLines(new OptionLines()
+             {
+                {"                    On$0Changing(ref value);"         , ScriptingOptions.ImplementPartialPropertyChanges, column.Detail.Name},
+                {"                    OnPropertyChanging();"            , ScriptingOptions.ImplementNotifyPropertyChanging},
+                {"                    _$0 = value;"                     , column.Detail.Name},
+                {"                    _entity.Change(\"$0\", value);"   , ScriptingOptions.ImplementStateTracking, column.Detail.Name},
+                {"                    OnPropertyChanged();"             , ScriptingOptions.ImplementNotifyPropertyChanged},
+                {"                    On$0Changed();"                   , ScriptingOptions.ImplementPartialPropertyChanges, column.Detail.Name},
+                {"                }"                                    , ScriptingOptions.MinimizePropertyChanges, column.Detail.Name},
+                {"            }"},
+                {"        }"},
+             });         
        }
 
        protected void WritePropertyChanging()
@@ -361,54 +376,56 @@ namespace DrivenDb.Scripting.Internal
              throw new Exception("Cannot implement validation check without state tracking enabled");
           }
 
-          _writer.WriteLine("");
-          _writer.WriteLine("        partial void HasExtendedRequirementsMet(IList<RequirementFailure> failures);");
-          _writer.WriteLine("");
-          _writer.WriteLine("        public IEnumerable<RequirementFailure> GetRequirementsFailures()");
-          _writer.WriteLine("        {");
-          _writer.WriteLine("            var failures = new List<RequirementFailure>();");
+/*
+ * state == current -> true
+ * state == deleted -> true
+ * state == updated -> if all non-nullable/non-generated string columns have a value then true
+ * state == new -> if all non-nullable/non-generated columns have a change recorded
+ */
+          _writer.WriteLine(@"
+        partial void HasExtendedRequirementsMet(IList<RequirementFailure> failures);
 
-          /*
-           * state == current -> true
-           * state == deleted -> true
-           * state == updated -> if all non-nullable/non-generated string columns have a value then true
-           * state == new -> if all non-nullable/non-generated columns have a change recorded
-           */
-          _writer.WriteLine("            if (_entity.State == EntityState.Current || _entity.State == EntityState.Deleted)");
-          _writer.WriteLine("            {");
-          _writer.WriteLine("                return failures;");
-          _writer.WriteLine("            }");
+        public IEnumerable<RequirementFailure> GetRequirementsFailures()
+        {
+            var failures = new List<RequirementFailure>();
 
-          _writer.WriteLine("            if (_entity.State == EntityState.Updated || _entity.State == EntityState.New)");
-          _writer.WriteLine("            {");
+
+            if (_entity.State == EntityState.Current || _entity.State == EntityState.Deleted)
+            {
+                return failures;
+            }
+
+            if (_entity.State == EntityState.Updated || _entity.State == EntityState.New)
+            {
+            ");
 
           foreach (var column in table.Columns.Where(c => !c.Detail.IsGenerated && !c.Detail.IsNullable && c.Detail.SqlType.ToCsString() == "string"))
           {
-             _writer.WriteLine("                if (_$0 == default(string))", column.Detail.Name);
-             _writer.WriteLine("                {");
-             _writer.WriteLine("                    failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));", column.Detail.Name);
-             _writer.WriteLine("                }");
+             _writer.WriteLine(@"
+                if (_$0 == default(string))
+                {
+                    failures.Add(new RequirementFailure(""$0"", ""Null value not allowed"", default(string)));
+                }", column.Detail.Name);
           }
 
-          _writer.WriteLine("            }");
-
-          _writer.WriteLine("            if (_entity.State == EntityState.New)");
-          _writer.WriteLine("            {");
+          _writer.WriteLine(@"            }
+            if (_entity.State == EntityState.New)
+            {");
 
           foreach (var column in table.Columns.Where(c => !c.Detail.IsGenerated && !c.Detail.IsNullable))
           {
-             _writer.WriteLine("                if (!_entity.Changes.Any(c => c.ColumnName == \"$0\"))", column.Detail.Name);
-             _writer.WriteLine("                {");
-             _writer.WriteLine("                    failures.Add(new RequirementFailure(\"$0\", \"Required value not set\", default(string)));", column.Detail.Name);
-             _writer.WriteLine("                }");
+             _writer.WriteLine(@"
+                if (!_entity.Changes.Any(c => c.ColumnName == ""$0""))
+                {
+                    failures.Add(new RequirementFailure(""$0"", ""Required value not set"", default(string)));
+                }", column.Detail.Name);
           }
 
-          _writer.WriteLine("            }");
+          _writer.WriteLine(@"            }
+            HasExtendedRequirementsMet(failures);
 
-          _writer.WriteLine("            HasExtendedRequirementsMet(failures);");
-          _writer.WriteLine("");
-          _writer.WriteLine("            return failures;");
-          _writer.WriteLine("        }");
+            return failures;
+        }");
        }
 
        protected void WriteClassClose()
