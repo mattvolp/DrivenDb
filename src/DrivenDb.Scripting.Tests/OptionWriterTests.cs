@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using DrivenDb.Data.Internal;
-using DrivenDb.VisualStudio.Generator.Internal;
+using DrivenDb.Scripting.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DrivenDb.VisualStudio.Generator.Tests
+namespace DrivenDb.Scripting.Tests
 {
    [TestClass]
    public class OptionWriterTests

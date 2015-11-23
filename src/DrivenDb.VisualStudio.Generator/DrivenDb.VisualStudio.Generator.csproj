@@ -11,6 +11,7 @@
     <AssemblyName>DrivenDb.VisualStudio.Generator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,18 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Internal\ColumnAlteration.cs" />
-    <Compile Include="Internal\ColumnMappingCollection.cs" />
-    <Compile Include="Internal\IEntityGenerator.cs" />
-    <Compile Include="Internal\OptionWriter.cs" />
-    <Compile Include="Internal\CsGenerator.cs" />
-    <Compile Include="Internal\ScriptingConfiguration.cs" />
-    <Compile Include="Internal\TableAlteration.cs" />
-    <Compile Include="Internal\TableMappingCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Documentation\DrivenDb - Generator Concept.pdf" />
     <None Include="DrivenDb.snk" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using DrivenDb.Data.Internal;
 
-namespace DrivenDb.VisualStudio.Generator.Internal
+namespace DrivenDb.Scripting.Internal
 {
    internal class OptionWriter      
    {

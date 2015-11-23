@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using DrivenDb.Data;
-using DrivenDb.MsSql;
 using DrivenDb.Data.Internal;
-using DrivenDb.VisualStudio.Generator.Internal;
+using DrivenDb.Data.MsSql;
+using DrivenDb.Scripting.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DrivenDb.VisualStudio.Generator.Tests
+namespace DrivenDb.Scripting.Tests
 {
    [TestClass]
    public class CsScriptWriterPropertyTests
@@ -143,7 +143,7 @@ namespace DrivenDb.VisualStudio.Generator.Tests
             _writer = writer;
          }
 
-         public new string WriteProperty(ColumnDetail details)
+         public string WriteProperty(ColumnDetail details)
          {
             var mapping = new ColumnMap(details, null);
 

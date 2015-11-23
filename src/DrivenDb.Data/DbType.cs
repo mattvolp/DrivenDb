@@ -23,6 +23,7 @@ namespace DrivenDb.Data
          _isDateOnly = false;
       }
 
+      // TODO: needed?
       public override bool Equals(object other)
       {
          var dbType = other as DbType;
@@ -35,11 +36,13 @@ namespace DrivenDb.Data
          return Equals(_sqlType, dbType._sqlType);         
       }
 
+      // TODO: needed?
       public override int GetHashCode()
       {
          return _sqlType.GetHashCode();
       }
 
+      // TODO: needed?
       public override string ToString()
       {
          return _sqlType;
@@ -117,11 +120,11 @@ namespace DrivenDb.Data
       protected static string ScriptCsDateTimeParse(ScriptingOptions options, bool isDateOnly, string value)
       {
          var parsed = isDateOnly && options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns)
-                  ? String.Format("DateTime.Parse({0}).Date", value)
-                  : String.Format("DateTime.Parse({0})", value);
+            ? $"DateTime.Parse({value}).Date"
+            : $"DateTime.Parse({value})";
 
          value = options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
-            ? String.Format("new DateTime({0}.Ticks, DateTimeKind.Unspecified)", parsed)
+            ? $"new DateTime({parsed}.Ticks, DateTimeKind.Unspecified)"
             : parsed;
 
          return value;

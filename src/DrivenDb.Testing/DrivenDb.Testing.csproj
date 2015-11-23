@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,9 +85,9 @@
       <Project>{8F28F1FC-B2D8-481A-B299-ED5F4A740662}</Project>
       <Name>DrivenDb.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DrivenDb.VisualStudio.Generator\DrivenDb.VisualStudio.Generator.csproj">
-      <Project>{9caf8261-acef-4150-be5e-b53bdb161add}</Project>
-      <Name>DrivenDb.VisualStudio.Generator</Name>
+    <ProjectReference Include="..\DrivenDb.Scripting\DrivenDb.Scripting.csproj">
+      <Project>{c57244d6-26f2-4a73-806c-1cdcaac93ccf}</Project>
+      <Name>DrivenDb.Scripting</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

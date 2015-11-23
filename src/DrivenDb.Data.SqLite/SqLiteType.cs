@@ -1,8 +1,7 @@
 ﻿using System;
-using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 
-namespace DrivenDb.SqLite
+namespace DrivenDb.Data.SqLite
 {
     internal class SqLiteType
        : DbType

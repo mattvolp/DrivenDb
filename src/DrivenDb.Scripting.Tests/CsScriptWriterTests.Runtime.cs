@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using DrivenDb.Core;
 using DrivenDb.Data.Internal;
-using DrivenDb.MsSql;
+using DrivenDb.Data.MsSql;
 using DrivenDb.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DrivenDb.VisualStudio.Generator.Tests
+namespace DrivenDb.Scripting.Tests
 {
    [TestClass]
    public class CsScriptWriterRuntimeTests

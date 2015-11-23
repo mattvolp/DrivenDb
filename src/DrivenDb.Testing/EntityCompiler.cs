@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
-using DrivenDb.VisualStudio.Generator.Internal;
+using DrivenDb.Scripting.Internal;
 using Microsoft.CSharp;
 
 namespace DrivenDb.Testing
@@ -42,7 +42,7 @@ namespace DrivenDb.Testing
 
                foreach (CompilerError error in results.Errors)
                {
-                  builder.AppendLine(String.Format("Error ({0}): {1}", error.ErrorNumber, error.ErrorText));
+                  builder.AppendLine($"Error ({error.ErrorNumber}): {error.ErrorText}");
                }
 
                throw new InvalidOperationException(builder.ToString());

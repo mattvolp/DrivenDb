@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DrivenDb.Testing")]
+[assembly: AssemblyTitle("DrivenDb.Scripting")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DrivenDb.Testing")]
+[assembly: AssemblyProduct("DrivenDb.Scripting")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0d6ec40c-f768-45db-b5ea-5b8963118746")]
+[assembly: Guid("c57244d6-26f2-4a73-806c-1cdcaac93ccf")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: InternalsVisibleTo(@"DrivenDb.Data.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f5301bd91dc4e601ae29673613785dd15da0f7081d3e398964001a19bc88c3cf20ec691d66d2e35ec09f6dee18022cea8f69185f934490890a92715bd30df80ec4d56c94f707f239f06f3f468456d6c8619f18b188b46a94f0820cb9c1cabf6e7674b158000718119208097e2adea98f1f51a22e0d760ac1780c45cb8b9bd68e")]
+[assembly: InternalsVisibleTo(@"DrivenDb.Testing, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f5301bd91dc4e601ae29673613785dd15da0f7081d3e398964001a19bc88c3cf20ec691d66d2e35ec09f6dee18022cea8f69185f934490890a92715bd30df80ec4d56c94f707f239f06f3f468456d6c8619f18b188b46a94f0820cb9c1cabf6e7674b158000718119208097e2adea98f1f51a22e0d760ac1780c45cb8b9bd68e")]
 [assembly: InternalsVisibleTo(@"DrivenDb.Scripting.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100f5301bd91dc4e601ae29673613785dd15da0f7081d3e398964001a19bc88c3cf20ec691d66d2e35ec09f6dee18022cea8f69185f934490890a92715bd30df80ec4d56c94f707f239f06f3f468456d6c8619f18b188b46a94f0820cb9c1cabf6e7674b158000718119208097e2adea98f1f51a22e0d760ac1780c45cb8b9bd68e")]

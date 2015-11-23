@@ -36,11 +36,12 @@ namespace DrivenDb.Testing.Internal.SqLite
 
          CreateTables(tables);
 
-         var entities = items
-            .Select(p => p.Entity)
-            .ToArray();
+         // TODO:
+         //var entities = items
+         //   .Select(p => p.Entity)
+         //   .ToArray();
 
-         _writer.Write(entities);
+         //_writer.Write(entities);
       }
 
       private void CreateTables(IEnumerable<TableDef> tables)

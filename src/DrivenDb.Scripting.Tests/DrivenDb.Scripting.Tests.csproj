@@ -6,8 +6,8 @@
     <ProjectGuid>{F07C5FD3-3FBD-49A8-AF62-31D00404E2AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DrivenDb.VisualStudio.Generator.Tests</RootNamespace>
-    <AssemblyName>DrivenDb.VisualStudio.Generator.Tests</AssemblyName>
+    <RootNamespace>DrivenDb.Scripting.Tests</RootNamespace>
+    <AssemblyName>DrivenDb.Scripting.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -75,13 +76,13 @@
       <Project>{8f28f1fc-b2d8-481a-b299-ed5f4a740662}</Project>
       <Name>DrivenDb.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DrivenDb.Scripting\DrivenDb.Scripting.csproj">
+      <Project>{c57244d6-26f2-4a73-806c-1cdcaac93ccf}</Project>
+      <Name>DrivenDb.Scripting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DrivenDb.Testing\DrivenDb.Testing.csproj">
       <Project>{9500ac38-4de2-47eb-88bd-5299c5c6a3a8}</Project>
       <Name>DrivenDb.Testing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DrivenDb.VisualStudio.Generator\DrivenDb.VisualStudio.Generator.csproj">
-      <Project>{9caf8261-acef-4150-be5e-b53bdb161add}</Project>
-      <Name>DrivenDb.VisualStudio.Generator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

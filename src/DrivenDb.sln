@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8566532F-2A35-44D8-802F-8ADE730CFEF0}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,17 +12,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{856653
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Core", "DrivenDb.Core\DrivenDb.Core.csproj", "{849535D8-D0E4-4673-B446-617EBF75C814}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.MySql", "DrivenDb.MySql\DrivenDb.MySql.csproj", "{0574F31C-3904-42C1-9132-29872A9B0AA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Data.MySql", "DrivenDb.Data.MySql\DrivenDb.Data.MySql.csproj", "{0574F31C-3904-42C1-9132-29872A9B0AA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.SqLite", "DrivenDb.SqLite\DrivenDb.SqLite.csproj", "{273CDDF8-371C-4065-93A7-016171769E91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Data.SqLite", "DrivenDb.Data.SqLite\DrivenDb.Data.SqLite.csproj", "{273CDDF8-371C-4065-93A7-016171769E91}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{11F71127-F94D-4C28-9CA9-E728C65B5DC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Oracle", "DrivenDb.Oracle\DrivenDb.Oracle.csproj", "{F981BB63-FA0D-4B9F-950B-B1A249A24887}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Data.Oracle", "DrivenDb.Data.Oracle\DrivenDb.Data.Oracle.csproj", "{F981BB63-FA0D-4B9F-950B-B1A249A24887}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.VisualStudio.Generator", "DrivenDb.VisualStudio.Generator\DrivenDb.VisualStudio.Generator.csproj", "{9CAF8261-ACEF-4150-BE5E-B53BDB161ADD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.VisualStudio.Generator.Tests", "DrivenDb.VisualStudio.Generator.Tests\DrivenDb.VisualStudio.Generator.Tests.csproj", "{F07C5FD3-3FBD-49A8-AF62-31D00404E2AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Scripting.Tests", "DrivenDb.Scripting.Tests\DrivenDb.Scripting.Tests.csproj", "{F07C5FD3-3FBD-49A8-AF62-31D00404E2AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Core.Tests", "DrivenDb.Core.Tests\DrivenDb.Core.Tests.csproj", "{BFC38B89-3A38-4736-ABD3-F81A30CCB017}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Testing", "DrivenDb.Testing\DrivenDb.Testing.csproj", "{9500AC38-4DE2-47EB-88BD-5299C5C6A3A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Data.Tests", "DrivenDb.Data.Tests\DrivenDb.Data.Tests.csproj", "{88A3F907-E3B3-481C-84F4-CA08D510018F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Scripting", "DrivenDb.Scripting\DrivenDb.Scripting.csproj", "{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,6 +124,18 @@ Global
 		{88A3F907-E3B3-481C-84F4-CA08D510018F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{88A3F907-E3B3-481C-84F4-CA08D510018F}.Release|x64.ActiveCfg = Release|Any CPU
 		{88A3F907-E3B3-481C-84F4-CA08D510018F}.Release|x86.ActiveCfg = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|x64.Build.0 = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Debug|x86.Build.0 = Debug|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x64.ActiveCfg = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x64.Build.0 = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x86.ActiveCfg = Release|Any CPU
+		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DrivenDb.Data;
 
-namespace DrivenDb.VisualStudio.Generator.Internal
+namespace DrivenDb.Scripting.Internal
 {
    internal interface IEntityGenerator
    {

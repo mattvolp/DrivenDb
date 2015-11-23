@@ -5,7 +5,7 @@ using System.Linq;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 
-namespace DrivenDb.VisualStudio.Generator.Internal
+namespace DrivenDb.Scripting.Internal
 {
     internal class CsGenerator : IEntityGenerator
     {              
