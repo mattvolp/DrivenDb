@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal static class StringExtensions
+   internal static class Extensions
    {      
       private static readonly Regex ArgsEx = new Regex(@"\$(\d)");
 
@@ -26,6 +27,11 @@ namespace DrivenDb.Scripting.Internal
       public static string Format(this string format, params object[] args)
       {
          return String.Format(format, args);
+      }
+
+      public static string Join<T>(this IEnumerable<T> items, string delimiter)
+      {
+         return string.Join(delimiter, items);
       }
    }
 }
