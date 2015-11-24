@@ -21,7 +21,9 @@ namespace DrivenDb.Scripting.Internal
       public void Write(string @namespace, string contextName, IEnumerable<TableMap> tables)
       {
          WriteNamespaceOpen(@namespace);
-         WriteContext(contextName, tables);
+
+         if (_options.HasFlag(ScriptingOptions.ImplementLinqContext))
+            WriteContext(contextName, tables);
 
          foreach (var table in tables)
          {
@@ -31,345 +33,321 @@ namespace DrivenDb.Scripting.Internal
          WriteNamespaceClose();
       }
 
-      protected void WriteNamespaceOpen(string @namespace)
+      private void WriteNamespaceOpen(string @namespace)
       {
          _writer.WriteLines(new OptionLines()
             {
-               {"                                           "},
-               {"namespace $0                               "},
-               {"{                                          "},
-               {"   using DrivenDb.Core;                    "},
-               {"   using System;                           "},
-               {"   using System.Linq;                      "},
-               {"   using System.Collections.Generic;       "},
-               {"   using System.Runtime.CompilerServices;  "},
-               {"   using System.Data.Linq;                 ", ScriptingOptions.ImplementLinqContext},
-               {"   using System.Data.Linq.Mapping;         ", ScriptingOptions.ImplementLinqContext},
-               {"   using System.Runtime.Serialization;     ", ScriptingOptions.Serializable},
-               {"   using System.ComponentModel;            ", ScriptingOptions.ImplementNotifyPropertyChanged, ScriptingOptions.ImplementNotifyPropertyChanging},
+               {"                                            "},
+               {"namespace $0                                "},
+               {"{                                           "},
+               {"    using DrivenDb.Core;                    "},
+               {"    using System;                           "},
+               {"    using System.Linq;                      "},
+               {"    using System.Collections.Generic;       "},
+               {"    using System.Runtime.CompilerServices;  "},
+               {"    using System.Data.Linq;                 ", ScriptingOptions.ImplementLinqContext},
+               {"    using System.Data.Linq.Mapping;         ", ScriptingOptions.ImplementLinqContext},
+               {"    using System.Runtime.Serialization;     ", ScriptingOptions.Serializable},
+               {"    using System.ComponentModel;            ", ScriptingOptions.ImplementNotifyPropertyChanged, ScriptingOptions.ImplementNotifyPropertyChanging},
             }, @namespace);
       }
 
-      protected void WriteContext(string contextName, IEnumerable<TableMap> tables)
+      private void WriteContext(string contextName, IEnumerable<TableMap> tables)
       {
-         if (_options.HasFlag(ScriptingOptions.ImplementLinqContext))
-            _writer
-               .WriteLines(new OptionLines()
-                  {
-                     {"                                                                                              "},
-                     {"    public class $0 : DataContext                                                             "},
-                     {"    {                                                                                         "},
-                     {"        private static readonly MappingSource _mappingSource = new AttributeMappingSource();  "},
-                     {"                                                                                              "},
-                     {"        public $0() : base(\"_\", _mappingSource)                                             "},
-                     {"        {                                                                                     "},
-                     {"        }                                                                                     "},
-                  }, contextName)
-               .WriteTemplate(tables, new OptionLines()
-                  {
-                     {"                                                                                              "},
-                     {"        public Table<$0> $0                                                                   "},
-                     {"        {                                                                                     "},
-                     {"            get { return this.GetTable<$0>(); }                                               "},
-                     {"        }                                                                                     "},
-                  }, t => new object[] {t.Detail.Name})
+         _writer
+            .WriteLines(new OptionLines()
+               {
+                  {"                                                                                              "},
+                  {"    public class $0 : DataContext                                                             "},
+                  {"    {                                                                                         "},
+                  {"        private static readonly MappingSource _mappingSource = new AttributeMappingSource();  "},
+                  {"                                                                                              "},
+                  {"        public $0() : base(\"_\", _mappingSource)                                             "},
+                  {"        {                                                                                     "},
+                  {"        }                                                                                     "},
+               }, contextName)
 
-               .WriteLines(new OptionLines()
-                  {
-                     {"    }                                                                                         "},
-                  });
+            .WriteTemplate(tables, new OptionLines()
+               {
+                  {"                                                                                              "},
+                  {"        public Table<$0> $0                                                                   "},
+                  {"        {                                                                                     "},
+                  {"            get { return this.GetTable<$0>(); }                                               "},
+                  {"        }                                                                                     "},
+               }, t => new object[] {t.Detail.Name})
+
+            .WriteLines(new OptionLines()
+               {
+                  {"    }                                                                                         "},
+               });
       }
 
-      protected void ScriptEntity(TableMap table)
+      private void ScriptEntity(TableMap table)
       {
-         if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))
-         {
+         if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))         
             WriteKeyClass(table);
-         }
-
+         
          WriteClassOpen(table);
          WriteConstructor(table);
-
-         foreach (var column in table.Columns)
-         {
-            WriteField(column);
-         }
-
-         foreach (var column in table.Columns)
-         {
-            WritePartial(column);
-         }
-
+         WriteFields(table.Columns);
+         WritePartials(table.Columns);
+         
          if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))
-         {
             WriteKeyProperty(table);
-         }
 
-         foreach (var column in table.Columns)
-         {
-            WriteProperty(column);
-         }
-
+         WriteProperties(table.Columns);
+         
          if (_options.HasFlag(ScriptingOptions.ImplementNotifyPropertyChanging))
-         {
             WritePropertyChanging();
-         }
-
+         
          if (_options.HasFlag(ScriptingOptions.ImplementNotifyPropertyChanged))
-         {
             WritePropertyChanged();
-         }
-
+         
          if (_options.HasFlag(ScriptingOptions.ImplementValidationCheck))
-         {
             WriteValidationCheck(table);
-         }
 
          WriteClassClose();
       }
-
-      // TODO: consider testing mappings to custom types for key classes
-      private void WriteKeyClass(TableMap table)
+      
+      protected void WriteKeyClass(TableMap table)
       {
-         var primaries = table.Columns.Where(c => c.Detail.IsPrimary)
-            .OrderBy(c => c.Detail.ColumnPosition)
-            .ToList();
-
-         if (primaries.Count > 8)
+         var primaries = table.GetPrimaryKeyColumns()
+            .ToArray();
+            
+         if (primaries.Count() > 8)
          {
             throw new Exception("Unable to script key class for tables with a primary key of more than 8 columns");
          }
 
-         if (primaries.Count < 1)
+         if (primaries.Any())
          {
-            return;
+            _writer
+               .WriteLines(new OptionLines()
+                  {
+                     {"                                                          "},
+                     {"    public class $0Key                                    "},
+                     {"        : Tuple<$1>                                       "},
+                     {"    {                                                     "},
+                     {"        public $0Key($2)                                  "},
+                     {"            : base($3)                                    "},
+                     {"        {                                                 "},
+                  }
+                  , table.Detail.Name
+                  , primaries.ScriptAsDelimitedCsTypes()
+                  , primaries.ScriptAsDelimitedCsTypedParameterNames()
+                  , primaries.ScriptAsDelimitedParameterNames())
+
+               .WriteTemplate(primaries, new OptionLines()
+                  {
+                     {"            $0 = $1;                                     "},
+                  }, p => new object[]
+                     {
+                        p.Detail.Name, p.ScriptAsParameterName()
+                     })
+
+               .WriteLines(new OptionLines()
+                  {
+                     {"        }                                                 "},
+                     {"                                                          "},
+                  })
+
+               .WriteTemplate(primaries, new OptionLines()
+                  {
+                     {"        public readonly $0 $1;                            "},
+                  }, p => new object[]
+                     {
+                        p.ScriptAsCsType(), p.Detail.Name
+                     })
+
+               .WriteLines(new OptionLines()
+                  {
+                     {"   }                                                      "},
+                  });
          }
-
-         var types = String.Join(", ", primaries.Select(p => p.Detail.SqlType.ToCsString()));
-         var typedParameters = String.Join(", ", primaries.Select(p => p.Detail.SqlType.ToCsString() + " @" + p.Detail.Name.ToLower()));
-         var baseParameters = String.Join(", ", primaries.Select(p => "@" + p.Detail.Name.ToLower()));
-         
-         _writer
-            .WriteLines(new OptionLines()
-               {
-                  {"                                        "},
-                  {"    public class $0Key                  "},
-                  {"        : Tuple<$1>                     "},
-                  {"    {                                   "},
-                  {"        public $0Key($2)                "},
-                  {"            : base($3)                  "},
-                  {"        {                               "},
-               }, table.Detail.Name, types, typedParameters, baseParameters)
-
-            .WriteTemplate(primaries, new OptionLines()
-               {
-                  {"            $0 = @$1;                   "},
-               }, p => new object[] {p.Detail.Name, p.Detail.Name.ToLower()})
-
-            .WriteLines(new OptionLines()
-               {
-                  {"        }                               "},
-                  {"                                        "},
-               })
-
-            .WriteTemplate(primaries, new OptionLines()
-               {
-                  {"        public readonly $0 $1;          "},
-               }, p => new object[] {p.Detail.SqlType.ToCsString(), p.Detail.Name})
-
-            .WriteLines(new OptionLines()
-               {
-                  {"   }                                    "},
-               });
       }
-
+      
       protected void WriteClassOpen(TableMap table)
       {
-         var interfaces = new List<string>();
-
-         if (_options.HasFlag(ScriptingOptions.ImplementNotifyPropertyChanging))
-         {
-            interfaces.Add("INotifyPropertyChanging");
-         }
-
-         if (_options.HasFlag(ScriptingOptions.ImplementNotifyPropertyChanged))
-         {
-            interfaces.Add("INotifyPropertyChanged");
-         }
-
-         if (_options.HasFlag(ScriptingOptions.ImplementStateTracking))
-         {
-            interfaces.Add("IDbEntityProvider");
-         }
-
-         var inheritance = interfaces.Count > 0
-            ? $" : {string.Join(", ", interfaces)}"
-            : "";
-
          _writer.WriteLines(new OptionLines()
             {
-               {"                                                             "},
-               {"    [DataContract]                                           ", ScriptingOptions.Serializable},
-               {"    [Table(Name = \"$0.$1\")]                                ", ScriptingOptions.ImplementLinqContext},
-               {"    [DbTable(Schema=\"$0\", Name=\"$1\")]                    "},
-               {"    public partial class $1 $2                               "},
-               {"    {                                                        "},
-               {"        [DataMember]                                         ", ScriptingOptions.Serializable | ScriptingOptions.ImplementStateTracking},
-               {"        private readonly DbEntity _entity = new DbEntity();  ", ScriptingOptions.ImplementStateTracking},
-            }, table.Detail.Schema, table.Detail.Name, inheritance);
+               {"                                                                   "},
+               {"    [DataContract]                                                 ", ScriptingOptions.Serializable},
+               {"    [Table(Name = \"$0.$1\")]                                      ", ScriptingOptions.ImplementLinqContext},
+               {"    [DbTable(Schema=\"$0\", Name=\"$1\")]                          "},
+               {"    public partial class $1 $2                                     "},
+               {"    {                                                              "},
+               {"        [DataMember]                                               ", ScriptingOptions.Serializable | ScriptingOptions.ImplementStateTracking},
+               {"        private readonly DbEntity _entity = new DbEntity();        ", ScriptingOptions.ImplementStateTracking},
+            }
+            , table.Detail.Schema
+            , table.Detail.Name
+            , _options.ScriptAsDelimitedImpliedInterfaces()
+            );
       }
 
       protected void WriteConstructor(TableMap table)
       {
-         if (_options.HasFlag(ScriptingOptions.ImplementColumnDefaults) && table.Columns.Any(c => c.Detail.HasDefault))
-         {
-            _writer.WriteLines(new OptionLines()
+         var defaults = table.GetColumnsWithDefaults()
+            .ToArray();
+
+         _writer
+            .WriteLines(new OptionLines()
                {
-                  {"                                    "},
-                  {"        public $0()                 "},
-                  {"        {                           "},
-               }, table.Detail.Name);
+                  {"                                                                "},
+                  {"        public $0()                                             "},
+                  {"        {                                                       "},
+               }, table.Detail.Name)
 
-            foreach (var column in table.Columns.Where(c => c.Detail.HasDefault))
-            {
-               var defaultValue = column.Detail.SqlType.ToCsDefault(_options, column.Detail);
-               var csType = column.HasCustomType
-                  ? column.CustomType
-                  : column.Detail.SqlType.ToCsString();
-
-               _writer.WriteLines(new OptionLines()
+            .WriteTemplate(defaults, new OptionLines()
+               {
+                  {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
+                  {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
+               }, d => new object[]
                   {
-                     {"            _$0 = ($1) $2;              "},
-                     {"            _entity.Change($0, _$0);    ", ScriptingOptions.ImplementStateTracking},
-                  }, column.Detail.Name, csType, defaultValue);
-            }
+                     d.Detail.Name, d.ScriptAsCsType(), d.ScriptAsDefaultValue(_options)
+                  })
 
-            _writer.WriteLine("        }");
+            .WriteLines(new OptionLines()
+               {
+                  {"        }                                                       "},
+                  {"                                                                ", ScriptingOptions.ImplementStateTracking},
+                  {"        public IDbEntity Entity                                 ", ScriptingOptions.ImplementStateTracking},
+                  {"        {                                                       ", ScriptingOptions.ImplementStateTracking},
+                  {"            get { return _entity; }                             ", ScriptingOptions.ImplementStateTracking},
+                  {"        }                                                       ", ScriptingOptions.ImplementStateTracking},
+               });
+      }
+
+      protected void WriteFields(IEnumerable<ColumnMap> columns)
+      {
+         foreach (var column in columns)
+         {
+            WriteField(column);
          }
-
-         _writer.WriteLines(new OptionLines()
-            {
-               {"                                     ", ScriptingOptions.ImplementStateTracking},
-               {"        public IDbEntity Entity      ", ScriptingOptions.ImplementStateTracking},
-               {"        {                            ", ScriptingOptions.ImplementStateTracking},
-               {"            get { return _entity; }  ", ScriptingOptions.ImplementStateTracking},
-               {"        }                            ", ScriptingOptions.ImplementStateTracking},
-            });
       }
 
       protected void WriteField(ColumnMap column)
-      {
-         var csType = column.HasCustomType
-            ? column.CustomType
-            : column.Detail.SqlType.ToCsString();
-
-         var isPrimary = column.Detail.IsPrimary ? "true" : "false";
-         var isGenerated = column.Detail.IsGenerated ? "true" : "false";
-
+      {                  
          _writer.WriteLines(new OptionLines()
             {
                {"                                                                "},
                {"        [DataMember]                                            ", ScriptingOptions.Serializable},
                {"        [DbColumn(Name=\"$0\", IsPrimary=$1, IsGenerated=$2)]   "},
                {"        private $3 _$0;                                         "},
-            }, column.Detail.Name, isPrimary, isGenerated, csType);
+            }
+         , column.Detail.Name
+         , column.Detail.IsPrimary.ScriptAsCsBoolean()
+         , column.Detail.IsGenerated.ScriptAsCsBoolean()
+         , column.ScriptAsCsType());
+      }
+
+      private void WritePartials(IEnumerable<ColumnMap> columns)
+      {
+         foreach (var column in columns)
+         {
+            WritePartial(column);
+         }
       }
 
       protected void WritePartial(ColumnMap column)
       {
-         var csType = column.Detail.SqlType.ToCsString();
-
          _writer.WriteLines(new OptionLines()
             {
-               {"                                                    ", ScriptingOptions.ImplementPartialPropertyChanges},
-               {"        partial void On$0Changing(ref $1 value);    ", ScriptingOptions.ImplementPartialPropertyChanges},
-               {"        partial void On$0Changed();                 ", ScriptingOptions.ImplementPartialPropertyChanges},
-            }, column.Detail.Name, csType);
+               {"                                                                ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"        partial void On$0Changing(ref $1 value);                ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"        partial void On$0Changed();                             ", ScriptingOptions.ImplementPartialPropertyChanges},
+            }
+            , column.Detail.Name
+            , column.ScriptAsCsType());
       }
 
-      // TODO: review for custom mappings consideration
-      private void WriteKeyProperty(TableMap table)
-      {
-         var primaries = table.Columns.Where(c => c.Detail.IsPrimary)
-            .OrderBy(c => c.Detail.ColumnPosition)
-            .ToList();
+      protected void WriteKeyProperty(TableMap table)
+      {         
+         var primaries = table.GetPrimaryKeyColumns()
+            .ToArray();
 
-         if (primaries.Count < 1)
+         if (primaries.Length > 0)
          {
-            return;
+            _writer.WriteLines(new OptionLines()
+               {
+                  {"                                                             "},
+                  {"        public $0Key PrimaryKey                              "},
+                  {"        {                                                    "},
+                  {"            get { return new $0Key($1); }                    "},
+                  {"        }                                                    "},
+               }
+               , table.Detail.Name
+               , primaries.ScriptAsDelimitedPrivateMemberNames()
+               );
          }
+      }
 
-         var fields = primaries
-            .Select(p => "_" + p.Detail.Name)
-            .Join(", ");
-
-         _writer.WriteLines(new OptionLines()
-            {
-               {"                                              "},
-               {"        public $0Key PrimaryKey               "},
-               {"        {                                     "},
-               {"            get { return new $0Key($1); }     "},
-               {"        }                                     "},
-            }, table.Detail.Name, fields);
+      private void WriteProperties(IEnumerable<ColumnMap> columns)
+      {
+         foreach (var column in columns)
+         {
+            WriteProperty(column);
+         }
       }
 
       protected void WriteProperty(ColumnMap column)
       {
-         var csType = column.HasCustomType
-            ? column.CustomType
-            : column.Detail.SqlType.ToCsString();
+         var csType = column.ScriptAsCsType();
 
-         _writer
-            .WriteLines(new OptionLines()
+         _writer.WriteLines(new OptionLines()
+            {
+               {""},
+               {"        [Column]                                                ", ScriptingOptions.ImplementLinqContext},
+               {"        public $0 $1                                            "},
+               {"        {                                                       "},
+               {"            get { return _$1; }                                 "},
+               {"            set                                                 "},
+               {"            {                                                   "},
+               {"                if (_$1 != value)                               ", ScriptingOptions.MinimizePropertyChanges},
+               {"                {                                               ", ScriptingOptions.MinimizePropertyChanges},
+            }, csType, column.Detail.Name);
+
+         if (csType == "DateTime" || csType == "DateTime?")
+         {
+            _writer
+               .WriteLines(new OptionLines()
+                  {
+                     {"                    if (!Equals(value, null))             ", ScriptingOptions.UnspecifiedDateTimes},
+                     {"                    {                                     ", ScriptingOptions.UnspecifiedDateTimes},
+                  })
+
+               .WriteLine(
+                  csType == "DateTime?"
+                     ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
+                     : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes);
+
+            if (column.Detail.SqlType.IsDateOnly() && _options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
+            {
+               _writer.WriteLine(
+                  _options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
+                     ? "                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);"
+                     : "                        value = value.Date;");
+            }
+
+            _writer.WriteLines(new OptionLines()
                {
-                  {""},
-                  {"        [Column]                   ", ScriptingOptions.ImplementLinqContext},
-                  {"        public $0 $1               "},
-                  {"        {                          "},
-                  {"            get { return _$1; }    "},
-                  {"            set                    "},
-                  {"            {                      "},
-                  {"                if (_$1 != value)  ", ScriptingOptions.MinimizePropertyChanges},
-                  {"                {                  ", ScriptingOptions.MinimizePropertyChanges},
-               }, csType, column.Detail.Name)
+                  {"                    }                                        ", ScriptingOptions.UnspecifiedDateTimes},
+                  {"                                                             ", ScriptingOptions.UnspecifiedDateTimes},
+               });
+         }
 
-            .WriteIf(csType == "DateTime" || csType == "DateTime?")
-            .WriteLines(new OptionLines()
-               {
-                  {"                    if (!Equals(value, null))    ", ScriptingOptions.UnspecifiedDateTimes},
-                  {"                    {                            ", ScriptingOptions.UnspecifiedDateTimes},
-               })
-            .WriteLine(
-               csType == "DateTime?"
-                  ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
-                  : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);", ScriptingOptions.UnspecifiedDateTimes)
-
-            .WriteIf(column.Detail.SqlType.IsDateOnly() && _options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
-            .WriteLine(
-               _options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
-                  ? "                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);"
-                  : "                        value = value.Date;")
-
-            .WriteIf(csType == "DateTime" || csType == "DateTime?")
-            .WriteLines(new OptionLines()
-               {
-                  {"                    }                ", ScriptingOptions.UnspecifiedDateTimes},
-                  {"                                     ", ScriptingOptions.UnspecifiedDateTimes},
-               })
-
-            .WriteIf(true)
-            .WriteLines(new OptionLines()
-               {
-                  {"                    On$0Changing(ref value);        ", ScriptingOptions.ImplementPartialPropertyChanges},
-                  {"                    OnPropertyChanging();           ", ScriptingOptions.ImplementNotifyPropertyChanging},
-                  {"                    _$0 = value;                    "},
-                  {"                    _entity.Change(\"$0\", value);  ", ScriptingOptions.ImplementStateTracking},
-                  {"                    OnPropertyChanged();            ", ScriptingOptions.ImplementNotifyPropertyChanged},
-                  {"                    On$0Changed();                  ", ScriptingOptions.ImplementPartialPropertyChanges},
-                  {"                }                                   ", ScriptingOptions.MinimizePropertyChanges},
-                  {"            }                                       "},
-                  {"        }                                           "},
-               }, column.Detail.Name);
+         _writer.WriteLines(new OptionLines()
+            {
+               {"                    On$0Changing(ref value);                    ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"                    OnPropertyChanging();                       ", ScriptingOptions.ImplementNotifyPropertyChanging},
+               {"                    _$0 = value;                                "},
+               {"                    _entity.Change(\"$0\", value);              ", ScriptingOptions.ImplementStateTracking},
+               {"                    OnPropertyChanged();                        ", ScriptingOptions.ImplementNotifyPropertyChanged},
+               {"                    On$0Changed();                              ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"                }                                               ", ScriptingOptions.MinimizePropertyChanges},
+               {"            }                                                   "},
+               {"        }                                                       "},
+            }, column.Detail.Name);
       }
 
       protected void WritePropertyChanging()
@@ -399,9 +377,8 @@ namespace DrivenDb.Scripting.Internal
                {"        }                                                                                     "},
             });
       }
-
-      // TODO: consider testing custom mapped types in validation check
-      private void WriteValidationCheck(TableMap table)
+      
+      protected void WriteValidationCheck(TableMap table)
       {
          if (!_options.HasFlag(ScriptingOptions.ImplementStateTracking))
          {
@@ -432,23 +409,23 @@ namespace DrivenDb.Scripting.Internal
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.Columns.Where(c => !c.Detail.IsGenerated && !c.Detail.IsNullable && c.Detail.SqlType.ToCsString() == "string"), new OptionLines()
+            .WriteTemplate(table.GetRequiredStringColumns(), new OptionLines()
                {
-                  {"             if (_$0 == default(string))                                                                        "},
-                  {"             {                                                                                                  "},
-                  {"                failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));      "},
-                  {"             }                                                                                                  "},
+                  {"                if (_$0 == default(string))                                                                     "},
+                  {"                {                                                                                               "},
+                  {"                    failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));  "},
+                  {"                }                                                                                               "},
                }, c => new object[] {c.Detail.Name})
 
             .WriteLines(new OptionLines()
                {
-                  {"           }                                                                                                    "},
+                  {"            }                                                                                                   "},
                   {"                                                                                                                "},
-                  {"           if (_entity.State == EntityState.New)                                                                "},
-                  {"           {                                                                                                    "},
+                  {"            if (_entity.State == EntityState.New)                                                               "},
+                  {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.Columns.Where(c => !c.Detail.IsGenerated && !c.Detail.IsNullable), new OptionLines()
+            .WriteTemplate(table.GetRequiredColumns(), new OptionLines()
                {
                   {"                if (!_entity.Changes.Any(c => c.ColumnName == \"$0\"))                                          "},
                   {"                {                                                                                               "},

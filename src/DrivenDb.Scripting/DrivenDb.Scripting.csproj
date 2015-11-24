@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Internal\CsGenerator.cs" />
     <Compile Include="Internal\IEntityGenerator.cs" />
+    <Compile Include="Internal\OptionLine.cs" />
+    <Compile Include="Internal\OptionLines.cs" />
     <Compile Include="Internal\OptionWriter.cs" />
     <Compile Include="Internal\Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

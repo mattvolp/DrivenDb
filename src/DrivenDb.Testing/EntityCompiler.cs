@@ -20,7 +20,6 @@ namespace DrivenDb.Testing
             scripter.Write("TestNamespace", "TestContext", tables);
 
             var code = buffer.ToString();
-
             var provider = new CSharpCodeProvider();
             var parameters = new CompilerParameters();
 

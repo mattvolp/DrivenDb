@@ -70,7 +70,7 @@ namespace DrivenDb.Data.MsSql
       public static MsSqlType Xml = new MsSqlType("xml", "string");
       public static MsSqlType NullableXml = new MsSqlType("xml", "string");   
 
-      public override string ToCsDefault(ScriptingOptions options, ColumnDetail column)
+      public override string ToScriptedDefaultValue(ScriptingOptions options, ColumnDetail column)
       {
          /*
         * (N'TEST')

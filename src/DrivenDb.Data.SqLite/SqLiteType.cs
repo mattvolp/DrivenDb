@@ -21,7 +21,7 @@ namespace DrivenDb.Data.SqLite
        public static SqLiteType NullableNumeric = new SqLiteType("numeric", true);
 
        // TODO: the similarities between this and MsSqlType leads me to believe this can be further reduced
-       public override string ToCsDefault(ScriptingOptions options, ColumnDetail column)
+       public override string ToScriptedDefaultValue(ScriptingOptions options, ColumnDetail column)
        {
           var value = StripParentheses(column.DefaultValue);
 

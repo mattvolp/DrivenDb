@@ -58,7 +58,7 @@ namespace DrivenDb.Data
          return _isDateOnly;
       }
 
-      public abstract string ToCsDefault(ScriptingOptions options, ColumnDetail column);
+      public abstract string ToScriptedDefaultValue(ScriptingOptions options, ColumnDetail column);
 
       protected static string StripParentheses(string value)
       {
