@@ -18,7 +18,7 @@ namespace DrivenDb.Scripting.Internal
          _options = options;
       }
 
-      public void Write(string @namespace, string contextName, IEnumerable<TableMap> tables)
+      public void Write(string @namespace, string contextName, TableMap[] tables)
       {
          WriteNamespaceOpen(@namespace);
 
@@ -74,7 +74,7 @@ namespace DrivenDb.Scripting.Internal
                   {"        {                                                                                     "},
                   {"            get { return this.GetTable<$0>(); }                                               "},
                   {"        }                                                                                     "},
-               }, t => new object[] {t.Detail.Name})
+               }, t => new [] {t.Detail.Name})
 
             .WriteLines(new OptionLines()
                {
@@ -84,18 +84,21 @@ namespace DrivenDb.Scripting.Internal
 
       private void ScriptEntity(TableMap table)
       {
-         if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))         
+         //_writer.WriteSection(table, WriteKeyClass, ScriptingOptions.ImplementPrimaryKey);
+
+         if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))
             WriteKeyClass(table);
-         
+
          WriteClassOpen(table);
          WriteConstructor(table);
          WriteFields(table.Columns);
-         WritePartials(table.Columns);
-         
+
+         //_writer.WriteSection(table, WriteKeyProperty, ScriptingOptions.ImplementPrimaryKey);
          if (_options.HasFlag(ScriptingOptions.ImplementPrimaryKey))
             WriteKeyProperty(table);
 
          WriteProperties(table.Columns);
+         WritePartials(table.Columns);
          
          if (_options.HasFlag(ScriptingOptions.ImplementNotifyPropertyChanging))
             WritePropertyChanging();
@@ -114,11 +117,8 @@ namespace DrivenDb.Scripting.Internal
          var primaries = table.GetPrimaryKeyColumns()
             .ToArray();
             
-         if (primaries.Count() > 8)
-         {
-            throw new Exception("Unable to script key class for tables with a primary key of more than 8 columns");
-         }
-
+         primaries.GuardAgainstKeyClassOverflow();
+         
          if (primaries.Any())
          {
             _writer
@@ -140,7 +140,7 @@ namespace DrivenDb.Scripting.Internal
                .WriteTemplate(primaries, new OptionLines()
                   {
                      {"            $0 = $1;                                     "},
-                  }, p => new object[]
+                  }, p => new[]
                      {
                         p.Detail.Name, p.ScriptAsParameterName()
                      })
@@ -154,7 +154,7 @@ namespace DrivenDb.Scripting.Internal
                .WriteTemplate(primaries, new OptionLines()
                   {
                      {"        public readonly $0 $1;                            "},
-                  }, p => new object[]
+                  }, p => new[]
                      {
                         p.ScriptAsCsType(), p.Detail.Name
                      })
@@ -202,7 +202,7 @@ namespace DrivenDb.Scripting.Internal
                {
                   {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
                   {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
-               }, d => new object[]
+               }, d => new []
                   {
                      d.Detail.Name, d.ScriptAsCsType(), d.ScriptAsDefaultValue(_options)
                   })
@@ -415,7 +415,7 @@ namespace DrivenDb.Scripting.Internal
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, c => new object[] {c.Detail.Name})
+               }, c => new [] {c.Detail.Name})
 
             .WriteLines(new OptionLines()
                {
@@ -431,7 +431,7 @@ namespace DrivenDb.Scripting.Internal
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Required value not set\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, c => new object[] {c.Detail.Name})
+               }, c => new [] {c.Detail.Name})
 
             .WriteLines(new OptionLines()
                {

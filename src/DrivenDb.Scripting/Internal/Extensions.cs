@@ -59,6 +59,12 @@ namespace DrivenDb.Scripting.Internal
       // SCRIPTING
       //
 
+      public static void GuardAgainstKeyClassOverflow(this IEnumerable<ColumnMap> columns)
+      {
+         if (columns.Count() > 8)
+            throw new Exception("Unable to script key class for tables with a primary key of more than 8 columns");
+      }
+
       public static string ScriptAsCsBoolean(this bool b)
       {
          return b ? "true" : "false";
