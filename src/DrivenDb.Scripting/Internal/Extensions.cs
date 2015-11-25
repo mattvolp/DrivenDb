@@ -152,7 +152,15 @@ namespace DrivenDb.Scripting.Internal
       // TABLE RELATED
       //
 
-      public static IEnumerable<ColumnMap> GetColumnsWithDefaults(this TableMap table)
+      public static IEnumerable<TableDetail> GetDetails(this IEnumerable<TableMap> maps)
+      {
+         foreach (var map in maps)
+         {
+            yield return map.Detail;
+         }
+      }
+
+      public static IEnumerable<ColumnMap> GetColumnsWithDefaultDefinitions(this TableMap table)
       {
          foreach (var column in table.Columns)
          {

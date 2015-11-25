@@ -8,21 +8,17 @@ namespace DrivenDb.Scripting.Internal
 {
    internal class OptionWriter      
    {      
-      private readonly ScriptingOptions _options;
-      private readonly TextWriter _writer;
-      
-      public OptionWriter(ScriptingOptions options, TextWriter writer)
+      public readonly ScriptingOptions _options;
+      public readonly TextWriter _writer;
+      public readonly bool _penUp;
+
+      public OptionWriter(ScriptingOptions options, TextWriter writer, bool penUp)
       {
          _options = options;
-         _writer = writer;         
+         _writer = writer;
+         _penUp = penUp;
       }
-
-      //public void WriteSection(TableMap table, Action<TableMap> action, ScriptingOptions options)
-      //{
-      //   if (_options.HasFlag(options))
-      //      action(table);
-      //}
-
+      
       public OptionWriter WriteTemplate<T>(IEnumerable<T> items, OptionLines lines, Func<T, string[]> args)
       {
          foreach (var item in items)
