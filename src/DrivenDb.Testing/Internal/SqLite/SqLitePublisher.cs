@@ -41,7 +41,7 @@ namespace DrivenDb.Testing.Internal.SqLite
          //   .Select(p => p.Entity)
          //   .ToArray();
 
-         //_writer.Write(entities);
+         //Writer.Write(entities);
       }
 
       private void CreateTables(IEnumerable<TableDef> tables)

@@ -2,9 +2,9 @@
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal class OptionLine
+   internal class ScriptLine
    {
-      public OptionLine(string line, params ScriptingOptions[] options) 
+      public ScriptLine(string line, params ScriptingOptions[] options) 
       {         
          Line = line;
          Options = options;
@@ -12,5 +12,5 @@ namespace DrivenDb.Scripting.Internal
 
       public readonly ScriptingOptions[] Options;
       public readonly string Line;      
-   }
+   }   
 }

@@ -4,27 +4,22 @@ using DrivenDb.Data.Internal;
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal class OptionLines 
-      : IEnumerable<OptionLine>
+   internal class ScriptLines 
+      : IEnumerable<ScriptLine>
    {      
-      private readonly List<OptionLine> _lines = new List<OptionLine>();
+      private readonly List<ScriptLine> _lines = new List<ScriptLine>();
       
       public void Add(string line) 
       {
-         _lines.Add(new OptionLine(line));
+         _lines.Add(new ScriptLine(line));
       }
       
       public void Add(string line, params ScriptingOptions[] options)
       {         
-         _lines.Add(new OptionLine(line, options)); 
+         _lines.Add(new ScriptLine(line, options)); 
       }
-
-      public static implicit operator OptionLines(OptionLine[] lines)
-      {
-         return null;
-      }
-
-      public IEnumerator<OptionLine> GetEnumerator()
+      
+      public IEnumerator<ScriptLine> GetEnumerator()
       {
          return _lines.GetEnumerator();
       }

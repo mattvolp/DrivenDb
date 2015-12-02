@@ -15,9 +15,8 @@ namespace DrivenDb.Scripting.Tests
          {
             const ScriptingOptions OPTIONS = ScriptingOptions.Serializable | ScriptingOptions.MinimizePropertyChanges;
 
-            //var sut = new OptionWriter(OPTIONS, writer);
-            OptionWriter sut = null;
-
+            var sut = new ScriptTarget(OPTIONS, writer);
+            
             sut.WriteLine("test", ScriptingOptions.Serializable);
 
             var actual = writer.ToString()
@@ -34,9 +33,8 @@ namespace DrivenDb.Scripting.Tests
          {
             const ScriptingOptions OPTIONS = ScriptingOptions.Serializable | ScriptingOptions.MinimizePropertyChanges;
 
-            //var sut = new OptionWriter(OPTIONS, writer);
-            OptionWriter sut = null;
-
+            var sut = new ScriptTarget(OPTIONS, writer);
+            
             sut.WriteLine("test", ScriptingOptions.ImplementNotifyPropertyChanged);
 
             var actual = writer.ToString()

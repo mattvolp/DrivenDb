@@ -6,110 +6,22 @@ using DrivenDb.Data.Internal;
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal static class OptionWriterExtensions
+   internal static class CsScriptingServices
    {
-      //
-      // HELPER 
-      //
-
-      public delegate OptionWriter TableMapWriterContinuation(OptionWriter writer, TableMap table);
-      public delegate OptionWriter TableDetailWriterContinuation(OptionWriter writer, TableDetail table);
-      public delegate OptionWriter ColumnMapsWriterContinuation(OptionWriter writer, IEnumerable<ColumnMap> column);
-      public delegate OptionWriter OptionWriterContinuation(OptionWriter writer);
-
-      public static OptionWriter PenUpIf(this OptionWriter writer, bool condition)
+      public static void ScriptUnit(ScriptTarget target, string @namespace, string contextName, TableMap[] tables)
       {
-         return condition
-            ? new OptionWriter(writer._options, writer._writer, true)
-            : writer;
+         WriteNamespaceOpen(target, @namespace);
+
+         if (target.Options.HasFlag(ScriptingOptions.ImplementLinqContext))
+            WriteContext(target, contextName, tables.Select(t => t.Detail));
+
+         ScriptEntities(target, tables);         
+         WriteNamespaceClose(target);
       }
 
-      public static OptionWriter PenDownIf(this OptionWriter writer, bool condition)
+      public static void WriteNamespaceOpen(ScriptTarget target, string @namespace)
       {
-         return condition
-            ? new OptionWriter(writer._options, writer._writer, false)
-            : writer;
-      }
-
-      public static OptionWriter PenDownAnd(this OptionWriter writer, bool condition)
-      {
-         return !writer._penUp 
-            ? new OptionWriter(writer._options, writer._writer, !condition)
-            : writer;
-      }
-
-      public static OptionWriter PenDown(this OptionWriter writer)
-      {
-         return new OptionWriter(writer._options, writer._writer, false);
-      }
-      
-      public static OptionWriter WriteSection(this OptionWriter writer, TableMapWriterContinuation continuation, TableMap table, ScriptingOptions options)
-      {
-         if (writer._options.HasFlag(options))
-            writer.WriteSection(continuation, table);
-            
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, TableDetailWriterContinuation continuation, TableDetail table, ScriptingOptions options)
-      {
-         if (writer._options.HasFlag(options))
-            writer.WriteSection(continuation, table);
-
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, ColumnMapsWriterContinuation continuation, IEnumerable<ColumnMap> columns, ScriptingOptions options)
-      {
-         if (writer._options.HasFlag(options))
-            writer.WriteSection(continuation, columns);
-
-         return writer;
-      }
-      
-      public static OptionWriter WriteSection(this OptionWriter writer, TableMapWriterContinuation continuation, TableMap table)
-      {
-         continuation(writer, table);
-
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, TableDetailWriterContinuation continuation, TableDetail table)
-      {
-         continuation(writer, table);
-
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, ColumnMapsWriterContinuation continuation, IEnumerable<ColumnMap> columns)
-      {
-         continuation(writer, columns);
-         
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, OptionWriterContinuation continuation, ScriptingOptions options)
-      {
-         if (writer._options.HasFlag(options))
-            continuation(writer);
-
-         return writer;
-      }
-
-      public static OptionWriter WriteSection(this OptionWriter writer, OptionWriterContinuation continuation)
-      {
-         continuation(writer);
-
-         return writer;
-      }
-
-      //
-      // BEHAVIOR
-      //
-
-      public static OptionWriter WriteNamespaceOpen(this OptionWriter writer, string @namespace)
-      {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"namespace $0                                "},
                {"{                                           "},
@@ -125,10 +37,10 @@ namespace DrivenDb.Scripting.Internal
             }, @namespace);
       }
 
-      public static OptionWriter WriteContext(this OptionWriter writer, string contextName, IEnumerable<TableDetail> tables)
+      public static void WriteContext(ScriptTarget target, string contextName, IEnumerable<TableDetail> tables)
       {
-         return writer
-            .WriteLines(new OptionLines()
+         target
+            .WriteLinesAndContinue(new ScriptLines()
                {
                   {"                                                                                              "},
                   {"    public class $0 : DataContext                                                             "},
@@ -140,7 +52,7 @@ namespace DrivenDb.Scripting.Internal
                   {"        }                                                                                     "},
                }, contextName)
 
-            .WriteTemplate(tables, new OptionLines()
+            .WriteTemplateAndContinue(tables, new ScriptLines()
                {
                   {"                                                                                              "},
                   {"        public Table<$0> $0                                                                   "},
@@ -149,29 +61,37 @@ namespace DrivenDb.Scripting.Internal
                   {"        }                                                                                     "},
                }, t => new[] { t.Name })
 
-            .WriteLines(new OptionLines()
+            .WriteLines(new ScriptLines()
                {
                   {"    }                                                                                         "},
                });
       }
 
-      public static OptionWriter ScriptEntity(this OptionWriter writer, TableMap table, ScriptingOptions options)
+      public static void ScriptEntities(ScriptTarget target, IEnumerable<TableMap> tables)
       {
-         return writer
-            .WriteSection(WriteKeyClass, table, ScriptingOptions.ImplementPrimaryKey)
-            .WriteSection(WriteClassOpen, table.Detail)
-            .WriteSection(WriteConstructor, table)
-            .WriteSection(WriteFields, table.Columns)
-            .WriteSection(WriteKeyProperty, table, ScriptingOptions.ImplementPrimaryKey)
-            .WriteSection(WriteProperties, table.Columns, options)
-            .WriteSection(WritePartials, table.Columns)
-            .WriteSection(WritePropertyChanging, ScriptingOptions.ImplementNotifyPropertyChanging)
-            .WriteSection(WritePropertyChanged, ScriptingOptions.ImplementNotifyPropertyChanged)
-            .WriteSection(WriteValidationCheck, table, ScriptingOptions.ImplementValidationCheck)
-            .WriteSection(WriteClassClose);
+         foreach (var table in tables)
+         {
+            ScriptEntity(target, table);
+         }
       }
 
-      public static OptionWriter WriteKeyClass(this OptionWriter writer, TableMap table)
+      public static void ScriptEntity(ScriptTarget target, TableMap table)
+      {  
+         target.WriteKeyClassAndContinue(table)       
+            .WriteClassOpenAndContinue(table)
+            .WriteConstructorAndContinue(table)
+            .WriteFieldsAndContinue(table)
+            .WriteKeyPropertyAndContinue(table)
+            .WritePropertiesAndContinue(table)
+            .WritePartialsAndContinue(table)
+            .WritePropertyChangingAndContinue(table)
+            .WritePropertyChangedAndContinue(table)
+            .WriteValidationCheckAndContinue(table)
+            .WriteClassCloseAndContinue(table);
+            //.Ignore()            
+      }
+      
+      public static void WriteKeyClass(ScriptTarget target, TableMap table)
       {
          var primaries = table.GetPrimaryKeyColumns()
             .ToArray();
@@ -180,8 +100,8 @@ namespace DrivenDb.Scripting.Internal
 
          if (primaries.Any())
          {
-            writer
-               .WriteLines(new OptionLines()
+            target
+               .WriteLinesAndContinue(new ScriptLines()
                   {
                      {"                                                          "},
                      {"    public class $0Key                                    "},
@@ -196,7 +116,7 @@ namespace DrivenDb.Scripting.Internal
                   , primaries.ScriptAsDelimitedCsTypedParameterNames()
                   , primaries.ScriptAsDelimitedParameterNames())
 
-               .WriteTemplate(primaries, new OptionLines()
+               .WriteTemplateAndContinue(primaries, new ScriptLines()
                   {
                      {"            $0 = $1;                                     "},
                   }, p => new[]
@@ -204,13 +124,13 @@ namespace DrivenDb.Scripting.Internal
                         p.Detail.Name, p.ScriptAsParameterName()
                      })
 
-               .WriteLines(new OptionLines()
+               .WriteLinesAndContinue(new ScriptLines()
                   {
                      {"        }                                                 "},
                      {"                                                          "},
                   })
 
-               .WriteTemplate(primaries, new OptionLines()
+               .WriteTemplateAndContinue(primaries, new ScriptLines()
                   {
                      {"        public readonly $0 $1;                            "},
                   }, p => new[]
@@ -218,18 +138,16 @@ namespace DrivenDb.Scripting.Internal
                         p.ScriptAsCsType(), p.Detail.Name
                      })
 
-               .WriteLines(new OptionLines()
+               .WriteLines(new ScriptLines()
                   {
                      {"   }                                                      "},
                   });
-         }
-
-         return writer;
+         }         
       }
 
-      public static OptionWriter WriteClassOpen(this OptionWriter writer, TableDetail table)
+      public static void WriteClassOpen(ScriptTarget target, TableDetail table)
       {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"                                                                   "},
                {"    [DataContract]                                                 ", ScriptingOptions.Serializable},
@@ -242,24 +160,24 @@ namespace DrivenDb.Scripting.Internal
             }
             , table.Schema
             , table.Name
-            , writer._options.ScriptAsDelimitedImpliedInterfaces()
+            , target.Options.ScriptAsDelimitedImpliedInterfaces()
             );
       }
-
-      public static OptionWriter WriteConstructor(this OptionWriter writer, TableMap table)
+      
+      public static void WriteConstructor(ScriptTarget target, TableMap table)
       {
          var defaults = table.GetColumnsWithDefaultDefinitions()
             .ToArray();
          
-         return writer
-            .WriteLines(new OptionLines()
+         target
+            .WriteLinesAndContinue(new ScriptLines()
                {
                   {"                                                                "},
                   {"        public $0()                                             "},
                   {"        {                                                       "},
                }, table.Detail.Name)
 
-         .WriteTemplate(defaults, new OptionLines()
+         .WriteTemplateAndContinue(defaults, new ScriptLines()
             {
                {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
                {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
@@ -267,10 +185,10 @@ namespace DrivenDb.Scripting.Internal
                {
                     d.Detail.Name
                   , d.ScriptAsCsType()
-                  //, d.ScriptAsDefaultValue(writer._options)
+                  , d.ScriptAsDefaultValue(target.Options)
                })
 
-         .WriteLines(new OptionLines()
+         .WriteLines(new ScriptLines()
             {
                {"        }                                                       "},
                {"                                                                ", ScriptingOptions.ImplementStateTracking},
@@ -280,20 +198,18 @@ namespace DrivenDb.Scripting.Internal
                {"        }                                                       ", ScriptingOptions.ImplementStateTracking},
             });
       }
-
-      public static OptionWriter WriteFields(this OptionWriter writer, IEnumerable<ColumnMap> columns)
+      
+      public static void WriteFields(ScriptTarget target, IEnumerable<ColumnMap> columns)
       {
          foreach (var column in columns)
          {
-            writer.WriteField(column);
-         }
-
-         return writer;
+            WriteField(target, column);
+         }         
       }
 
-      public static OptionWriter WriteField(this OptionWriter writer, ColumnMap column)
+      public static void WriteField(ScriptTarget target, ColumnMap column)
       {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"                                                                "},
                {"        [DataMember]                                            ", ScriptingOptions.Serializable},
@@ -306,19 +222,17 @@ namespace DrivenDb.Scripting.Internal
          , column.ScriptAsCsType());
       }
 
-      public static OptionWriter WritePartials(this OptionWriter writer, IEnumerable<ColumnMap> columns)
+      public static void WritePartials(ScriptTarget target, IEnumerable<ColumnMap> columns)
       {
          foreach (var column in columns)
          {
-            writer.WritePartial(column);
-         }
-
-         return writer;
+            WritePartial(target, column);
+         }         
       }
 
-      public static OptionWriter WritePartial(this OptionWriter writer, ColumnMap column)
+      public static void WritePartial(ScriptTarget target, ColumnMap column)
       {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"                                                                ", ScriptingOptions.ImplementPartialPropertyChanges},
                {"        partial void On$0Changing(ref $1 value);                ", ScriptingOptions.ImplementPartialPropertyChanges},
@@ -328,14 +242,14 @@ namespace DrivenDb.Scripting.Internal
             , column.ScriptAsCsType());
       }
 
-      public static OptionWriter WriteKeyProperty(this OptionWriter writer, TableMap table)
+      public static void WriteKeyProperty(ScriptTarget target, TableMap table)
       {
          var primaries = table.GetPrimaryKeyColumns()
             .ToArray();
 
          if (primaries.Length > 0)
          {
-            writer.WriteLines(new OptionLines()
+            target.WriteLines(new ScriptLines()
                {
                   {"                                                             "},
                   {"        public $0Key PrimaryKey                              "},
@@ -346,26 +260,22 @@ namespace DrivenDb.Scripting.Internal
                , table.Detail.Name
                , primaries.ScriptAsDelimitedPrivateMemberNames()
                );
-         }
-
-         return writer;
+         }         
       }
 
-      public static OptionWriter WriteProperties(this OptionWriter writer, IEnumerable<ColumnMap> columns)
+      public static void WriteProperties(ScriptTarget target, IEnumerable<ColumnMap> columns)
       {
          foreach (var column in columns)
          {
-            writer.WriteProperty(column); 
-         }
-
-         return writer;
+            WriteProperty(target, column);
+         }         
       }
-
-      public static OptionWriter WriteProperty(this OptionWriter writer, ColumnMap column) 
+      
+      public static void WriteProperty(ScriptTarget target, ColumnMap column)
       {
          var csType = column.ScriptAsCsType();
 
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {""},
                {"        [Column]                                                ", ScriptingOptions.ImplementLinqContext},
@@ -376,50 +286,52 @@ namespace DrivenDb.Scripting.Internal
                {"            {                                                   "},
                {"                if (_$1 != value)                               ", ScriptingOptions.MinimizePropertyChanges},
                {"                {                                               ", ScriptingOptions.MinimizePropertyChanges},
-            }, csType, column.Detail.Name)
+            }, csType, column.Detail.Name);
 
-            .PenDownIf(csType == "DateTime" || csType == "DateTime?")
-            .WriteLines(new OptionLines()
+         if (csType == "DateTime" || csType == "DateTime?")
+         {
+            target.WriteLinesAndContinue(new ScriptLines()
                {
                   {"                    if (!Equals(value, null))             ", ScriptingOptions.UnspecifiedDateTimes},
                   {"                    {                                     ", ScriptingOptions.UnspecifiedDateTimes},
                })
-            .WriteLine(
-               csType == "DateTime?"
-                  ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
-                  : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes)
-                  
-            .PenDownAnd(column.Detail.SqlType.IsDateOnly() && writer._options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
-            .WriteLine(
-               writer._options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
-                  ? "                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);"
-                  : "                        value = value.Date;")
+               .WriteLine(
+                  csType == "DateTime?"
+                     ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
+                     : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes);
 
-            .PenDownIf(csType == "DateTime" || csType == "DateTime?")
-            .WriteLines(new OptionLines()
+            if (column.Detail.SqlType.IsDateOnly() && target.Options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
+            {
+               target.WriteLine(
+                  target.Options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
+                     ? "                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);"
+                     : "                        value = value.Date;");
+            }
+            
+            target.WriteLines(new ScriptLines()
                {
                   {"                    }                                        ", ScriptingOptions.UnspecifiedDateTimes},
                   {"                                                             ", ScriptingOptions.UnspecifiedDateTimes},
-               })
+               });
+         }
 
-            .PenDown()
-            .WriteLines(new OptionLines()
-               {
-                  {"                    On$0Changing(ref value);                    ", ScriptingOptions.ImplementPartialPropertyChanges},
-                  {"                    OnPropertyChanging();                       ", ScriptingOptions.ImplementNotifyPropertyChanging},
-                  {"                    _$0 = value;                                "},
-                  {"                    _entity.Change(\"$0\", value);              ", ScriptingOptions.ImplementStateTracking},
-                  {"                    OnPropertyChanged();                        ", ScriptingOptions.ImplementNotifyPropertyChanged},
-                  {"                    On$0Changed();                              ", ScriptingOptions.ImplementPartialPropertyChanges},
-                  {"                }                                               ", ScriptingOptions.MinimizePropertyChanges},
-                  {"            }                                                   "},
-                  {"        }                                                       "},
-               }, column.Detail.Name);
+         target.WriteLines(new ScriptLines()
+            {
+               {"                    On$0Changing(ref value);                    ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"                    OnPropertyChanging();                       ", ScriptingOptions.ImplementNotifyPropertyChanging},
+               {"                    _$0 = value;                                "},
+               {"                    _entity.Change(\"$0\", value);              ", ScriptingOptions.ImplementStateTracking},
+               {"                    OnPropertyChanged();                        ", ScriptingOptions.ImplementNotifyPropertyChanged},
+               {"                    On$0Changed();                              ", ScriptingOptions.ImplementPartialPropertyChanges},
+               {"                }                                               ", ScriptingOptions.MinimizePropertyChanges},
+               {"            }                                                   "},
+               {"        }                                                       "},
+            }, column.Detail.Name);
       }
 
-      public static OptionWriter WritePropertyChanging(this OptionWriter writer)
+      public static void WritePropertyChanging(ScriptTarget target)
       {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"                                                                                              "},
                {"        public event PropertyChangingEventHandler PropertyChanging = delegate {};             "},
@@ -431,9 +343,9 @@ namespace DrivenDb.Scripting.Internal
             });
       }
 
-      public static OptionWriter WritePropertyChanged(this OptionWriter writer)
+      public static void WritePropertyChanged(ScriptTarget target)
       {
-         return writer.WriteLines(new OptionLines()
+         target.WriteLines(new ScriptLines()
             {
                {"                                                                                              "},
                {"        public event PropertyChangedEventHandler PropertyChanged = delegate {};               "},
@@ -444,10 +356,10 @@ namespace DrivenDb.Scripting.Internal
                {"        }                                                                                     "},
             });
       }
-
-      public static OptionWriter WriteValidationCheck(this OptionWriter writer, TableMap table) //, ScriptingOptions options)
+      
+      public static void WriteValidationCheck(ScriptTarget target, TableMap table) //, ScriptingOptions options)
       {
-         if (!writer._options.HasFlag(ScriptingOptions.ImplementStateTracking))
+         if (!target.Options.HasFlag(ScriptingOptions.ImplementStateTracking))
          {
             throw new Exception("Cannot implement validation check without state tracking enabled");
          }
@@ -458,8 +370,8 @@ namespace DrivenDb.Scripting.Internal
           * state == updated -> if all non-nullable/non-generated string columns have a value then true
           * state == new -> if all non-nullable/non-generated columns have a change recorded
           */
-         return writer
-            .WriteLines(new OptionLines()
+         target
+            .WriteLinesAndContinue(new ScriptLines()
                {
                   {"        partial void HasExtendedRequirementsMet(IList<RequirementFailure> failures);                            "},
                   {"                                                                                                                "},
@@ -476,15 +388,15 @@ namespace DrivenDb.Scripting.Internal
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.GetRequiredStringColumns(), new OptionLines()
+            .WriteTemplateAndContinue(table.GetRequiredStringColumns(), new ScriptLines()
                {
                   {"                if (_$0 == default(string))                                                                     "},
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, c => new[] { c.Detail.Name })
+               }, (c) => new[] {c.Detail.Name})
 
-            .WriteLines(new OptionLines()
+            .WriteLinesAndContinue(new ScriptLines()
                {
                   {"            }                                                                                                   "},
                   {"                                                                                                                "},
@@ -492,15 +404,15 @@ namespace DrivenDb.Scripting.Internal
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.GetRequiredColumns(), new OptionLines()
+            .WriteTemplateAndContinue(table.GetRequiredColumns(), new ScriptLines()
                {
                   {"                if (!_entity.Changes.Any(c => c.ColumnName == \"$0\"))                                          "},
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Required value not set\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, c => new[] { c.Detail.Name })
+               }, (c) => new[] {c.Detail.Name})
 
-            .WriteLines(new OptionLines()
+            .WriteLines(new ScriptLines()
                {
                   {"            }                                                                                                   "},
                   {"                                                                                                                "},
@@ -510,15 +422,15 @@ namespace DrivenDb.Scripting.Internal
                   {"        }                                                                                                       "},
                });
       }
-
-      public static OptionWriter WriteClassClose(this OptionWriter writer)
+      
+      public static void WriteClassClose(ScriptTarget target)
       {
-         return writer.WriteLine("    }");
+         target.WriteLineAndContinue("    }");
       }
 
-      public static OptionWriter WriteNamespaceClose(this OptionWriter writer)
+      public static void WriteNamespaceClose(ScriptTarget target)
       {
-         return writer.WriteLine("}");
+         target.WriteLine("}");
       }
    }
 }

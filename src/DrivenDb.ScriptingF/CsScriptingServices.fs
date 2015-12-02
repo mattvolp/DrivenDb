@@ -2,70 +2,8 @@
 
 open System
 open System.IO
-
-//
-// GLOBAL
-//
-
-[<Flags>]
-type ScriptingOptions = 
-   | None = 0
-   | ImplementNotifyPropertyChanging = 1
-   | ImplementNotifyPropertyChanged = 2
-   | ImplementPartialPropertyChanges = 4
-   | ImplementLinqContext = 8
-   | ImplementPrimaryKey = 16
-   | ImplementColumnDefaults = 32
-   | MinimizePropertyChanges = 64
-   | Serializable = 128
-   | ImplementStateTracking = 256
-   | UnspecifiedDateTimes = 512
-   | TruncateTimeForDateColumns = 1024
-   | ImplementValidationCheck = 2048   
-//  |   All = ImplementNotifyPropertyChanging
-//            | ImplementNotifyPropertyChanged
-//            | ImplementPartialPropertyChanges
-//            | ImplementLinqContext
-//            | ImplementPrimaryKey
-//            | ImplementColumnDefaults
-//            | MinimizePropertyChanges
-//            | Serializable
-//            | ImplementStateTracking
-//            | UnspecifiedDateTimes
-//            | TruncateTimeForDateColumns
-//            | ImplementValidationCheck
-
-type ColumnDetail = 
-   {
-      SqlType : string // DbType TODO
-      Name : string
-      IsNullable : bool
-      IsPrimary : bool
-      IsGenerated : bool
-      IsReadonly : bool
-      HasDefault : bool
-      DefaultValue : string
-      ColumnPosition : int
-   }
-
-type ColumnMap = 
-   {
-      Detail : ColumnDetail
-      CustomType : string
-   }
-
-type TableDetail =
-   {
-      Schema : string
-      Name : string
-      Columns : ColumnDetail list
-   }
-
-type TableMap = 
-   {
-      Detail : TableDetail
-      Columns : ColumnMap list
-   }
+open DataStructures
+open DbTypes
 
 //
 // data services
@@ -245,9 +183,9 @@ let WriteConstructor (table : TableMap) (target : ScriptTarget) : ScriptTarget =
       Required("        public $0()                                             ")
       Required("        {                                                       ")
       ]
-   |> WriteTemplate defaults (fun c -> [d.Detail.Name, d.ScriptAsCsType(), d.ScriptAsDefaultValue(_options)]) [
+   |> WriteTemplate defaults (fun c -> [c.Detail.Name; (ScriptAsCsType c); (ScriptAsDefaultValue c target.Options)]) [
       Optional("            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults)
-      Optional("            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking)
+      Optional("            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults ||| ScriptingOptions.ImplementStateTracking)
       ]
    |> WriteLines [] [
       Required("        }                                                       ")
@@ -259,38 +197,34 @@ let WriteConstructor (table : TableMap) (target : ScriptTarget) : ScriptTarget =
       ]
    
 
-let WriteField (column : ColumnMap) (target : ScriptTarget) : ScriptTarget =         
+let WriteField (target : ScriptTarget) (column : ColumnMap) : unit =         
    target |> WriteLines [
       column.Detail.Name 
-      column.Detail.IsPrimary.ScriptAsCsBoolean()
-      column.Detail.IsGenerated.ScriptAsCsBoolean()
-      column.ScriptAsCsType()
+      (ScriptAsCsBoolean column.Detail.IsPrimary)
+      (ScriptAsCsBoolean column.Detail.IsGenerated)
+      (ScriptAsCsType column)
       ] [
       Required("                                                                ")
       Optional("        [DataMember]                                            ", ScriptingOptions.Serializable)
       Required("        [DbColumn(Name=\"$0\", IsPrimary=$1, IsGenerated=$2)]   ")
       Required("        private $3 _$0;                                         ")
-      ]       
+      ]  |> ignore
 
 
-//protected void WriteFields(IEnumerable<ColumnMap> columns)
-//      {
-//         foreach (var column in columns)
-//         {
-//            WriteField(column);
-//         }
-//      }
+let WriteFields (target : ScriptTarget) (columns : ColumnMap array) : ScriptTarget =
+      columns |> Array.iter (WriteField target)
+      target 
 
-let WritePartial (target : ScriptTarget) (column : ColumnMap) : ScriptTarget =   
-   target |> WriteLines [column.Detail.Name (*; column.ScriptAsCsType()*)] [
+let WritePartial (target : ScriptTarget) (column : ColumnMap) : unit = //ScriptTarget =   
+   target |> WriteLines [column.Detail.Name; (ScriptAsCsType column)] [
       Optional("                                                                ", ScriptingOptions.ImplementPartialPropertyChanges)
       Optional("        partial void On$0Changing(ref $1 value);                ", ScriptingOptions.ImplementPartialPropertyChanges)
       Optional("        partial void On$0Changed();                             ", ScriptingOptions.ImplementPartialPropertyChanges)
-      ]
+      ] |> ignore
       
 
 let WritePartials (columns : ColumnMap list)  (target : ScriptTarget) : ScriptTarget =   
-   columns |> List.forall (WritePartial target) |> ignore
+   columns |> List.iter (WritePartial target) 
    target
 
 
@@ -317,65 +251,63 @@ let WriteKeyProperty (table : TableMap) (target : ScriptTarget) : ScriptTarget =
 //         }
 //      }      
 
-//protected void WriteProperty(ColumnMap column)
-//      {
-//         var csType = column.ScriptAsCsType();
+//let WriteProperty (column : ColumnMap) (target : ScriptTarget) : ScriptTarget =
+//   let csType = (ScriptAsCsType column);
 //
-//         _writer.WriteLines(new OptionLines()
-//            {
-//               {""},
-//               {"        [Column]                                                ", ScriptingOptions.ImplementLinqContext},
-//               {"        public $0 $1                                            "},
-//               {"        {                                                       "},
-//               {"            get { return _$1; }                                 "},
-//               {"            set                                                 "},
-//               {"            {                                                   "},
-//               {"                if (_$1 != value)                               ", ScriptingOptions.MinimizePropertyChanges},
-//               {"                {                                               ", ScriptingOptions.MinimizePropertyChanges},
-//            }, csType, column.Detail.Name);
+//   target |> WriteLines [csType; column.Detail.Name] [
+//      Required("                                                                ")
+//      Optional("        [Column]                                                ", ScriptingOptions.ImplementLinqContext)
+//      Required("        public $0 $1                                            ")
+//      Required("        {                                                       ")
+//      Required("            get { return _$1; }                                 ")
+//      Required("            set                                                 ")
+//      Required("            {                                                   ")
+//      Optional("                if (_$1 != value)                               ", ScriptingOptions.MinimizePropertyChanges)
+//      Optional("                {                                               ", ScriptingOptions.MinimizePropertyChanges)
+//      ] |> ignore
 //
-//         if (csType == "DateTime" || csType == "DateTime?")
-//         {
-//            _writer
-//               .WriteLines(new OptionLines()
-//                  {
-//                     {"                    if (!Equals(value, null))             ", ScriptingOptions.UnspecifiedDateTimes},
-//                     {"                    {                                     ", ScriptingOptions.UnspecifiedDateTimes},
-//                  })
+//   if (csType = "DateTime" || csType = "DateTime?") then
+//      target |> WriteLines [] [
+//         Optional("                    if (!Equals(value, null))             ", ScriptingOptions.UnspecifiedDateTimes)
+//         Optional("                    {                                     ", ScriptingOptions.UnspecifiedDateTimes)
+//         ] |> ignore
 //
-//               .WriteLine(
-//                  csType == "DateTime?"
-//                     ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
-//                     : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes);
+//      if (csType = "DateTime?") then
+//         target |> WriteLines [] [
+//            Required("                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);")
+//            ] |> ignore
+//      else
+//         target |> WriteLines [] [
+//            Optional("                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes)
+//            ] |> ignore
 //
-//            if (column.Detail.SqlType.IsDateOnly() && _options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
-//            {
-//               _writer.WriteLine(
-//                  _options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)
-//                     ? "                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);"
-//                     : "                        value = value.Date;");
-//            }
+//         if ((IsDateOnly column.Detail.SqlType) && _options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns)) then
+//            if (target.Options.HasFlag(ScriptingOptions.UnspecifiedDateTimes)) then
+//               target |> WriteLines [] [            
+//                  Required("                        value = new DateTime(value.Date.Ticks, DateTimeKind.Unspecified);")
+//                  ] |> ignore
+//            else
+//               target |> WriteLines [] [
+//                  Required("                        value = value.Date;")
+//                  ] |> ignore
 //
-//            _writer.WriteLines(new OptionLines()
-//               {
-//                  {"                    }                                        ", ScriptingOptions.UnspecifiedDateTimes},
-//                  {"                                                             ", ScriptingOptions.UnspecifiedDateTimes},
-//               });
-//         }
-//
-//         _writer.WriteLines(new OptionLines()
-//            {
-//               {"                    On$0Changing(ref value);                    ", ScriptingOptions.ImplementPartialPropertyChanges},
-//               {"                    OnPropertyChanging();                       ", ScriptingOptions.ImplementNotifyPropertyChanging},
-//               {"                    _$0 = value;                                "},
-//               {"                    _entity.Change(\"$0\", value);              ", ScriptingOptions.ImplementStateTracking},
-//               {"                    OnPropertyChanged();                        ", ScriptingOptions.ImplementNotifyPropertyChanged},
-//               {"                    On$0Changed();                              ", ScriptingOptions.ImplementPartialPropertyChanges},
-//               {"                }                                               ", ScriptingOptions.MinimizePropertyChanges},
-//               {"            }                                                   "},
-//               {"        }                                                       "},
-//            }, column.Detail.Name);
-//      }
+//      target |> WriteLines [] [
+//         Optional("                    }                                        ", ScriptingOptions.UnspecifiedDateTimes)
+//         Optional("                                                             ", ScriptingOptions.UnspecifiedDateTimes)
+//         ] |> ignore
+//   
+//   target |> WriteLines [column.Detail.Name] [
+//      Optional("                    On$0Changing(ref value);                    ", ScriptingOptions.ImplementPartialPropertyChanges)
+//      Optional("                    OnPropertyChanging();                       ", ScriptingOptions.ImplementNotifyPropertyChanging)
+//      Required("                    _$0 = value;                                ")
+//      Optional("                    _entity.Change(\"$0\", value);              ", ScriptingOptions.ImplementStateTracking)
+//      Optional("                    OnPropertyChanged();                        ", ScriptingOptions.ImplementNotifyPropertyChanged)
+//      Optional("                    On$0Changed();                              ", ScriptingOptions.ImplementPartialPropertyChanges)
+//      Optional("                }                                               ", ScriptingOptions.MinimizePropertyChanges)
+//      Required("            }                                                   ")
+//      Required("        }                                                       ")
+//      ]
+
 
 let WritePropertyChanging (target : ScriptTarget) : ScriptTarget =
    target |> WriteLines [] [

@@ -1,0 +1,4 @@
+namespace DrivenDb.Scripting.Internal
+{
+   
+}

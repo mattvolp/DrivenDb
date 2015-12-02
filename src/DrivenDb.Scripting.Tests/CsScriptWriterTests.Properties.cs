@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 using DrivenDb.Data.MsSql;
@@ -132,24 +134,22 @@ namespace DrivenDb.Scripting.Tests
          return scriptWriter;
       }
 
-      private class CsGeneratorLikeness
-         : CsGenerator
+      private class CsGeneratorLikeness         
       {
-         private readonly StringWriter _writer;
+         private readonly ScriptTarget _target;
 
-         public CsGeneratorLikeness(ScriptingOptions options, StringWriter writer)
-            : base(options, writer)
+         public CsGeneratorLikeness(ScriptingOptions options, StringWriter writer)            
          {
-            _writer = writer;
+            _target = new ScriptTarget(options, writer);            
          }
 
          public string WriteProperty(ColumnDetail details)
          {
             var mapping = new ColumnMap(details, null);
 
-            base.WriteProperty(mapping);
-
-            return _writer.ToString();
+            CsScriptingServices.WriteProperty(_target, mapping);
+            
+            return _target.Writer.ToString();
          }
       }
    }

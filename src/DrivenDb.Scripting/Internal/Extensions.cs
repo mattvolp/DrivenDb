@@ -30,17 +30,7 @@ namespace DrivenDb.Scripting.Internal
          // changes "this code $0" to "this code {0}"
          return ArgsEx.Replace(input, "{$1}");
       }
-
-      //
-      // ENUMERABLES
-      //
-
-      public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
-      {
-         foreach (var item in items)
-            action(item);
-      }
-
+      
       // 
       // STRINGS
       //
@@ -151,14 +141,6 @@ namespace DrivenDb.Scripting.Internal
       //
       // TABLE RELATED
       //
-
-      public static IEnumerable<TableDetail> GetDetails(this IEnumerable<TableMap> maps)
-      {
-         foreach (var map in maps)
-         {
-            yield return map.Detail;
-         }
-      }
 
       public static IEnumerable<ColumnMap> GetColumnsWithDefaultDefinitions(this TableMap table)
       {
