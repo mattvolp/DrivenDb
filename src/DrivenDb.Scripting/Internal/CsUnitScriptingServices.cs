@@ -6,17 +6,14 @@ using DrivenDb.Data.Internal;
 
 namespace DrivenDb.Scripting.Internal
 {
-   internal static class CsScriptingServices
+   internal static class CsUnitScriptingServices
    {
-      public static void ScriptUnit(ScriptTarget target, string @namespace, string contextName, TableMap[] tables)
+      public static void WriteUnit(ScriptTarget target, string @namespace, string contextName, TableMap[] tables)
       {
-         WriteNamespaceOpen(target, @namespace);
-
-         if (target.Options.HasFlag(ScriptingOptions.ImplementLinqContext))
-            WriteContext(target, contextName, tables.Select(t => t.Detail));
-
-         ScriptEntities(target, tables);         
-         WriteNamespaceClose(target);
+         target.WriteNamespaceOpenAndContinue(@namespace)
+            .WriteContextAndContinue(contextName, tables.GetDetails())
+            .WriteEntitiesAndContinue(tables)
+            .WriteNamespaceClose();     
       }
 
       public static void WriteNamespaceOpen(ScriptTarget target, string @namespace)
@@ -67,17 +64,17 @@ namespace DrivenDb.Scripting.Internal
                });
       }
 
-      public static void ScriptEntities(ScriptTarget target, IEnumerable<TableMap> tables)
+      public static void WriteEntities(ScriptTarget target, IEnumerable<TableMap> tables)
       {
          foreach (var table in tables)
          {
-            ScriptEntity(target, table);
+            WriteEntity(target, table);
          }
       }
 
-      public static void ScriptEntity(ScriptTarget target, TableMap table)
-      {  
-         target.WriteKeyClassAndContinue(table)       
+      public static void WriteEntity(ScriptTarget target, TableMap table)
+      {         
+         target.WriteKeyClassAndContinue(table)
             .WriteClassOpenAndContinue(table)
             .WriteConstructorAndContinue(table)
             .WriteFieldsAndContinue(table)
@@ -87,10 +84,22 @@ namespace DrivenDb.Scripting.Internal
             .WritePropertyChangingAndContinue(table)
             .WritePropertyChangedAndContinue(table)
             .WriteValidationCheckAndContinue(table)
-            .WriteClassCloseAndContinue(table);
-            //.Ignore()            
+            .WriteClassClose(table);
+
+         //Tuple.Create(target, table)
+         //   .WriteKeyClassAndContinue()
+         //   .WriteClassOpenAndContinue()
+         //   .WriteConstructorAndContinue()
+         //   .WriteFieldsAndContinue()
+         //   .WriteKeyPropertyAndContinue()
+         //   .WritePropertiesAndContinue()
+         //   .WritePartialsAndContinue()
+         //   .WritePropertyChangingAndContinue()
+         //   .WritePropertyChangedAndContinue()
+         //   .WriteValidationCheckAndContinue()
+         //   .WriteClassClose();
       }
-      
+
       public static void WriteKeyClass(ScriptTarget target, TableMap table)
       {
          var primaries = table.GetPrimaryKeyColumns()
@@ -168,7 +177,7 @@ namespace DrivenDb.Scripting.Internal
       {
          var defaults = table.GetColumnsWithDefaultDefinitions()
             .ToArray();
-         
+
          target
             .WriteLinesAndContinue(new ScriptLines()
                {
@@ -177,26 +186,26 @@ namespace DrivenDb.Scripting.Internal
                   {"        {                                                       "},
                }, table.Detail.Name)
 
-         .WriteTemplateAndContinue(defaults, new ScriptLines()
-            {
-               {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
-               {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
-            }, d => new []
+            .WriteTemplateAndContinue(defaults, new ScriptLines()
                {
-                    d.Detail.Name
-                  , d.ScriptAsCsType()
-                  , d.ScriptAsDefaultValue(target.Options)
-               })
+                  {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
+                  {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
+               }, d => new[]
+                  {
+                       d.Detail.Name
+                     , d.ScriptAsCsType()
+                     , CsValueScriptingServices.ToCsScriptedDefaultValue(target.Options, d.Detail) //d.ScriptAsDefaultValue(target.Options)
+                  })
 
-         .WriteLines(new ScriptLines()
-            {
-               {"        }                                                       "},
-               {"                                                                ", ScriptingOptions.ImplementStateTracking},
-               {"        public IDbEntity Entity                                 ", ScriptingOptions.ImplementStateTracking},
-               {"        {                                                       ", ScriptingOptions.ImplementStateTracking},
-               {"            get { return _entity; }                             ", ScriptingOptions.ImplementStateTracking},
-               {"        }                                                       ", ScriptingOptions.ImplementStateTracking},
-            });
+            .WriteLines(new ScriptLines()
+               {
+                  {"        }                                                       "},
+                  {"                                                                ", ScriptingOptions.ImplementStateTracking},
+                  {"        public IDbEntity Entity                                 ", ScriptingOptions.ImplementStateTracking},
+                  {"        {                                                       ", ScriptingOptions.ImplementStateTracking},
+                  {"            get { return _entity; }                             ", ScriptingOptions.ImplementStateTracking},
+                  {"        }                                                       ", ScriptingOptions.ImplementStateTracking},
+               });
       }
       
       public static void WriteFields(ScriptTarget target, IEnumerable<ColumnMap> columns)
@@ -216,10 +225,10 @@ namespace DrivenDb.Scripting.Internal
                {"        [DbColumn(Name=\"$0\", IsPrimary=$1, IsGenerated=$2)]   "},
                {"        private $3 _$0;                                         "},
             }
-         , column.Detail.Name
-         , column.Detail.IsPrimary.ScriptAsCsBoolean()
-         , column.Detail.IsGenerated.ScriptAsCsBoolean()
-         , column.ScriptAsCsType());
+            , column.Detail.Name
+            , column.Detail.IsPrimary.ScriptAsCsBoolean()
+            , column.Detail.IsGenerated.ScriptAsCsBoolean()
+            , column.ScriptAsCsType());
       }
 
       public static void WritePartials(ScriptTarget target, IEnumerable<ColumnMap> columns)
@@ -258,8 +267,7 @@ namespace DrivenDb.Scripting.Internal
                   {"        }                                                    "},
                }
                , table.Detail.Name
-               , primaries.ScriptAsDelimitedPrivateMemberNames()
-               );
+               , primaries.ScriptAsDelimitedPrivateMemberNames());
          }         
       }
 

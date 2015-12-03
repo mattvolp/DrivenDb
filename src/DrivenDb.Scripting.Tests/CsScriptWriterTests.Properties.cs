@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
+﻿using System.IO;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 using DrivenDb.Data.MsSql;
@@ -147,7 +145,7 @@ namespace DrivenDb.Scripting.Tests
          {
             var mapping = new ColumnMap(details, null);
 
-            CsScriptingServices.WriteProperty(_target, mapping);
+            CsUnitScriptingServices.WriteProperty(_target, mapping);
             
             return _target.Writer.ToString();
          }

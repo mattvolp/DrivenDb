@@ -48,13 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Internal\CsGenerator.cs" />
+    <Compile Include="Internal\CsValueScriptingServices.cs" />
     <Compile Include="Internal\IEntityGenerator.cs" />
-    <Compile Include="Internal\CsScriptingCompositions.cs" />
+    <Compile Include="Internal\CsUnitScriptingCompositions.cs" />
     <Compile Include="Internal\ScriptLine.cs" />
     <Compile Include="Internal\ScriptLines.cs" />
     <Compile Include="Internal\ScriptTarget.cs" />
     <Compile Include="Internal\Extensions.cs" />
-    <Compile Include="Internal\CsScriptingServices.cs" />
+    <Compile Include="Internal\CsUnitScriptingServices.cs" />
     <Compile Include="Internal\Success.cs" />
     <Compile Include="Internal\WritingCompositions.cs" />
     <Compile Include="Internal\WritingServices.cs" />

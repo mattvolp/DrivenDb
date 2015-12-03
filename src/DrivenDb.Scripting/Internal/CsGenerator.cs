@@ -17,7 +17,7 @@ namespace DrivenDb.Scripting.Internal
 
       public void Write(string @namespace, string contextName, TableMap[] tables)
       {         
-         CsScriptingServices.ScriptUnit(_target, @namespace, contextName, tables);         
+         CsUnitScriptingServices.WriteUnit(_target, @namespace, contextName, tables);         
       }      
    }
 }

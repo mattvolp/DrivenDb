@@ -142,6 +142,11 @@ namespace DrivenDb.Scripting.Internal
       // TABLE RELATED
       //
 
+      public static IEnumerable<TableDetail> GetDetails(this IEnumerable<TableMap> tables)
+      {
+         return tables.Select(t => t.Detail);
+      }
+
       public static IEnumerable<ColumnMap> GetColumnsWithDefaultDefinitions(this TableMap table)
       {
          foreach (var column in table.Columns)
@@ -180,10 +185,10 @@ namespace DrivenDb.Scripting.Internal
          }
       }
 
-      public static string ScriptAsDefaultValue(this ColumnMap column, ScriptingOptions options)
-      {
-         return column.Detail.SqlType
-            .ToScriptedDefaultValue(options, column.Detail);
-      }
+      //public static string ScriptAsDefaultValue(this ColumnMap column, ScriptingOptions options)
+      //{
+      //   return column.Detail.SqlType
+      //      .ToCsScriptedDefaultValue(options, column.Detail);
+      //}
    }
 }

@@ -70,96 +70,96 @@ namespace DrivenDb.Data.MsSql
       public static MsSqlType Xml = new MsSqlType("xml", "string");
       public static MsSqlType NullableXml = new MsSqlType("xml", "string");   
 
-      public override string ToScriptedDefaultValue(ScriptingOptions options, ColumnDetail column)
-      {
-         /*
-        * (N'TEST')
-        * ('TEST')
-        * ((5))
-        * (getdate())
-        */
-         var value = StripParentheses(column.DefaultValue);
+      //public override string ToScriptedDefaultValue(ScriptingOptions options, ColumnDetail column)
+      //{
+      //   /*
+      //  * (N'TEST')
+      //  * ('TEST')
+      //  * ((5))
+      //  * (getdate())
+      //  */
+      //   var value = StripParentheses(column.DefaultValue);
 
-         if (DefaultIsExplicitNull(value))
-         {
-            value = ScriptCsNull();
-         }
-         else
-         {
-            if (DefaultIsAnsiString(value))
-            {
-               value = ReplaceAnsiQuotes(value);
-            }
-            else if (DefaultIsUnicodeString(value))
-            {
-               value = ReplaceUnicodeQuotes(value);
-            }
+      //   if (DefaultIsExplicitNull(value))
+      //   {
+      //      value = ScriptCsNull();
+      //   }
+      //   else
+      //   {
+      //      if (DefaultIsAnsiString(value))
+      //      {
+      //         value = ReplaceAnsiQuotes(value);
+      //      }
+      //      else if (DefaultIsUnicodeString(value))
+      //      {
+      //         value = ReplaceUnicodeQuotes(value);
+      //      }
 
-            if (DefaultIsGetDateFunction(value))
-            {
-               // TODO: doesn't cover timespan defaults?
-               value = ScriptCsNowFunction(options, IsDateOnly());
-            }                        
-            else if (ColumnIsDateOrTimeType(column))
-            {
-               // TODO: doesn't cover timespan defaults
-               value = ScriptCsDateTimeParse(options, IsDateOnly(), value);
-            }
-            else if (ColumnIsBooleanType(column))
-            {
-               value = ScriptCsBoolFromNumeric(value);
-            }
-            else if (ColumnIsDecimalType(column))
-            {
-               value = ScriptCsDecimalFromNumeric(value);
-            }
-         }
+      //      if (DefaultIsGetDateFunction(value))
+      //      {
+      //         // TODO: doesn't cover timespan defaults?
+      //         value = ScriptCsNowFunction(options, IsDateOnly());
+      //      }                        
+      //      else if (ColumnIsDateOrTimeType(column))
+      //      {
+      //         // TODO: doesn't cover timespan defaults
+      //         value = ScriptCsDateTimeParse(options, IsDateOnly(), value);
+      //      }
+      //      else if (ColumnIsBooleanType(column))
+      //      {
+      //         value = ScriptCsBoolFromNumeric(value);
+      //      }
+      //      else if (ColumnIsDecimalType(column))
+      //      {
+      //         value = ScriptCsDecimalFromNumeric(value);
+      //      }
+      //   }
 
-         return value;
-      }
+      //   return value;
+      //}
 
-      private static string ReplaceUnicodeQuotes(string value)
-      {
-         return "\"" + value.Substring(2, value.Length - 3) + "\"";
-      }
+      //private static string ReplaceUnicodeQuotes(string value)
+      //{
+      //   return "\"" + value.Substring(2, value.Length - 3) + "\"";
+      //}
 
-      private static string ReplaceAnsiQuotes(string value)
-      {
-         return ReplaceSingleQuotes(value);         
-      }
+      //private static string ReplaceAnsiQuotes(string value)
+      //{
+      //   return ReplaceSingleQuotes(value);         
+      //}
 
-      private static bool ColumnIsDateOrTimeType(ColumnDetail column)
-      {
-         return column.SqlType.ToString().StartsWith("date")
-             || column.SqlType.ToString() == "time";
-      }
+      //private static bool ColumnIsDateOrTimeType(ColumnDetail column)
+      //{
+      //   return column.SqlType.ToString().StartsWith("date")
+      //       || column.SqlType.ToString() == "time";
+      //}
 
-      private static bool ColumnIsDecimalType(ColumnDetail column)
-      {
-         return column.SqlType.ToString()
-            .StartsWith("decimal", StringComparison.CurrentCultureIgnoreCase);
-      }
+      //private static bool ColumnIsDecimalType(ColumnDetail column)
+      //{
+      //   return column.SqlType.ToString()
+      //      .StartsWith("decimal", StringComparison.CurrentCultureIgnoreCase);
+      //}
 
-      private static bool ColumnIsBooleanType(ColumnDetail column)
-      {
-         return column.SqlType.ToString()
-            .StartsWith("bit", StringComparison.CurrentCultureIgnoreCase);
-      }
+      //private static bool ColumnIsBooleanType(ColumnDetail column)
+      //{
+      //   return column.SqlType.ToString()
+      //      .StartsWith("bit", StringComparison.CurrentCultureIgnoreCase);
+      //}
 
-      private static bool DefaultIsGetDateFunction(string value)
-      {
-         return value.StartsWith("getdate()", StringComparison.CurrentCultureIgnoreCase);
-      }
+      //private static bool DefaultIsGetDateFunction(string value)
+      //{
+      //   return value.StartsWith("getdate()", StringComparison.CurrentCultureIgnoreCase);
+      //}
 
-      private static bool DefaultIsUnicodeString(string value)
-      {
-         return value.StartsWith("N\'", StringComparison.CurrentCultureIgnoreCase);
-      }
+      //private static bool DefaultIsUnicodeString(string value)
+      //{
+      //   return value.StartsWith("N\'", StringComparison.CurrentCultureIgnoreCase);
+      //}
 
-      private static bool DefaultIsAnsiString(string value)
-      {
-         return DefaultIsSingleQuoted(value);
-      }
+      //private static bool DefaultIsAnsiString(string value)
+      //{
+      //   return DefaultIsSingleQuoted(value);
+      //}
    }   
 }
 
