@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8566532F-2A35-44D8-802F-8ADE730CFEF0}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,8 +33,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Data.Tests", "DrivenDb.Data.Tests\DrivenDb.Data.Tests.csproj", "{88A3F907-E3B3-481C-84F4-CA08D510018F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivenDb.Scripting", "DrivenDb.Scripting\DrivenDb.Scripting.csproj", "{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DrivenDb.ScriptingF", "DrivenDb.ScriptingF\DrivenDb.ScriptingF.fsproj", "{BEFB0B41-67E1-4354-9883-66F53762AF19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,18 +136,6 @@ Global
 		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x64.Build.0 = Release|Any CPU
 		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x86.ActiveCfg = Release|Any CPU
 		{C57244D6-26F2-4A73-806C-1CDCAAC93CCF}.Release|x86.Build.0 = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|x64.Build.0 = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Debug|x86.Build.0 = Debug|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|x64.ActiveCfg = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|x64.Build.0 = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|x86.ActiveCfg = Release|Any CPU
-		{BEFB0B41-67E1-4354-9883-66F53762AF19}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

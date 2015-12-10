@@ -1,4 +1,0 @@
-namespace DrivenDb.Scripting.Internal
-{
-   
-}

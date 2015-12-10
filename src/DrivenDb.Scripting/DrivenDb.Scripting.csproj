@@ -48,15 +48,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Internal\CsGenerator.cs" />
-    <Compile Include="Internal\CsValueScriptingServices.cs" />
+    <Compile Include="Internal\DbScriptingServices.cs" />
+    <Compile Include="Internal\MsSqlScriptingServices.cs" />
     <Compile Include="Internal\IEntityGenerator.cs" />
-    <Compile Include="Internal\CsUnitScriptingCompositions.cs" />
     <Compile Include="Internal\ScriptLine.cs" />
     <Compile Include="Internal\ScriptLines.cs" />
     <Compile Include="Internal\ScriptTarget.cs" />
     <Compile Include="Internal\Extensions.cs" />
-    <Compile Include="Internal\CsUnitScriptingServices.cs" />
-    <Compile Include="Internal\Success.cs" />
+    <Compile Include="Internal\SqLiteScriptingServices.cs" />
+    <Compile Include="Internal\Writers\CsClassWriter.cs" />
+    <Compile Include="Internal\Writers\CsConstructorWriter.cs" />
+    <Compile Include="Internal\Writers\CsContextWriter.cs" />
+    <Compile Include="Internal\Writers\CsEntityWriter.cs" />
+    <Compile Include="Internal\Writers\CsFieldWriter.cs" />
+    <Compile Include="Internal\Writers\CsKeyClassWriter.cs" />
+    <Compile Include="Internal\Writers\CsKeyPropertyWriter.cs" />
+    <Compile Include="Internal\Writers\CsNamespaceWriter.cs" />
+    <Compile Include="Internal\Writers\CsPartialWriter.cs" />
+    <Compile Include="Internal\Writers\CsPropertyChangedWriter.cs" />
+    <Compile Include="Internal\Writers\CsPropertyChangingWriter.cs" />
+    <Compile Include="Internal\Writers\CsPropertyWriter.cs" />
+    <Compile Include="Internal\Writers\CsValidationWriter.cs" />
     <Compile Include="Internal\WritingCompositions.cs" />
     <Compile Include="Internal\WritingServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

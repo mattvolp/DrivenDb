@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
-using DrivenDb.Scripting.Internal;
+using DrivenDb.Scripting.Internal.Writers;
 using Microsoft.CSharp;
 
 namespace DrivenDb.Testing
@@ -15,7 +15,10 @@ namespace DrivenDb.Testing
       {
          using (var buffer = new StringWriter())
          {
-            var scripter = new CsGenerator(options, buffer);
+            var scripter = new DrivenDb.Scripting.Internal.CsGenerator(options, buffer
+               , new CsNamespaceWriter(new CsContextWriter(), new CsEntityWriter(new CsClassWriter(new CsConstructorWriter(), new CsFieldWriter()
+               , new CsKeyPropertyWriter(), new CsPropertyWriter(), new CsPartialWriter(), new CsPropertyChangingWriter(), new CsPropertyChangedWriter(), 
+               new CsValidationWriter()))));
             
             scripter.Write("TestNamespace", "TestContext", tables);
 
