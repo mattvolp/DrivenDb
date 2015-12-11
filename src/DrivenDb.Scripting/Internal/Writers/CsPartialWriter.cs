@@ -1,11 +1,18 @@
 ﻿using System.Collections.Generic;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsPartialWriter
+      : ITableWriter
    {
+      public void Write(ScriptTarget target, TableMap table)
+      {
+         Write(target, table.Columns);
+      }
+
       public void Write(ScriptTarget target, IEnumerable<ColumnMap> columns)
       {
          foreach (var column in columns)
@@ -24,6 +31,6 @@ namespace DrivenDb.Scripting.Internal.Writers
             }
             , column.Detail.Name
             , column.ScriptAsCsType());
-      }
+      }      
    }
 }

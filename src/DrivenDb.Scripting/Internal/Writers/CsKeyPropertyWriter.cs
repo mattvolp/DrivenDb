@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using DrivenDb.Data;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsKeyPropertyWriter
+      : ITableWriter
    {
       public void Write(ScriptTarget target, TableMap table)
       {

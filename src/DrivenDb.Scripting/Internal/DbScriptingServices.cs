@@ -76,7 +76,7 @@ namespace DrivenDb.Scripting.Internal
       
       public static string ScriptCsDecimalFromNumeric(string value)
       {
-         return value += "m";
+         return value + "m";
       }
 
       public static bool DefaultIsGetDateFunction(string value)

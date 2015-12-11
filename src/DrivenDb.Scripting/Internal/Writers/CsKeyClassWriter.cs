@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using DrivenDb.Data;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsKeyClassWriter
+      : ITableWriter
    {
-      public static void Write(ScriptTarget target, TableMap table)
+      public void Write(ScriptTarget target, TableMap table)
       {
          var primaries = table.GetPrimaryKeyColumns()
             .ToArray();
@@ -15,7 +17,7 @@ namespace DrivenDb.Scripting.Internal.Writers
          if (primaries.Any())
          {
             target
-               .WriteLinesAndContinue(new ScriptLines()
+               .WriteLines(new ScriptLines()
                   {
                      {"                                                          "},
                      {"    public class $0Key                                    "},
@@ -30,33 +32,45 @@ namespace DrivenDb.Scripting.Internal.Writers
                   , primaries.ScriptAsDelimitedCsTypedParameterNames()
                   , primaries.ScriptAsDelimitedParameterNames())
 
-               .WriteTemplateAndContinue(primaries, new ScriptLines()
+               .WriteTemplate(primaries, new ScriptLines()
                   {
                      {"            $0 = $1;                                     "},
-                  }, p => new[]
-                     {
-                        p.Detail.Name, p.ScriptAsParameterName()
-                     })
+                  }, ColumnExtractor1)
 
-               .WriteLinesAndContinue(new ScriptLines()
+               .WriteLines(new ScriptLines()
                   {
                      {"        }                                                 "},
                      {"                                                          "},
                   })
 
-               .WriteTemplateAndContinue(primaries, new ScriptLines()
+               .WriteTemplate(primaries, new ScriptLines()
                   {
                      {"        public readonly $0 $1;                            "},
-                  }, p => new[]
-                     {
-                        p.ScriptAsCsType(), p.Detail.Name
-                     })
+                  }, ColumnExtractor2)
 
                .WriteLines(new ScriptLines()
                   {
                      {"   }                                                      "},
                   });
          }
+      }
+
+      private static string[] ColumnExtractor1(ColumnMap column)
+      {
+         return new[]
+            {
+               column.Detail.Name,
+               column.ScriptAsParameterName()
+            };
+      }
+
+      private static string[] ColumnExtractor2(ColumnMap column)
+      {
+         return new[]
+            {
+               column.ScriptAsCsType(),
+               column.Detail.Name
+            };
       }
    }
 }

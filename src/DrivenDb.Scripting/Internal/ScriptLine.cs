@@ -4,13 +4,13 @@ namespace DrivenDb.Scripting.Internal
 {
    internal class ScriptLine
    {
-      public ScriptLine(string line, params ScriptingOptions[] options) 
+      public ScriptLine(string text, params ScriptingOptions[] options) 
       {         
-         Line = line;
+         Text = text;
          Options = options;
       }
 
       public readonly ScriptingOptions[] Options;
-      public readonly string Line;      
+      public readonly string Text;      
    }   
 }

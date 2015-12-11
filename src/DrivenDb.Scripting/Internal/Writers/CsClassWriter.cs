@@ -1,38 +1,26 @@
-﻿using DrivenDb.Data;
+﻿using System.Collections.Generic;
+using DrivenDb.Data;
 using DrivenDb.Data.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsClassWriter
+      : ITablesWriter
    {
-      private readonly CsConstructorWriter _constructor;
-      private readonly CsFieldWriter _fields;
-      private readonly CsKeyPropertyWriter _keyProperty;
-      private readonly CsPropertyWriter _properties;
-      private readonly CsPartialWriter _partials;
-      private readonly CsPropertyChangingWriter _propertyChanging;
-      private readonly CsPropertyChangedWriter _propertyChanged;
-      private readonly CsValidationWriter _validation;
-
-      public CsClassWriter(
-           CsConstructorWriter constructor
-         , CsFieldWriter fields
-         , CsKeyPropertyWriter keyProperty
-         , CsPropertyWriter properties
-         , CsPartialWriter partials
-         , CsPropertyChangingWriter propertyChanging
-         , CsPropertyChangedWriter propertyChanged
-         , CsValidationWriter validation
-         )
+      private readonly ITableWriter _content;
+      
+      public CsClassWriter(ITableWriter content)
       {
-         _constructor = constructor;
-         _fields = fields;
-         _keyProperty = keyProperty;
-         _properties = properties;
-         _partials = partials;
-         _propertyChanging = propertyChanging;
-         _propertyChanged = propertyChanged;
-         _validation = validation;
+         _content = content;         
+      }
+
+      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
+      {
+         foreach (var table in tables)
+         {
+            Write(target, table);
+         }
       }
 
       public void Write(ScriptTarget target, TableMap table)
@@ -50,24 +38,12 @@ namespace DrivenDb.Scripting.Internal.Writers
             }
             , table.Detail.Schema
             , table.Detail.Name
-            , target.Options.ScriptAsDelimitedImpliedInterfaces()
+            , target.Options.ScriptAsDelimitedImpliedInterfaces() // TODO: unsure about this
             );
 
-         _constructor.Write(target, table);
-         _fields.Write(target, table.Columns);
-         _keyProperty.Write(target, table);
-         _properties.Write(target, table.Columns);
-         _partials.Write(target, table.Columns);
-         _propertyChanging.Write(target);
-         _propertyChanged.Write(target);
-         _validation.Write(target, table);
-
-         target.WriteLineAndContinue("    }");
-      }
-
-      //public static void WriteClassClose(ScriptTarget target)
-      //{
-      //   target.WriteLineAndContinue("    }");
-      //}
+         _content.Write(target, table);
+         
+         target.WriteLine("    }");
+      }      
    }
 }

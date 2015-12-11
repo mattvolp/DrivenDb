@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using DrivenDb.Data;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsContextWriter
+      : ITablesWriter
    {
-      public void Write(ScriptTarget target, string contextName, IEnumerable<TableDetail> tables)
+      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
       {
          target
-            .WriteLinesAndContinue(new ScriptLines()
+            .WriteLines(new ScriptLines()
                {
                   {"                                                                                              "},
                   {"    public class $0 : DataContext                                                             "},
@@ -18,21 +20,26 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"        public $0() : base(\"_\", _mappingSource)                                             "},
                   {"        {                                                                                     "},
                   {"        }                                                                                     "},
-               }, contextName)
+               }, target.ContextName)
 
-            .WriteTemplateAndContinue(tables, new ScriptLines()
+            .WriteTemplate(tables, new ScriptLines()
                {
                   {"                                                                                              "},
                   {"        public Table<$0> $0                                                                   "},
                   {"        {                                                                                     "},
                   {"            get { return this.GetTable<$0>(); }                                               "},
                   {"        }                                                                                     "},
-               }, t => new[] { t.Name })
+               }, TemplateExtractor)
 
             .WriteLines(new ScriptLines()
                {
                   {"    }                                                                                         "},
                });
+      }
+
+      private static string[] TemplateExtractor(TableMap table)
+      {
+         return new [] {table.Detail.Name};
       }
    }
 }

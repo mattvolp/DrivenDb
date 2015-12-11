@@ -139,7 +139,7 @@ namespace DrivenDb.Scripting.Tests
 
          public CsGeneratorLikeness(ScriptingOptions options, StringWriter writer)            
          {
-            _target = new ScriptTarget(options, writer);            
+            _target = new ScriptTarget(options, writer, "TestNamespace", "TestContext");            
          }
 
          public string WriteProperty(ColumnDetail details)
@@ -148,7 +148,7 @@ namespace DrivenDb.Scripting.Tests
 
             new CsPropertyWriter().Write(_target, mapping);
             
-            return _target.Writer.ToString();
+            return _target.ToString();
          }
       }
    }

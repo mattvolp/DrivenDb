@@ -30,10 +30,15 @@ namespace DrivenDb.Scripting.Internal
          // changes "this code $0" to "this code {0}"
          return ArgsEx.Replace(input, "{$1}");
       }
-      
+
       // 
       // STRINGS
       //
+
+      public static string Format(this string format, params string[] args)
+      {
+         return string.Format(format, args);
+      }
 
       public static string Format(this string format, params object[] args)
       {

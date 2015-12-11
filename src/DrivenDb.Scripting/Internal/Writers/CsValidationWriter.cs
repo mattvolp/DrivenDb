@@ -1,12 +1,14 @@
 ﻿using System;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsValidationWriter
+      : ITableWriter
    {
-      public void Write(ScriptTarget target, TableMap table) //, ScriptingOptions options)
+      public void Write(ScriptTarget target, TableMap table) 
       {
          if (!target.Options.HasFlag(ScriptingOptions.ImplementStateTracking))
          {
@@ -20,7 +22,7 @@ namespace DrivenDb.Scripting.Internal.Writers
           * state == new -> if all non-nullable/non-generated columns have a change recorded
           */
          target
-            .WriteLinesAndContinue(new ScriptLines()
+            .WriteLines(new ScriptLines()
                {
                   {"        partial void HasExtendedRequirementsMet(IList<RequirementFailure> failures);                            "},
                   {"                                                                                                                "},
@@ -37,15 +39,15 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplateAndContinue(table.GetRequiredStringColumns(), new ScriptLines()
+            .WriteTemplate(table.GetRequiredStringColumns(), new ScriptLines()
                {
                   {"                if (_$0 == default(string))                                                                     "},
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Null value not allowed\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, (c) => new[] { c.Detail.Name })
+               }, ColumnExtractor)
 
-            .WriteLinesAndContinue(new ScriptLines()
+            .WriteLines(new ScriptLines()
                {
                   {"            }                                                                                                   "},
                   {"                                                                                                                "},
@@ -53,13 +55,13 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplateAndContinue(table.GetRequiredColumns(), new ScriptLines()
+            .WriteTemplate(table.GetRequiredColumns(), new ScriptLines()
                {
                   {"                if (!_entity.Changes.Any(c => c.ColumnName == \"$0\"))                                          "},
                   {"                {                                                                                               "},
                   {"                    failures.Add(new RequirementFailure(\"$0\", \"Required value not set\", default(string)));  "},
                   {"                }                                                                                               "},
-               }, (c) => new[] { c.Detail.Name })
+               }, ColumnExtractor)
 
             .WriteLines(new ScriptLines()
                {
@@ -70,6 +72,11 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"            return failures;                                                                                    "},
                   {"        }                                                                                                       "},
                });
+      }
+
+      private static string[] ColumnExtractor(ColumnMap column)
+      {
+         return new[] { column.Detail.Name };
       }
    }
 }

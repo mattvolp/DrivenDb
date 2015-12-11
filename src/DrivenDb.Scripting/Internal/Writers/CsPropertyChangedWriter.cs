@@ -1,7 +1,16 @@
-﻿namespace DrivenDb.Scripting.Internal.Writers
+﻿using DrivenDb.Data;
+using DrivenDb.Scripting.Internal.Interfaces;
+
+namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsPropertyChangedWriter
+      : ITableWriter
    {
+      public void Write(ScriptTarget target, TableMap table)
+      {
+         Write(target);
+      }
+
       public void Write(ScriptTarget target)
       {
          target.WriteLines(new ScriptLines()
@@ -14,6 +23,6 @@
                {"            PropertyChanged(this, new PropertyChangedEventArgs(property));                    "},
                {"        }                                                                                     "},
             });
-      }
+      }      
    }
 }

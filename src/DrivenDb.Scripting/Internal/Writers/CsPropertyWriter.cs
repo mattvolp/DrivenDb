@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using DrivenDb.Data;
+﻿using DrivenDb.Data;
 using DrivenDb.Data.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsPropertyWriter
-   {
-      public void Write(ScriptTarget target, IEnumerable<ColumnMap> columns)
+      : ITableWriter
+   {      
+      public void Write(ScriptTarget target, TableMap table)
       {
-         foreach (var column in columns)
+         foreach (var column in table.Columns)
          {
             Write(target, column);
          }
@@ -33,15 +34,16 @@ namespace DrivenDb.Scripting.Internal.Writers
 
          if (csType == "DateTime" || csType == "DateTime?")
          {
-            target.WriteLinesAndContinue(new ScriptLines()
+            target.WriteLines(new ScriptLines()
                {
                   {"                    if (!Equals(value, null))             ", ScriptingOptions.UnspecifiedDateTimes},
                   {"                    {                                     ", ScriptingOptions.UnspecifiedDateTimes},
-               })
-               .WriteLine(
-                  csType == "DateTime?"
-                     ? "                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"
-                     : "                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes);
+               });
+
+            if (csType == "DateTime?")
+               target.WriteLines(new ScriptLines() {{"                        value = new DateTime(value.Value.Ticks, DateTimeKind.Unspecified);"}});
+            else
+               target.WriteLines(new ScriptLines() {{"                        value = new DateTime(value.Ticks, DateTimeKind.Unspecified);      ", ScriptingOptions.UnspecifiedDateTimes}});
 
             if (column.Detail.SqlType.IsDateOnly() && target.Options.HasFlag(ScriptingOptions.TruncateTimeForDateColumns))
             {
@@ -70,6 +72,6 @@ namespace DrivenDb.Scripting.Internal.Writers
                {"            }                                                   "},
                {"        }                                                       "},
             }, column.Detail.Name);
-      }
+      }      
    }
 }

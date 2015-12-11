@@ -1,24 +1,21 @@
-﻿using DrivenDb.Data;
+﻿using System.Collections.Generic;
+using DrivenDb.Data;
 using DrivenDb.Data.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsNamespaceWriter
+      : ITablesWriter
    {
-      private readonly CsContextWriter _context;
-      private readonly CsEntityWriter _entities;
-
-      public CsNamespaceWriter(
-         // CsContentWriterCollection IEnumerable<Target, Tables>?
-           CsContextWriter context
-         , CsEntityWriter entities
-         )
+      private readonly ITablesWriter _content;
+      
+      public CsNamespaceWriter(ITablesWriter content)
       {
-         _context = context;
-         _entities = entities;
+         _content = content;         
       }
 
-      public void Write(ScriptTarget target, string @namespace, string contextName, TableMap[] tables)
+      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
       {
          target.WriteLines(new ScriptLines()
             {
@@ -33,11 +30,10 @@ namespace DrivenDb.Scripting.Internal.Writers
                {"    using System.Data.Linq.Mapping;         ", ScriptingOptions.ImplementLinqContext},
                {"    using System.Runtime.Serialization;     ", ScriptingOptions.Serializable},
                {"    using System.ComponentModel;            ", ScriptingOptions.ImplementNotifyPropertyChanged, ScriptingOptions.ImplementNotifyPropertyChanging},
-            }, @namespace);
+            }, target.Namespace);
 
-         _context.Write(target, contextName, tables.GetDetails());
-         _entities.Write(target, tables);
-
+         _content.Write(target, tables);
+         
          target.WriteLine("}");
       }      
    }

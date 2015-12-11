@@ -5,6 +5,21 @@ using DrivenDb.Data.MsSql;
 
 namespace DrivenDb.Scripting.Internal
 {
+   internal class CsDefaultTranslator
+   {
+      private readonly ScriptingOptions _options;
+
+      public CsDefaultTranslator(ScriptingOptions options)
+      {
+         _options = options;
+      }
+
+      public string Translate(ColumnMap column)
+      {
+         return MsSqlScriptingServices.ToCsScriptedDefaultValue(_options, column.Detail);
+      }
+   }
+
    internal static class MsSqlScriptingServices
    {
       // TODO: this is really MS SQL TO CS sspecific stuff
@@ -88,7 +103,7 @@ namespace DrivenDb.Scripting.Internal
          return DbScriptingServices.DefaultIsGetDateFunction(value)
             ? DbScriptingServices.ScriptCsNowFunction(options, column.SqlType.Equals(MsSqlType.Date))
             : ColumnIsDateOrTimeType(column)
-               ? value = DbScriptingServices.ScriptCsDateTimeParse(options, column.SqlType.Equals(MsSqlType.Date), value)
+               ? DbScriptingServices.ScriptCsDateTimeParse(options, column.SqlType.Equals(MsSqlType.Date), value)
                : value;
       }
 
