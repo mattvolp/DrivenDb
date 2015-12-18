@@ -57,7 +57,7 @@
     <Compile Include="Internal\ScriptLines.cs" />
     <Compile Include="Internal\ScriptTarget.cs" />
     <Compile Include="Internal\Extensions.cs" />
-    <Compile Include="Internal\ScriptWriter.cs" />
+    <Compile Include="Internal\TargetWriter.cs" />
     <Compile Include="Internal\SqLiteScriptingServices.cs" />
     <Compile Include="Internal\Writers\CsClassWriter.cs" />
     <Compile Include="Internal\Writers\CsConstructorWriter.cs" />

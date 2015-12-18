@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using DrivenDb.Data;
 using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Collections
 {
    internal class TableWriterCollection
       : IEnumerable<ITableWriter>
-         , ITableWriter
+      , ITableWriter
    {
       private readonly IReadOnlyCollection<ITableWriter> _writers;
 
@@ -16,12 +15,14 @@ namespace DrivenDb.Scripting.Internal.Collections
          _writers = writers;
       }
 
-      public void Write(ScriptTarget target, TableMap table)
+      public TableTarget Write(TableTarget target)
       {
          foreach (var writer in _writers)
          {
-            writer.Write(target, table);
+            writer.Write(target);
          }
+
+         return target;
       }
 
       public IEnumerator<ITableWriter> GetEnumerator()
@@ -32,6 +33,6 @@ namespace DrivenDb.Scripting.Internal.Collections
       IEnumerator IEnumerable.GetEnumerator()
       {
          return GetEnumerator();
-      }      
+      }
    }
 }

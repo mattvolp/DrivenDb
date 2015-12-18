@@ -1,4 +1,5 @@
 ﻿using System;
+using DrivenDb.Core.Extensions;
 using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 using DrivenDb.Scripting.Internal.Interfaces;
@@ -8,20 +9,30 @@ namespace DrivenDb.Scripting.Internal.Writers
    internal class CsValidationWriter
       : ITableWriter
    {
-      public void Write(ScriptTarget target, TableMap table) 
+      public TableTarget Write(TableTarget target)
       {
-         if (!target.Options.HasFlag(ScriptingOptions.ImplementStateTracking))
+         return target 
+            .Chain(GuardAgainstInvalidOptionSelection)
+            .Chain(WriteValidation);
+      }
+
+      private static void GuardAgainstInvalidOptionSelection(TableTarget target)
+      {
+         if (!target.Target.Options.HasFlag(ScriptingOptions.ImplementStateTracking))
          {
             throw new Exception("Cannot implement validation check without state tracking enabled");
          }
+      }
 
+      private static void WriteValidation(TableTarget target) 
+      {         
          /*
           * state == current -> true
           * state == deleted -> true
           * state == updated -> if all non-nullable/non-generated string columns have a value then true
           * state == new -> if all non-nullable/non-generated columns have a change recorded
           */
-         target
+         target.Writer
             .WriteLines(new ScriptLines()
                {
                   {"        partial void HasExtendedRequirementsMet(IList<RequirementFailure> failures);                            "},
@@ -39,7 +50,7 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.GetRequiredStringColumns(), new ScriptLines()
+            .WriteTemplate(target.Table.GetRequiredStringColumns(), new ScriptLines()
                {
                   {"                if (_$0 == default(string))                                                                     "},
                   {"                {                                                                                               "},
@@ -55,7 +66,7 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"            {                                                                                                   "},
                })
 
-            .WriteTemplate(table.GetRequiredColumns(), new ScriptLines()
+            .WriteTemplate(target.Table.GetRequiredColumns(), new ScriptLines()
                {
                   {"                if (!_entity.Changes.Any(c => c.ColumnName == \"$0\"))                                          "},
                   {"                {                                                                                               "},
@@ -71,12 +82,13 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"                                                                                                                "},
                   {"            return failures;                                                                                    "},
                   {"        }                                                                                                       "},
-               });
+               })
+            .Ignore();
       }
 
       private static string[] ColumnExtractor(ColumnMap column)
       {
          return new[] { column.Detail.Name };
-      }
+      }      
    }
 }

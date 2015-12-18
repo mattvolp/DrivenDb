@@ -16,7 +16,7 @@ namespace DrivenDb.Scripting.Internal
 
       public void Write(string @namespace, string contextName, TableMap[] tables)
       {         
-         _writer.Write(_target, tables);         
+         _writer.Write(new TablesTarget(_target, new TargetWriter(_target), tables));         
       }      
    }
 }

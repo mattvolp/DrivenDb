@@ -15,8 +15,8 @@ namespace DrivenDb.Scripting.Tests
          {
             const ScriptingOptions OPTIONS = ScriptingOptions.Serializable | ScriptingOptions.MinimizePropertyChanges;
 
-            var sut = new ScriptTarget(OPTIONS, writer, "TestNamespace", "TestContext");
-            //var sut = new ScriptWriter(target);
+            var target = new ScriptTarget(OPTIONS, writer, "TestNamespace", "TestContext");
+            var sut = new TargetWriter(target);
 
             sut.WriteLines(new ScriptLines() { { "test", ScriptingOptions.Serializable}});
 
@@ -34,8 +34,9 @@ namespace DrivenDb.Scripting.Tests
          {
             const ScriptingOptions OPTIONS = ScriptingOptions.Serializable | ScriptingOptions.MinimizePropertyChanges;
 
-            var sut = new ScriptTarget(OPTIONS, writer, "TestNamespace", "TestContext");
-            
+            var target = new ScriptTarget(OPTIONS, writer, "TestNamespace", "TestContext");
+            var sut = new TargetWriter(target);
+
             sut.WriteLines(new ScriptLines() { { "test", ScriptingOptions.ImplementNotifyPropertyChanged}});
 
             var actual = writer.ToString()

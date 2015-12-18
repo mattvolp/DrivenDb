@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using DrivenDb.Data;
-using DrivenDb.Data.Internal;
+﻿using DrivenDb.Data.Internal;
 using DrivenDb.Scripting.Internal.Interfaces;
+using DrivenDb.Core.Extensions;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
@@ -15,9 +14,17 @@ namespace DrivenDb.Scripting.Internal.Writers
          _content = content;         
       }
 
-      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
+      public TablesTarget Write(TablesTarget target)
       {
-         target.WriteLines(new ScriptLines()
+         return target
+            .Chain(OpenNamespace)
+            .Hitch(_content.Write)
+            .Chain(CloseNamespace);         
+      }
+
+      private static void OpenNamespace(TablesTarget target)
+      {
+         target.Writer.WriteLines(new ScriptLines()
             {
                {"namespace $0                                "},
                {"{                                           "},
@@ -30,11 +37,18 @@ namespace DrivenDb.Scripting.Internal.Writers
                {"    using System.Data.Linq.Mapping;         ", ScriptingOptions.ImplementLinqContext},
                {"    using System.Runtime.Serialization;     ", ScriptingOptions.Serializable},
                {"    using System.ComponentModel;            ", ScriptingOptions.ImplementNotifyPropertyChanged, ScriptingOptions.ImplementNotifyPropertyChanging},
-            }, target.Namespace);
+            }, target.Target.Namespace)
+            .Ignore();
+      }
 
-         _content.Write(target, tables);
-         
-         target.WriteLine("}");
-      }      
+      private static void CloseNamespace(TablesTarget target)
+      {
+         target.Writer
+            .WriteLines(new ScriptLines()
+               {
+                  {"}"}
+               })
+            .Ignore();
+      }  
    }
 }

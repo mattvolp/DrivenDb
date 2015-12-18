@@ -3,6 +3,7 @@ using DrivenDb.Data;
 using DrivenDb.Data.Internal;
 using DrivenDb.Data.MsSql;
 using DrivenDb.Scripting.Internal;
+using DrivenDb.Scripting.Internal.Interfaces;
 using DrivenDb.Scripting.Internal.Writers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -142,11 +143,13 @@ namespace DrivenDb.Scripting.Tests
             _target = new ScriptTarget(options, writer, "TestNamespace", "TestContext");            
          }
 
-         public string WriteProperty(ColumnDetail details)
+         public string WriteProperty(ColumnDetail detail)
          {
-            var mapping = new ColumnMap(details, null);
+            var columns = new[] {new ColumnMap(detail, null)};
+            var details = new[] {detail};
+            var mapping = new TableMap(new TableDetail("", "", details), columns);
 
-            new CsPropertyWriter().Write(_target, mapping);
+            new CsPropertyWriter().Write(new TableTarget(_target, new TargetWriter(_target), mapping));
             
             return _target.ToString();
          }

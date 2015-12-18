@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DrivenDb.Core.Extensions;
 using DrivenDb.Data;
 using DrivenDb.Scripting.Internal.Interfaces;
 
@@ -7,16 +10,22 @@ namespace DrivenDb.Scripting.Internal.Writers
    internal class CsKeyClassWriter
       : ITableWriter
    {
-      public void Write(ScriptTarget target, TableMap table)
+      public TableTarget Write(TableTarget target)
       {
-         var primaries = table.GetPrimaryKeyColumns()
-            .ToArray();
+         return target.Chain(WriteKeyClass);
+      }
 
-         primaries.GuardAgainstKeyClassOverflow();
-
+      // TODO: still room for improvement
+      public void WriteKeyClass(TableTarget target)
+      {
+         var primaries = target.Table
+            .GetPrimaryKeyColumns()// .Map(GetPrimaryKeyColumns)
+            .Chain(GuardAgainsColumnOverflow)
+            .ToList();
+         
          if (primaries.Any())
          {
-            target
+            target.Writer
                .WriteLines(new ScriptLines()
                   {
                      {"                                                          "},
@@ -27,7 +36,7 @@ namespace DrivenDb.Scripting.Internal.Writers
                      {"            : base($3)                                    "},
                      {"        {                                                 "},
                   }
-                  , table.Detail.Name
+                  , target.Table.Detail.Name
                   , primaries.ScriptAsDelimitedCsTypes()
                   , primaries.ScriptAsDelimitedCsTypedParameterNames()
                   , primaries.ScriptAsDelimitedParameterNames())
@@ -51,10 +60,26 @@ namespace DrivenDb.Scripting.Internal.Writers
                .WriteLines(new ScriptLines()
                   {
                      {"   }                                                      "},
-                  });
+                  })
+               .Ignore();
          }
       }
 
+      //private static IEnumerable<ColumnMap> GetPrimaryKeyColumns(TableTarget target)
+      //{
+      //   foreach (var column in target)
+      //   {
+      //      if (column.Column.Detail.IsPrimary)
+      //         yield return column.Column;
+      //   }
+      //}
+
+      private static void GuardAgainsColumnOverflow(IEnumerable<ColumnMap> columns)
+      {
+         if (columns.Count() > 8)
+            throw new Exception("Unable to script key class for tables with a primary key of more than 8 columns");
+      }
+      
       private static string[] ColumnExtractor1(ColumnMap column)
       {
          return new[]
@@ -71,6 +96,6 @@ namespace DrivenDb.Scripting.Internal.Writers
                column.ScriptAsCsType(),
                column.Detail.Name
             };
-      }
+      }      
    }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using DrivenDb.Core.Extensions;
 using DrivenDb.Data;
 using DrivenDb.Scripting.Internal.Interfaces;
 
@@ -7,9 +7,14 @@ namespace DrivenDb.Scripting.Internal.Writers
    internal class CsContextWriter
       : ITablesWriter
    {
-      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
+      public TablesTarget Write(TablesTarget target)
       {
-         target
+         return target.Chain(WriteContext);
+      }
+
+      public void WriteContext(TablesTarget target)
+      {
+         target.Writer
             .WriteLines(new ScriptLines()
                {
                   {"                                                                                              "},
@@ -20,9 +25,9 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"        public $0() : base(\"_\", _mappingSource)                                             "},
                   {"        {                                                                                     "},
                   {"        }                                                                                     "},
-               }, target.ContextName)
+               }, target.Target.ContextName)
 
-            .WriteTemplate(tables, new ScriptLines()
+            .WriteTemplate(target.Tables, new ScriptLines()
                {
                   {"                                                                                              "},
                   {"        public Table<$0> $0                                                                   "},
@@ -34,12 +39,13 @@ namespace DrivenDb.Scripting.Internal.Writers
             .WriteLines(new ScriptLines()
                {
                   {"    }                                                                                         "},
-               });
+               })
+            .Ignore();
       }
 
       private static string[] TemplateExtractor(TableMap table)
       {
-         return new [] {table.Detail.Name};
-      }
+         return new[] {table.Detail.Name};
+      }      
    }
 }

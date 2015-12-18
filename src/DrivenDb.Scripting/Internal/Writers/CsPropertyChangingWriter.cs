@@ -1,4 +1,4 @@
-﻿using DrivenDb.Data;
+﻿using DrivenDb.Core.Extensions;
 using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
@@ -6,23 +6,25 @@ namespace DrivenDb.Scripting.Internal.Writers
    internal class CsPropertyChangingWriter
       : ITableWriter
    {
-      public void Write(ScriptTarget target, TableMap table)
+      public TableTarget Write(TableTarget target)
       {
-         Write(target);
+         return target.Chain(WriteHandler);
       }
-
-      public void Write(ScriptTarget target)
+      
+      public void WriteHandler(TableTarget target)
       {
-         target.WriteLines(new ScriptLines()
-            {
-               {"                                                                                              "},
-               {"        public event PropertyChangingEventHandler PropertyChanging = delegate {};             "},
-               {"                                                                                              "},
-               {"        protected virtual void OnPropertyChanging([CallerMemberName] string property = null)  "},
-               {"        {                                                                                     "},
-               {"            PropertyChanging(this, new PropertyChangingEventArgs(property));                  "},
-               {"        }                                                                                     "},
-            });
+         target.Writer
+            .WriteLines(new ScriptLines()
+               {
+                  {"                                                                                              "},
+                  {"        public event PropertyChangingEventHandler PropertyChanging = delegate {};             "},
+                  {"                                                                                              "},
+                  {"        protected virtual void OnPropertyChanging([CallerMemberName] string property = null)  "},
+                  {"        {                                                                                     "},
+                  {"            PropertyChanging(this, new PropertyChangingEventArgs(property));                  "},
+                  {"        }                                                                                     "},
+               })
+            .Ignore();
       }      
    }
 }

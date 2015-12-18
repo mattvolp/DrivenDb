@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbEntityChange.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Internal\Optional.cs" />
     <Compile Include="DbEntity.cs" />
     <Compile Include="DbColumnAttribute.cs" />

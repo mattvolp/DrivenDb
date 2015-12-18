@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DrivenDb.Data;
+﻿using DrivenDb.Core.Extensions;
 using DrivenDb.Data.Internal;
 using DrivenDb.Scripting.Internal.Interfaces;
 
@@ -15,35 +14,53 @@ namespace DrivenDb.Scripting.Internal.Writers
          _content = content;         
       }
 
-      public void Write(ScriptTarget target, IReadOnlyCollection<TableMap> tables)
+      public TablesTarget Write(TablesTarget target)
       {
-         foreach (var table in tables)
+         foreach (var table in target)
          {
-            Write(target, table);
+            Write(table).Ignore();
          }
+
+         return target;
       }
 
-      public void Write(ScriptTarget target, TableMap table)
+      public TableTarget Write(TableTarget target)
       {
-         target.WriteLines(new ScriptLines()
-            {
-               {"                                                                   "},
-               {"    [DataContract]                                                 ", ScriptingOptions.Serializable},
-               {"    [Table(Name = \"$0.$1\")]                                      ", ScriptingOptions.ImplementLinqContext},
-               {"    [DbTable(Schema=\"$0\", Name=\"$1\")]                          "},
-               {"    public partial class $1 $2                                     "},
-               {"    {                                                              "},
-               {"        [DataMember]                                               ", ScriptingOptions.Serializable | ScriptingOptions.ImplementStateTracking},
-               {"        private readonly DbEntity _entity = new DbEntity();        ", ScriptingOptions.ImplementStateTracking},
-            }
-            , table.Detail.Schema
-            , table.Detail.Name
-            , target.Options.ScriptAsDelimitedImpliedInterfaces() // TODO: unsure about this
-            );
+         return target
+            .Chain(OpenClass)
+            .Hitch(_content.Write)
+            .Chain(CloseClass);
+      }
+      
+      private static void OpenClass(TableTarget target)
+      {
+         target.Writer
+            .WriteLines(new ScriptLines()
+               {
+                  {"                                                                   "},
+                  {"    [DataContract]                                                 ", ScriptingOptions.Serializable},
+                  {"    [Table(Name = \"$0.$1\")]                                      ", ScriptingOptions.ImplementLinqContext},
+                  {"    [DbTable(Schema=\"$0\", Name=\"$1\")]                          "},
+                  {"    public partial class $1 $2                                     "},
+                  {"    {                                                              "},
+                  {"        [DataMember]                                               ", ScriptingOptions.Serializable | ScriptingOptions.ImplementStateTracking}, //TODO: comma not or?
+                  {"        private readonly DbEntity _entity = new DbEntity();        ", ScriptingOptions.ImplementStateTracking},
+               }
+               , target.Table.Detail.Schema
+               , target.Table.Detail.Name
+               , target.Target.Options.ScriptAsDelimitedImpliedInterfaces() // TODO: unsure about this
+            )
+            .Ignore();
+      }
 
-         _content.Write(target, table);
-         
-         target.WriteLine("    }");
-      }      
+      private static void CloseClass(TableTarget target)
+      {
+         target.Writer
+            .WriteLines(new ScriptLines()
+               {
+                  {"    }"}
+               })
+            .Ignore();
+      }
    }
 }
