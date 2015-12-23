@@ -21,8 +21,8 @@ namespace DrivenDb.Testing
             var target = new ScriptTarget(options, buffer, "TestNamespace", "TestContext");
             var scripter = new CsGenerator(target,
                new TablesWriterCollection(
-                  new CsContextWriter(),
-                  new CsClassWriter(new TableWriterCollection(
+                  new CsContextScripter(),
+                  new CsClassScripter(new TableWriterCollection(
                      new CsConstructorWriter(new CsDefaultTranslator(target.Options)),
                      new CsFieldWriter(),
                      new CsKeyPropertyWriter(),

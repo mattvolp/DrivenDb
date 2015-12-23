@@ -1,21 +1,16 @@
-﻿using DrivenDb.Core.Extensions;
-using DrivenDb.Data;
+﻿using DrivenDb.Data;
+using DrivenDb.Data.Internal;
 using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
-   internal class CsContextWriter
-      : ITablesWriter
-   {
-      public TablesTarget Write(TablesTarget target)
+   internal class CsContextScripter   
+      : IScripter<NamespaceDetail>
+   {      
+      public Script<NamespaceDetail> Script(NamespaceDetail nd, ScriptingOptions so, SegmentCollection sc)
       {
-         return target.Chain(WriteContext);
-      }
-
-      public void WriteContext(TablesTarget target)
-      {
-         target.Writer
-            .WriteLines(new ScriptLines()
+         return new Script<NamespaceDetail>(nd, so, sc
+            .Append(new ScriptSegment(nd.Context)
                {
                   {"                                                                                              "},
                   {"    public class $0 : DataContext                                                             "},
@@ -25,27 +20,24 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"        public $0() : base(\"_\", _mappingSource)                                             "},
                   {"        {                                                                                     "},
                   {"        }                                                                                     "},
-               }, target.Target.ContextName)
-
-            .WriteTemplate(target.Tables, new ScriptLines()
+               })
+            .AppendForEach(nd.Tables, TemplateExtractor, new ScriptSegment()
                {
                   {"                                                                                              "},
                   {"        public Table<$0> $0                                                                   "},
                   {"        {                                                                                     "},
                   {"            get { return this.GetTable<$0>(); }                                               "},
                   {"        }                                                                                     "},
-               }, TemplateExtractor)
-
-            .WriteLines(new ScriptLines()
+               })
+            .Append(new ScriptSegment()
                {
                   {"    }                                                                                         "},
-               })
-            .Ignore();
+               }));
       }
 
       private static string[] TemplateExtractor(TableMap table)
       {
-         return new[] {table.Detail.Name};
+         return new[] { table.Detail.Name };
       }      
    }
 }

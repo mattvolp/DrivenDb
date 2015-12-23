@@ -5,7 +5,7 @@ using DrivenDb.Scripting.Internal.Interfaces;
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsKeyPropertyWriter
-      : ITableWriter
+      : IClassContentScripter
    {
       public TableTarget Write(TableTarget target)
       {

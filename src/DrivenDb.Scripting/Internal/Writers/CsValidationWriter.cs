@@ -7,7 +7,7 @@ using DrivenDb.Scripting.Internal.Interfaces;
 namespace DrivenDb.Scripting.Internal.Writers
 {
    internal class CsValidationWriter
-      : ITableWriter
+      : IClassContentScripter
    {
       public TableTarget Write(TableTarget target)
       {

@@ -5,12 +5,12 @@ using DrivenDb.Scripting.Internal.Interfaces;
 namespace DrivenDb.Scripting.Internal.Collections
 {
    internal class TableWriterCollection
-      : IEnumerable<ITableWriter>
-      , ITableWriter
+      : IEnumerable<IClassContentScripter>
+      , IClassContentScripter
    {
-      private readonly IReadOnlyCollection<ITableWriter> _writers;
+      private readonly IReadOnlyCollection<IClassContentScripter> _writers;
 
-      public TableWriterCollection(params ITableWriter[] writers)
+      public TableWriterCollection(params IClassContentScripter[] writers)
       {
          _writers = writers;
       }
@@ -25,7 +25,7 @@ namespace DrivenDb.Scripting.Internal.Collections
          return target;
       }
 
-      public IEnumerator<ITableWriter> GetEnumerator()
+      public IEnumerator<IClassContentScripter> GetEnumerator()
       {
          return _writers.GetEnumerator();
       }

@@ -10,6 +10,20 @@ namespace DrivenDb.Scripting.Internal.Interfaces
       TablesTarget Write(TablesTarget target);
    }
 
+   internal class NamespaceDetail
+   {
+      public readonly string Namespace;
+      public readonly string Context;
+      public readonly IEnumerable<TableMap> Tables;
+
+      public NamespaceDetail(string @namespace, string context, IEnumerable<TableMap> tables)
+      {
+         Namespace = @namespace;
+         Context = context;
+         Tables = tables;
+      }
+   }
+
    internal class TablesTarget
       : IEnumerable<TableTarget>
    {

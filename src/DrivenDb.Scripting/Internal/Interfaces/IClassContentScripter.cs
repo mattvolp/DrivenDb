@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using DrivenDb.Data;
+using DrivenDb.Data.Internal;
 
 namespace DrivenDb.Scripting.Internal.Interfaces
 {
-   internal interface ITableWriter
+   //internal interface INamespaceContentScripter
+   //{
+   //   Script<NamespaceDetail> Script(NamespaceDetail tm, ScriptingOptions so, SegmentCollection sc);
+   //}
+
+   internal interface IScripter<T>
    {
-      TableTarget Write(TableTarget target); //(ScriptTarget target, TargetWriter writer, TableMap table);
+      //TableTarget Write(TableTarget target); //(ScriptTarget target, TargetWriter writer, TableMap table);
+      Script<T> Script(T tm, ScriptingOptions so, SegmentCollection sc);
    }
 
    internal class TableTarget

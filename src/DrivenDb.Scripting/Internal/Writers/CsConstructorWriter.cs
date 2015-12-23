@@ -5,8 +5,7 @@ using DrivenDb.Scripting.Internal.Interfaces;
 
 namespace DrivenDb.Scripting.Internal.Writers
 {
-   internal class CsConstructorWriter
-      : ITableWriter
+   internal class CsConstructorWriter      
    {
       private readonly CsDefaultTranslator _defaults;
 
@@ -15,29 +14,22 @@ namespace DrivenDb.Scripting.Internal.Writers
          _defaults = defaults;
       }
 
-      public TableTarget Write(TableTarget target)
+      public Script<TableMap> Write(TableMap tm, ScriptingOptions so, SegmentCollection sc)
       {
-         return target.Chain(WriteContructor);
-      }
-
-      public void WriteContructor(TableTarget target)
-      {
-         target.Writer
-            .WriteLines(new ScriptLines()
+         return new Script<TableMap>(tm, so, sc
+            .Append(new ScriptSegment(tm.Detail.Name)
                {
                   {"                                                                "},
                   {"        public $0()                                             "},
                   {"        {                                                       "},
-               }, target.Table.Detail.Name)
-
-            .WriteTemplate(target.Table.GetColumnsWithDefaultDefinitions(), new ScriptLines()
+               })
+            .AppendForEach(tm.GetColumnsWithDefaultDefinitions(), ColumnExtractor, new ScriptSegment()
                {
                   {"            _$0 = ($1) $2;                                      ", ScriptingOptions.ImplementColumnDefaults},
                   // TODO: comma not or?
                   {"            _entity.Change($0, _$0);                            ", ScriptingOptions.ImplementColumnDefaults | ScriptingOptions.ImplementStateTracking},
-               }, ColumnExtractor)
-
-            .WriteLines(new ScriptLines()
+               })
+            .Append(new ScriptSegment()
                {
                   {"        }                                                       "},
                   {"                                                                ", ScriptingOptions.ImplementStateTracking},
@@ -45,8 +37,7 @@ namespace DrivenDb.Scripting.Internal.Writers
                   {"        {                                                       ", ScriptingOptions.ImplementStateTracking},
                   {"            get { return _entity; }                             ", ScriptingOptions.ImplementStateTracking},
                   {"        }                                                       ", ScriptingOptions.ImplementStateTracking},
-               })
-            .Ignore();
+               }));
       }
 
       private string[] ColumnExtractor(ColumnMap column)
@@ -58,6 +49,6 @@ namespace DrivenDb.Scripting.Internal.Writers
                _defaults.Translate(column)
                //MsSqlScriptingServices.ToCsScriptedDefaultValue(target.Options, d.Detail)  // TODO:
             };
-      }      
+      }
    }
 }
