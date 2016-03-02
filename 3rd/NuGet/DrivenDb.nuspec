@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DrivenDb</id>
-		<version>1.44</version>
+		<version>1.46</version>
 		<authors>Anthony Leatherwood</authors>
 		<owners>aleatherwood</owners>
 		<licenseUrl>https://github.com/Fastlite/DrivenDb/blob/master/LICENSE</licenseUrl>
@@ -19,7 +19,13 @@
 		<!--<copyright>Copyright 2012</copyright>-->
 		<tags>microorm db database micro orm database dal sql mysql sqlite mapping cache petapoco dapper self-tracking entity ddd repository nhibernate napper microlite entityframework</tags>
 		<references>
-			<reference file="DrivenDb.dll" />
+         <group targetFramework="net451"> 
+            <reference file="DrivenDb.dll" />
+            <reference file="DrivenDb.Async.dll" />
+         </group> 
+         <group>
+			   <reference file="DrivenDb.dll" />
+         </group>
 		</references>    
 	</metadata>  
 	<files>
