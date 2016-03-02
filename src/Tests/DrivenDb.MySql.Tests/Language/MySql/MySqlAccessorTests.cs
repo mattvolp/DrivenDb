@@ -1,7 +1,7 @@
 ﻿using System.Data;
-using DrivenDb.Tests.Language.Interfaces;
 using MySql.Data.MySqlClient;
 using System;
+using DrivenDb.Tests.Language.Interfaces;
 
 namespace DrivenDb.Tests.Language.MySql
 {

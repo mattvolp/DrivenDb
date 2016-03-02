@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DrivenDb</id>
-		<version>1.43</version>
+		<version>1.44</version>
 		<authors>Anthony Leatherwood</authors>
 		<owners>aleatherwood</owners>
 		<licenseUrl>https://github.com/Fastlite/DrivenDb/blob/master/LICENSE</licenseUrl>
@@ -23,9 +23,14 @@
 		</references>    
 	</metadata>  
 	<files>
-		<file src="..\..\Release\*.dll" target="lib\net40" /> 
-		<file src="..\..\Release\*.exe" target="lib\net40" /> 
-		<file src="..\..\Release\*.pdb" target="lib\net40" /> 			 
-		<file src="..\..\Release\*.xml" target="lib\net40" /> 			 
+		<file src="..\..\Release\*.dll" exclude="DrivenDb.Async.dll" target="lib\net40" />
+		<file src="..\..\Release\*.exe" target="lib\net40" />
+		<file src="..\..\Release\*.pdb" target="lib\net40" />
+		<file src="..\..\Release\*.xml" target="lib\net40" />
+      
+		<file src="..\..\Release\*.dll" target="lib\net451" />
+		<file src="..\..\Release\*.exe" target="lib\net451" />
+		<file src="..\..\Release\*.pdb" target="lib\net451" />
+		<file src="..\..\Release\*.xml" target="lib\net451" />
 	</files>	
 </package>

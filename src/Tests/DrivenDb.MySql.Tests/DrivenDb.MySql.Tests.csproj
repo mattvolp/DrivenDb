@@ -97,13 +97,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DrivenDb.Tests\DrivenDb.Tests.csproj">
-      <Project>{8979A411-DACB-440D-953C-FBB54380E030}</Project>
-      <Name>DrivenDb.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DrivenDb\DrivenDb.csproj">
       <Project>{AC60FADE-3264-4BA0-8157-6899D77B02C7}</Project>
       <Name>DrivenDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DrivenDb.Tests\DrivenDb.Tests.csproj">
+      <Project>{8979a411-dacb-440d-953c-fbb54380e030}</Project>
+      <Name>DrivenDb.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

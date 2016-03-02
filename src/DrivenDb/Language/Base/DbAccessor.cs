@@ -25,10 +25,10 @@ namespace DrivenDb.Base
    {
       //private const int CommandTimeout = 600;
 
-      private readonly IDb m_Db;
-      private readonly IDbAggregator m_Aggregator;
-      private readonly IDbMapper m_Mapper;
-      private readonly IDbScripter m_Scripter;
+      protected readonly IDb m_Db;
+      protected readonly IDbAggregator m_Aggregator;
+      protected readonly IDbMapper m_Mapper;
+      protected readonly IDbScripter m_Scripter;
 
       public DbAccessor(IDbScripter scripter, IDbMapper mapper, IDb db, IDbAggregator aggregator)
       {
@@ -1515,7 +1515,7 @@ namespace DrivenDb.Base
          return null;
       }
 
-      private void LogMessage(string message)
+      protected void LogMessage(string message)
       {
           if (Log != null)
           {

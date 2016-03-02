@@ -270,12 +270,20 @@ namespace DrivenDb
          return new string(chars);
       }
 
-      private const string MASTER_CSTRING = @"Integrated Security=SSPI;Initial Catalog=master;Data Source=localhost";
-      private const string TEST_CSTRING = @"Integrated Security=SSPI;Initial Catalog=DrivenDbTest;Data Source=localhost";
+      protected const string MASTER_CSTRING = @"Integrated Security=SSPI;Initial Catalog=master;Data Source=localhost";
+      protected const string TEST_CSTRING = @"Integrated Security=SSPI;Initial Catalog=DrivenDbTest;Data Source=localhost";
 
       protected override IDbAccessor CreateAccessor(out string key)
       {
          return CreateAccessor(out key, AccessorExtension.All);
+      }
+
+      protected virtual IDbAccessor CreateAccessor(AccessorExtension extensions)
+      {
+         return DbFactory.CreateAccessor(
+            DbAccessorType.MsSql, extensions,
+            () => new SqlConnection(TEST_CSTRING)
+            );
       }
 
       protected override IDbAccessor CreateAccessor(out string key, AccessorExtension extensions)
@@ -298,10 +306,7 @@ namespace DrivenDb
                CREATE DATABASE [DrivenDbTest]"
             );
 
-         var accessor = DbFactory.CreateAccessor(
-             DbAccessorType.MsSql, extensions,
-             () => new SqlConnection(TEST_CSTRING)
-             );
+         var accessor = CreateAccessor(extensions);
 
          accessor.Execute(@"CREATE SCHEMA [one]");
          accessor.Execute(@"CREATE SCHEMA [two]");

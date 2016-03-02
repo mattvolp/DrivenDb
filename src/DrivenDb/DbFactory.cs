@@ -26,48 +26,14 @@ namespace DrivenDb
    {
       public static IDbAccessor CreateAccessor(DbAccessorType type, IDb db)
       {
-         var aggregator = new DbAggregator();
-         var mapper = new DbMapper(db);
+         var setup = GetSetup(type, db);
 
-         Func<ISqlBuilder> builders;
-         IValueJoiner joiner;
-
-         switch (type)
+         if (type == DbAccessorType.MsSql)
          {
-            case DbAccessorType.MsSql:
-               {
-                  Func<IMsSqlBuilder> msbuilders = () => new MsSqlBuilder();
-
-                  var msjoiner = new MsSqlValueJoiner();
-                  var msscripter = new MsSqlScripter(db, msjoiner, msbuilders);
-
-                  return new MsSqlAccessor(msscripter, mapper, db, aggregator);
-               }
-            case DbAccessorType.SqLite:
-               {
-                  builders = () => new SqLiteBuilder();
-                  joiner = new SqLiteValueJoiner();
-               }
-               break;
-            case DbAccessorType.MySql:
-               {
-                  builders = () => new MySqlBuilder();
-                  joiner = new MySqlValueJoiner();
-               }
-               break;
-            case DbAccessorType.Oracle:
-               {
-                  builders = () => new OracleBuilder();
-                  joiner = new OracleValueJoiner();
-               }
-               break;
-            default:
-               throw new InvalidOperationException(String.Format("Unsupported DbAccessorType value of '{0}'", type));
+            return new MsSqlAccessor((IMsSqlScripter)setup.Scripter, setup.Mapper, db, setup.Aggregator);
          }
 
-         var scripter = new DbScripter(db, joiner, builders);
-
-         return new DbAccessor(scripter, mapper, db, aggregator);
+         return new DbAccessor(setup.Scripter, setup.Mapper, db, setup.Aggregator);
       }
 
       public static IDbAccessor CreateAccessor(DbAccessorType type, Func<IDbConnection> connections)
@@ -128,6 +94,81 @@ namespace DrivenDb
           where T : class, IDbEntity<T>
       {
          return new DbCache<K, T, I>(core);
+      }
+
+      internal static AccessorSetup GetSetup(DbAccessorType type, IDb db)
+      {
+         var aggregator = new DbAggregator();
+         var mapper = new DbMapper(db);
+
+         Func<ISqlBuilder> builders;
+         IValueJoiner joiner;
+
+         switch (type)
+         {
+            case DbAccessorType.MsSql:
+               {
+                  Func<IMsSqlBuilder> msbuilders = () => new MsSqlBuilder();
+
+                  var msjoiner = new MsSqlValueJoiner();
+                  var msscripter = new MsSqlScripter(db, msjoiner, msbuilders);
+
+                  return new AccessorSetup(msscripter, mapper, aggregator);
+               }
+            case DbAccessorType.SqLite:
+               {
+                  builders = () => new SqLiteBuilder();
+                  joiner = new SqLiteValueJoiner();
+               }
+               break;
+            case DbAccessorType.MySql:
+               {
+                  builders = () => new MySqlBuilder();
+                  joiner = new MySqlValueJoiner();
+               }
+               break;
+            case DbAccessorType.Oracle:
+               {
+                  builders = () => new OracleBuilder();
+                  joiner = new OracleValueJoiner();
+               }
+               break;
+            default:
+               throw new InvalidOperationException(string.Format("Unsupported DbAccessorType value of '{0}'", type));
+         }
+
+         var scripter = new DbScripter(db, joiner, builders);
+
+         return new AccessorSetup(scripter, mapper, aggregator);
+      }
+
+      internal sealed class AccessorSetup
+      {
+         private readonly IDbScripter _scripter;
+         private readonly IDbMapper _mapper;
+         private readonly IDbAggregator _aggregator;
+
+         public AccessorSetup(IDbScripter scripter, IDbMapper mapper, IDbAggregator aggregator)
+         {
+            _scripter = scripter;
+            _mapper = mapper;
+            _aggregator = aggregator;
+         }
+
+         public IDbScripter Scripter
+         {
+            get { return _scripter;}
+         }
+
+         public IDbMapper Mapper
+         {
+            get { return _mapper; }
+         }
+
+         public IDbAggregator Aggregator
+         {
+            get { return _aggregator; }
+         }
       }
    }
 }
