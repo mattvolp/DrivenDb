@@ -16,7 +16,7 @@ ECHO.
 
 IF "%PUBLISH%" == "y" (
 	ECHO Publishing to Nuget...
-	NuGet Push .\release\DrivenDb.1.46.nupkg
+	NuGet Push .\release\DrivenDb.1.51.nupkg -ApiKey %NUGET_API_KEY_DRIVENDB% -Source https://www.nuget.org
 	ECHO Publish complete.
 ) ELSE (
 	ECHO Publish cancelled.
