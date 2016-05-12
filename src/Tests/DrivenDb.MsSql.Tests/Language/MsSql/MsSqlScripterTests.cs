@@ -7,317 +7,479 @@ using Xunit;
 
 namespace DrivenDb.Tests.Language.MsSql
 {
-    public class MsSqlScripterTests 
-    {
-       [Fact]
-       public void ColumnsWithTrailingSpacesInTheNameDeleteWithoutError()
-       {
-          var sut = new MySpacedIndentityClass();
-          var joiner = new MsSqlValueJoiner();
-          var db = new Db(AccessorExtension.Common, () => null);
-          var scripter = new MsSqlScripter(db, joiner, () => new MsSqlBuilder());
+   public class MsSqlScripterTests
+   {
+      private readonly MsSqlScripter _scripter;
 
-          sut.Entity.SetIdentity(1);
-          sut.Entity.Reset();
-          sut.Entity.Delete();
+      public MsSqlScripterTests()
+      {
+         var db = new Db(AccessorExtension.Common, () => null);
+         _scripter = new MsSqlScripter(db, () => new MsSqlBuilder());
+      }
 
-          using (var command = new SqlCommand())
-          {
-             scripter.ScriptDelete(command, 0, sut);
+      [Fact]
+      public void ColumnsWithTrailingSpacesInTheNameDeleteWithoutError()
+      {
+         var sut = new MySpacedIndentityClass();
 
-             Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
-          }
-       }
+         sut.Entity.SetIdentity(1);
+         sut.Entity.Reset();
+         sut.Entity.Delete();
 
-       [Fact]
-       public void ColumnsWithTrailingSpacesInTheNameUpdateWithoutError()
-       {
-          var sut = new MySpacedIndentityClass();
-          var joiner = new MsSqlValueJoiner();          
-          var db = new Db(AccessorExtension.Common, () => null);
-          var scripter = new MsSqlScripter(db, joiner, () => new MsSqlBuilder());
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptDelete(command, 0, sut);
 
-          sut.Entity.SetIdentity(1);
-          sut.Entity.Reset();
-          sut.MyValue = "TEST";
+            Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
+         }
+      }
 
-          using (var command = new SqlCommand())
-          {
-             scripter.ScriptUpdate(command, 0, sut);
+      [Fact]
+      public void ColumnsWithTrailingSpacesInTheNameUpdateWithoutError()
+      {
+         var sut = new MySpacedIndentityClass();
 
-             Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
-          }
-       }
+         sut.Entity.SetIdentity(1);
+         sut.Entity.Reset();
+         sut.MyValue = "TEST";
 
-        //[Test]
-        //public void ScriptDeleteTest()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable();
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptUpdate(command, 0, sut);
 
-        //    entity.Entity.SetIdentity(9);
+            Assert.Contains("WHERE [MyIdentity ] = ", command.CommandText);
+         }
+      }
 
-        //    scripter.ScriptDelete(command, 0, entity);
+      [Fact]
+      public void ScriptExecuteFact()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1)";
+         var enumerable = new[] { 1, 2, 3 };
 
-        //    Assert.True(command.CommandText.Trim() == @"DELETE FROM [MyTable] WHERE [MyIdentity] = @0_0;");
-        //    Assert.True(command.Parameters.Count == 1);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals(9));
-        //}
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, 1, enumerable);
+            Assert.Equal(@"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1,@2,@3)", command.CommandText.Trim());
+            Assert.Equal(4, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal(1, command.Parameters[1].Value);
+            Assert.Equal("@2", command.Parameters[2].ParameterName);
+            Assert.Equal(2, command.Parameters[2].Value);
+         }
+      }
 
-        //[Test]
-        //public void ScriptDeleteTest2()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable2();
+      [Fact]
+      public void ScriptExecuteFact2()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1) AND [Buz] = @2";
+         var enumerable = new[] { 1, 2, 3 };
 
-        //    entity.MyKey1 = 1;
-        //    entity.MyKey2 = 2;
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, 1, enumerable, "foo");
+            Assert.Equal(@"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1,@2,@3) AND [Buz] = @4", command.CommandText.Trim());
+            Assert.Equal(5, command.Parameters.Count);
+            Assert.Equal("@4", command.Parameters[4].ParameterName);
+            Assert.Equal("foo", command.Parameters[4].Value);
+         }
+      }
 
-        //    scripter.ScriptDelete(command, 0, entity);
+      [Fact]
+      public void ScriptExecuteFact3()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = 12 WHERE [Baz] IN (@0) AND [Buz] = @1";
+         var enumerable = new[] { 3, 2, 1 };
 
-        //    Assert.True(command.CommandText.Trim() == @"DELETE FROM [MyTable2] WHERE [MyKey1] = @0_0 AND [MyKey2] = @0_1;");
-        //    Assert.True(command.Parameters.Count == 2);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals(1));
-        //    Assert.True(command.Parameters[1].ParameterName == "@0_1");
-        //    Assert.True(command.Parameters[1].Value.Equals(2));
-        //}
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, enumerable, "foo");
+            Assert.Equal(@"UPDATE [Foo] SET [Bar] = 12 WHERE [Baz] IN (@0,@1,@2) AND [Buz] = @3", command.CommandText.Trim());
+            Assert.Equal(4, command.Parameters.Count);
+            Assert.Equal("@0", command.Parameters[0].ParameterName);
+            Assert.Equal(3, command.Parameters[0].Value);
+            Assert.Equal("@3", command.Parameters[3].ParameterName);
+            Assert.Equal("foo", command.Parameters[3].Value);
+         }
+      }
 
-        //[Test]
-        //public void ScriptIdentitySelectTest()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
+      [Fact]
+      public void ScriptExecuteFact4()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1)";
+         var enumerable = new[] { "abc", "def" };
 
-        //    scripter.ScriptIdentitySelect<MyTable>(command, 9);
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, 1, enumerable);
+            Assert.Equal(@"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1,@2)", command.CommandText.Trim());
+            Assert.Equal(3, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal("abc", command.Parameters[1].Value);
+            Assert.Equal("@2", command.Parameters[2].ParameterName);
+            Assert.Equal("def", command.Parameters[2].Value);
+         }
+      }
 
-        //    Console.WriteLine(command.CommandText);
+      [Fact]
+      public void ScriptExecuteFact5()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = @1 WHERE [Baz] IN (@0)";
+         var enumerable = new[] { "abc", "def" };
 
-        //    Assert.True(command.CommandText.Trim() == @"SELECT [MyIdentity], [MyString] FROM [MyTable] WHERE [MyIdentity] = @0;");
-        //    Assert.True(command.Parameters.Count == 1);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0");
-        //    Assert.True(command.Parameters[0].Value.Equals(9));
-        //}
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, enumerable, 1);
+            Assert.Equal(@"UPDATE [Foo] SET [Bar] = @2 WHERE [Baz] IN (@0,@1)", command.CommandText.Trim());
+            Assert.Equal(3, command.Parameters.Count);
+            Assert.Equal("@0", command.Parameters[0].ParameterName);
+            Assert.Equal("abc", command.Parameters[0].Value);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal("def", command.Parameters[1].Value);
+         }
+      }
 
-        //[Test]
-        //public void ScriptIdentitySelectTest2()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
+      [Fact]
+      public void ScriptExecuteFact6()
+      {
+         var query = @"UPDATE [Foo] SET [Bar] = @0 WHERE [Baz] IN (@1)";
+         var enumerable = new[] { "abc" };
 
-        //    scripter.ScriptIdentitySelect<MyTable2>(command, 1, 2);
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptExecute(command, query, 1, enumerable);
+            Assert.Equal(query, command.CommandText.Trim());
+            Assert.Equal(2, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal("abc", command.Parameters[1].Value);
+         }
+      }
 
-        //    Assert.True(command.CommandText.Trim() == @"SELECT [MyKey1], [MyKey2], [MyString] FROM [MyTable2] WHERE [MyKey1] = @0 AND [MyKey2] = @1;");
-        //    Assert.True(command.Parameters.Count == 2);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0");
-        //    Assert.True(command.Parameters[0].Value.Equals(1));
-        //    Assert.True(command.Parameters[1].ParameterName == "@1");
-        //    Assert.True(command.Parameters[1].Value.Equals(2));
-        //}
+      [Fact]
+      public void ScriptSelectFact()
+      {
+         var query = @"SELECT * FROM [Foo] WHERE [Bar] IN (@0) AND [Baz] IN (@1)";
+         var enumerable1 = new[] { "abc", "def" };
+         var enumerable2 = new[] { 5, 6, 7 };
 
-        //[Test]
-        //public void ScriptInsertTest()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable();
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptSelect(command, query, enumerable1, enumerable2);
+            Assert.Equal(@"SELECT * FROM [Foo] WHERE [Bar] IN (@0,@1) AND [Baz] IN (@2,@3,@4)", command.CommandText.Trim());
+            Assert.Equal(5, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal("def", command.Parameters[1].Value);
+            Assert.Equal("@3", command.Parameters[3].ParameterName);
+            Assert.Equal(6, command.Parameters[3].Value);
+         }
+      }
 
-        //    entity.MyString = "test";
+      [Fact]
+      public void ScriptSelectFact2()
+      {
+         var query = @"SELECT * FROM [Foo] WHERE [Bar] IN (@0) AND [Baz] IN (@1)";
+         var enumerable1 = new[] { "abc", "def" };
+         var enumerable2 = new[] { 5, 6, 7 };
 
-        //    scripter.ScriptInsert(command, 0, entity);
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptSelect(command, query, enumerable2, enumerable1);
+            Assert.Equal(@"SELECT * FROM [Foo] WHERE [Bar] IN (@0,@1,@2) AND [Baz] IN (@3,@4)", command.CommandText.Trim());
+            Assert.Equal(5, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal(6, command.Parameters[1].Value);
+            Assert.Equal("@3", command.Parameters[3].ParameterName);
+            Assert.Equal("abc", command.Parameters[3].Value);
+         }
+      }
 
-        //    Assert.True(command.CommandText.Trim() == @"INSERT INTO [MyTable] ([MyString]) OUTPUT 0, INSERTED.MyIdentity VALUES (@0_0);");
-        //    Assert.True(command.Parameters.Count == 1);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals("test"));
-        //}
+      [Fact]
+      public void ScriptSelectFact3()
+      {
+         var query = @"SELECT * FROM [Foo] WHERE [Bar] IN (@0) AND [Baz] IN (@0)";
+         var enumerable = new[] { 5, 6, 7 };
 
-        //[Test]
-        //public void ScriptInsertTest2()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable2();
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptSelect(command, query, enumerable);
+            Assert.Equal(@"SELECT * FROM [Foo] WHERE [Bar] IN (@0,@1,@2) AND [Baz] IN (@0,@1,@2)", command.CommandText.Trim());
+            Assert.Equal(3, command.Parameters.Count);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal(6, command.Parameters[1].Value);
+            Assert.Equal("@2", command.Parameters[2].ParameterName);
+            Assert.Equal(7, command.Parameters[2].Value);
+         }
+      }
 
-        //    entity.MyKey1 = 1;
-        //    entity.MyKey2 = 2;
-        //    entity.MyString = "test";
+      [Fact]
+      public void ScriptSelectFact4()
+      {
+         var query = @"SELECT * FROM [Foo] WHERE [Bar] IN (@0) AND [Buz] = @1 AND [Baz] IN (@0)";
+         var enumerable = new[] { 5, 6, 7 };
 
-        //    scripter.ScriptInsert(command, 0, entity);
+         using (var command = new SqlCommand())
+         {
+            _scripter.ScriptSelect(command, query, enumerable, "other");
+            Assert.Equal(@"SELECT * FROM [Foo] WHERE [Bar] IN (@0,@1,@2) AND [Buz] = @3 AND [Baz] IN (@0,@1,@2)", command.CommandText.Trim());
+            Assert.Equal(4, command.Parameters.Count);
+            Assert.Equal("@3", command.Parameters[3].ParameterName);
+            Assert.Equal("other", command.Parameters[3].Value);
+            Assert.Equal("@1", command.Parameters[1].ParameterName);
+            Assert.Equal(6, command.Parameters[1].Value);
+         }
+      }
 
-        //    Assert.True(command.CommandText.Trim() == @"INSERT INTO [MyTable2] ([MyKey1], [MyKey2], [MyString]) VALUES (@0_0, @0_1, @0_2);");
-        //    Assert.True(command.Parameters.Count == 3);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals(1));
-        //    Assert.True(command.Parameters[1].ParameterName == "@0_1");
-        //    Assert.True(command.Parameters[1].Value.Equals(2));
-        //    Assert.True(command.Parameters[2].ParameterName == "@0_2");
-        //    Assert.True(command.Parameters[2].Value.Equals("test"));
-        //}
+      [Fact]
+      public void ScriptDeleteFact()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable();
 
-        //[Test]
-        //public void ScriptUpdateTest()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable();
+         entity.Entity.SetIdentity(9);
 
-        //    entity.Entity.SetIdentity(9);
-        //    entity.Entity.Reset();
-        //    entity.MyString = "test";
+         _scripter.ScriptDelete(command, 0, entity);
 
-        //    scripter.ScriptUpdate(command, 0, entity);
+         Assert.Equal(@"DELETE FROM [MyTable] WHERE [MyIdentity] = @0_0;", command.CommandText.Trim());
+         Assert.Equal(1, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals(9));
+      }
 
-        //    Assert.True(command.CommandText.Trim() == @"UPDATE [MyTable] SET [MyString] = @0_0 WHERE [MyIdentity] = @0_1;");
-        //    Assert.True(command.Parameters.Count == 2);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals("test"));
-        //    Assert.True(command.Parameters[1].ParameterName == "@0_1");
-        //    Assert.True(command.Parameters[1].Value.Equals(9));
-        //}
+      [Fact]
+      public void ScriptDeleteFact2()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable2();
 
-        //[Test]
-        //public void ScriptUpdateTest2()
-        //{
-        //    var db = new Db(AccessorExtension.All, null);
-        //    var scripter = new MsSqlScripter(db);
-        //    var command = new SqlCommand();
-        //    var entity = new MyTable2();
+         entity.MyKey1 = 1;
+         entity.MyKey2 = 2;
 
-        //    entity.MyKey1 = 1;
-        //    entity.MyKey2 = 2;
-        //    entity.Entity.Reset();
+         _scripter.ScriptDelete(command, 0, entity);
 
-        //    entity.MyString = "test";
+         Assert.Equal(@"DELETE FROM [MyTable2] WHERE [MyKey1] = @0_0 AND [MyKey2] = @0_1;", command.CommandText.Trim());
+         Assert.Equal(2, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals(1));
+         Assert.Equal("@0_1", command.Parameters[1].ParameterName);
+         Assert.True(command.Parameters[1].Value.Equals(2));
+      }
 
-        //    scripter.ScriptUpdate(command, 0, entity);
+      [Fact]
+      public void ScriptIdentitySelectFact()
+      {
+         var command = new SqlCommand();
 
-        //    Assert.True(command.CommandText.Trim() == @"UPDATE [MyTable2] SET [MyString] = @0_0 WHERE [MyKey1] = @0_1 AND [MyKey2] = @0_2;");
-        //    Assert.True(command.Parameters.Count == 3);
-        //    Assert.True(command.Parameters[0].ParameterName == "@0_0");
-        //    Assert.True(command.Parameters[0].Value.Equals("test"));
-        //    Assert.True(command.Parameters[1].ParameterName == "@0_1");
-        //    Assert.True(command.Parameters[1].Value.Equals(1));
-        //    Assert.True(command.Parameters[2].ParameterName == "@0_2");
-        //    Assert.True(command.Parameters[2].Value.Equals(2));
-        //}
+         _scripter.ScriptIdentitySelect<MyTable>(command, 9);
 
-        #region --- NESTED -----------------------------------------------------------------------
+         Assert.Equal(@"SELECT [MyIdentity], [MyString] FROM [MyTable] WHERE [MyIdentity] = @0;", command.CommandText.Trim());
+         Assert.Equal(1, command.Parameters.Count);
+         Assert.Equal("@0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals(9));
+      }
 
-        [Table(Name = "MyTable")]
-        internal class MyTable : DbEntity<MyTable>, INotifyPropertyChanged
-        {
-            private int m_MyIdentity;
-            private string m_MyString;
+      [Fact]
+      public void ScriptIdentitySelectFact2()
+      {
+         var command = new SqlCommand();
 
-            [Column(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity")]
-            public int MyIdentity
+         _scripter.ScriptIdentitySelect<MyTable2>(command, 1, 2);
+
+         Assert.Equal(@"SELECT [MyKey1], [MyKey2], [MyString] FROM [MyTable2] WHERE [MyKey1] = @0 AND [MyKey2] = @1;", command.CommandText.Trim());
+         Assert.Equal(2, command.Parameters.Count);
+         Assert.Equal("@0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals(1));
+         Assert.Equal("@1", command.Parameters[1].ParameterName);
+         Assert.True(command.Parameters[1].Value.Equals(2));
+      }
+
+      [Fact]
+      public void ScriptInsertFact()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable();
+
+         entity.MyString = "test";
+
+         _scripter.ScriptInsert(command, 0, entity, true);
+
+         Assert.Equal(@"INSERT INTO [MyTable] ([MyString]) OUTPUT 0, INSERTED.MyIdentity VALUES (@0_0);", command.CommandText.Trim());
+         Assert.Equal(1, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals("test"));
+      }
+
+      [Fact]
+      public void ScriptInsertFact2()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable2();
+
+         entity.MyKey1 = 1;
+         entity.MyKey2 = 2;
+         entity.MyString = "test";
+
+         _scripter.ScriptInsert(command, 0, entity, false);
+
+         Assert.Equal(@"INSERT INTO [MyTable2] ([MyKey1], [MyKey2], [MyString]) VALUES (@0_0, @0_1, @0_2);", command.CommandText.Trim());
+         Assert.Equal(3, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals(1));
+         Assert.Equal("@0_1", command.Parameters[1].ParameterName);
+         Assert.True(command.Parameters[1].Value.Equals(2));
+         Assert.Equal("@0_2", command.Parameters[2].ParameterName);
+         Assert.True(command.Parameters[2].Value.Equals("test"));
+      }
+
+      [Fact]
+      public void ScriptUpdateFact()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable();
+
+         entity.Entity.SetIdentity(9);
+         entity.Entity.Reset();
+         entity.MyString = "test";
+
+         _scripter.ScriptUpdate(command, 0, entity);
+
+         Assert.Equal(@"UPDATE [MyTable] SET [MyString] = @0_0 WHERE [MyIdentity] = @0_1;", command.CommandText.Trim());
+         Assert.Equal(2, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals("test"));
+         Assert.Equal("@0_1", command.Parameters[1].ParameterName);
+         Assert.True(command.Parameters[1].Value.Equals(9));
+      }
+
+      [Fact]
+      public void ScriptUpdateFact2()
+      {
+         var command = new SqlCommand();
+         var entity = new MyTable2();
+
+         entity.MyKey1 = 1;
+         entity.MyKey2 = 2;
+         entity.Entity.Reset();
+
+         entity.MyString = "test";
+
+         _scripter.ScriptUpdate(command, 0, entity);
+
+         Assert.Equal(@"UPDATE [MyTable2] SET [MyString] = @0_0 WHERE [MyKey1] = @0_1 AND [MyKey2] = @0_2;", command.CommandText.Trim());
+         Assert.Equal(3, command.Parameters.Count);
+         Assert.Equal("@0_0", command.Parameters[0].ParameterName);
+         Assert.True(command.Parameters[0].Value.Equals("test"));
+         Assert.Equal("@0_1", command.Parameters[1].ParameterName);
+         Assert.True(command.Parameters[1].Value.Equals(1));
+         Assert.Equal("@0_2", command.Parameters[2].ParameterName);
+         Assert.True(command.Parameters[2].Value.Equals(2));
+      }
+
+      #region --- NESTED -----------------------------------------------------------------------
+
+      [Table(Name = "MyTable")]
+      internal class MyTable : DbEntity<MyTable>, INotifyPropertyChanged
+      {
+         private int m_MyIdentity;
+         private string m_MyString;
+
+         [Column(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity")]
+         public int MyIdentity
+         {
+            get { return m_MyIdentity; }
+            set
             {
-                get { return m_MyIdentity; }
-                set
-                {
-                    m_MyIdentity = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MyIdentity"));
-                }
+               m_MyIdentity = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyIdentity"));
             }
+         }
 
-            [Column(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
-            public string MyString
+         [Column(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
+         public string MyString
+         {
+            get { return m_MyString; }
+            set
             {
-                get { return m_MyString; }
-                set
-                {
-                    m_MyString = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
-                }
+               m_MyString = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
             }
+         }
 
-            public event PropertyChangedEventHandler PropertyChanged;
-        }
+         public event PropertyChangedEventHandler PropertyChanged;
+      }
 
-        [Table(Name = "MyTable2")]
-        internal class MyTable2 : DbEntity<MyTable2>, INotifyPropertyChanged
-        {
-            private int m_MyKey1;
-            private int m_MyKey2;
-            private string m_MyString;
+      [Table(Name = "MyTable2")]
+      internal class MyTable2 : DbEntity<MyTable2>, INotifyPropertyChanged
+      {
+         private int m_MyKey1;
+         private int m_MyKey2;
+         private string m_MyString;
 
-            [Column(IsDbGenerated = false, IsPrimaryKey = true, Name = "MyKey1")]
-            public int MyKey1
+         [Column(IsDbGenerated = false, IsPrimaryKey = true, Name = "MyKey1")]
+         public int MyKey1
+         {
+            get { return m_MyKey1; }
+            set
             {
-                get { return m_MyKey1; }
-                set
-                {
-                    m_MyKey1 = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MyKey1"));
-                }
+               m_MyKey1 = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyKey1"));
             }
-            [Column(IsDbGenerated = false, IsPrimaryKey = true, Name = "MyKey2")]
-            public int MyKey2
+         }
+         [Column(IsDbGenerated = false, IsPrimaryKey = true, Name = "MyKey2")]
+         public int MyKey2
+         {
+            get { return m_MyKey2; }
+            set
             {
-                get { return m_MyKey2; }
-                set
-                {
-                    m_MyKey2 = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MyKey2"));
-                }
+               m_MyKey2 = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyKey2"));
             }
+         }
 
-            [Column(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
-            public string MyString
+         [Column(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyString")]
+         public string MyString
+         {
+            get { return m_MyString; }
+            set
             {
-                get { return m_MyString; }
-                set
-                {
-                    m_MyString = value;
-                    PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
-                }
+               m_MyString = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyString"));
             }
+         }
 
-            public event PropertyChangedEventHandler PropertyChanged;
-        }
+         public event PropertyChangedEventHandler PropertyChanged;
+      }
 
-        [DbTable(Name = "MyTable")]
-        [DataContract]
-        private class MySpacedIndentityClass : DbEntity<MySpacedIndentityClass>, INotifyPropertyChanged
-        {
-           [DataMember]
-           private int m_MyIdentity;
+      [DbTable(Name = "MyTable")]
+      [DataContract]
+      private class MySpacedIndentityClass : DbEntity<MySpacedIndentityClass>, INotifyPropertyChanged
+      {
+         [DataMember]
+         private int m_MyIdentity;
 
-           [DataMember]
-           private string m_MyValue;
+         [DataMember]
+         private string m_MyValue;
 
-           [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity ")] // note: space on the end is on purpose
-           public int MyIdentity
-           {
-              get { return m_MyIdentity; }
-              set { m_MyIdentity = value; }
-           }
+         [DbColumn(IsDbGenerated = true, IsPrimaryKey = true, Name = "MyIdentity ")] // note: space on the end is on purpose
+         public int MyIdentity
+         {
+            get { return m_MyIdentity; }
+            set { m_MyIdentity = value; }
+         }
 
-           [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyValue")]
-           public string MyValue
-           {
-              get { return m_MyValue; }
-              set
-              {
-                 m_MyValue = value;
-                 PropertyChanged(this, new PropertyChangedEventArgs("MyValue"));
-              }
-           }
+         [DbColumn(IsDbGenerated = false, IsPrimaryKey = false, Name = "MyValue")]
+         public string MyValue
+         {
+            get { return m_MyValue; }
+            set
+            {
+               m_MyValue = value;
+               PropertyChanged(this, new PropertyChangedEventArgs("MyValue"));
+            }
+         }
 
-           public event PropertyChangedEventHandler PropertyChanged;
-        }
+         public event PropertyChangedEventHandler PropertyChanged;
+      }
 
-        #endregion
-    }
+      #endregion
+   }
 }

@@ -52,7 +52,7 @@ namespace DrivenDb
          var db = new Db(extensions, connections);
          var aggregator = new DbAggregator();
 
-         return new DbAccessor(new DbScripter(db, new ValueJoiner(), builder), new DbMapper(db), db, aggregator);
+         return new DbAccessor(new DbScripter(db, builder), new DbMapper(db), db, aggregator);
       }
 
       public static IDbAccessorSlim CreateSlimAccessor(DbAccessorType type, IDb db)
@@ -75,7 +75,7 @@ namespace DrivenDb
          var db = new Db(extensions, connections);
          var aggregator = new DbAggregator();
 
-         return new DbAccessor(new DbScripter(db, new ValueJoiner(), builder), new DbMapper(db), new Db(extensions, connections), aggregator);
+         return new DbAccessor(new DbScripter(db, builder), new DbMapper(db), new Db(extensions, connections), aggregator);
       }
 
       public static IDbIndex<K, T> CreateIndex<K, T>(IDbIndexCore<K, T> core)
@@ -102,7 +102,6 @@ namespace DrivenDb
          var mapper = new DbMapper(db);
 
          Func<ISqlBuilder> builders;
-         IValueJoiner joiner;
 
          switch (type)
          {
@@ -110,34 +109,30 @@ namespace DrivenDb
                {
                   Func<IMsSqlBuilder> msbuilders = () => new MsSqlBuilder();
 
-                  var msjoiner = new MsSqlValueJoiner();
-                  var msscripter = new MsSqlScripter(db, msjoiner, msbuilders);
+                  var msscripter = new MsSqlScripter(db, msbuilders);
 
                   return new AccessorSetup(msscripter, mapper, aggregator);
                }
             case DbAccessorType.SqLite:
                {
                   builders = () => new SqLiteBuilder();
-                  joiner = new SqLiteValueJoiner();
                }
                break;
             case DbAccessorType.MySql:
                {
                   builders = () => new MySqlBuilder();
-                  joiner = new MySqlValueJoiner();
                }
                break;
             case DbAccessorType.Oracle:
                {
                   builders = () => new OracleBuilder();
-                  joiner = new OracleValueJoiner();
                }
                break;
             default:
                throw new InvalidOperationException(string.Format("Unsupported DbAccessorType value of '{0}'", type));
          }
 
-         var scripter = new DbScripter(db, joiner, builders);
+         var scripter = new DbScripter(db, builders);
 
          return new AccessorSetup(scripter, mapper, aggregator);
       }

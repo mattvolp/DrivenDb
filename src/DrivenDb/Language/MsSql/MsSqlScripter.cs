@@ -20,7 +20,7 @@ namespace DrivenDb.MsSql
    {
       private new readonly Func<IMsSqlBuilder> m_Builders;
 
-      public MsSqlScripter(IDb db, IValueJoiner joiner, Func<IMsSqlBuilder> builders) : base(db, joiner, builders)
+      public MsSqlScripter(IDb db, Func<IMsSqlBuilder> builders) : base(db, builders)
       {
          m_Builders = builders;
       }

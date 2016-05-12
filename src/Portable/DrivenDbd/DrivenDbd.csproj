@@ -124,9 +124,6 @@
     <Compile Include="..\..\DrivenDb\Language\Base\SqlBuilder.cs">
       <Link>Language\Base\SqlBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\..\DrivenDb\Language\Base\ValueJoiner.cs">
-      <Link>Language\Base\ValueJoiner.cs</Link>
-    </Compile>
     <Compile Include="..\..\DrivenDb\Language\Db.cs">
       <Link>Language\Db.cs</Link>
     </Compile>
@@ -199,9 +196,6 @@
     <Compile Include="..\..\DrivenDb\Language\Interfaces\ISqlBuilder.cs">
       <Link>Language\Interfaces\ISqlBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\..\DrivenDb\Language\Interfaces\IValueJoiner.cs">
-      <Link>Language\Interfaces\IValueJoiner.cs</Link>
-    </Compile>
     <Compile Include="..\..\DrivenDb\Language\Interfaces\IWhereJoinable.cs">
       <Link>Language\Interfaces\IWhereJoinable.cs</Link>
     </Compile>
@@ -229,26 +223,14 @@
     <Compile Include="..\..\DrivenDb\Language\MsSql\MsSqlScripter.cs">
       <Link>Language\MsSql\MsSqlScripter.cs</Link>
     </Compile>
-    <Compile Include="..\..\DrivenDb\Language\MsSql\MsSqlValueJoiner.cs">
-      <Link>Language\MsSql\MsSqlValueJoiner.cs</Link>
-    </Compile>
     <Compile Include="..\..\DrivenDb\Language\MySql\MySqlBuilder.cs">
       <Link>Language\MySql\MySqlBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\..\DrivenDb\Language\MySql\MySqlValueJoiner.cs">
-      <Link>Language\MySql\MySqlValueJoiner.cs</Link>
     </Compile>
     <Compile Include="..\..\DrivenDb\Language\Oracle\OracleBuilder.cs">
       <Link>Language\Oracle\OracleBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\..\DrivenDb\Language\Oracle\OracleValueJoiner.cs">
-      <Link>Language\Oracle\OracleValueJoiner.cs</Link>
-    </Compile>
     <Compile Include="..\..\DrivenDb\Language\SqLite\SqLiteBuilder.cs">
       <Link>Language\SqLite\SqLiteBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\..\DrivenDb\Language\SqLite\SqLiteValueJoiner.cs">
-      <Link>Language\SqLite\SqLiteValueJoiner.cs</Link>
     </Compile>
     <Compile Include="..\..\DrivenDb\Language\Wrappers\DbWrapper.cs">
       <Link>Language\Wrappers\DbWrapper.cs</Link>

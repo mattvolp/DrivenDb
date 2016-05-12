@@ -29,5 +29,20 @@ namespace DrivenDb
             action(item);
          }
       }
+
+      public static void ForEach<T>(this IEnumerable<T> instance, Action<T, int> action)
+      {
+         if (instance == null)
+         {
+            return;
+         }
+
+         var i = 0;
+         foreach (var item in instance)
+         {
+            action(item, i);
+            i++;
+         }
+      }
    }
 }
