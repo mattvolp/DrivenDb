@@ -25,15 +25,13 @@ namespace DrivenDb.Base
    {
       private static readonly Regex m_Indexer = new Regex(@"@([0-9]+)($|[^0-9])");
       private readonly IDb m_Db;
-      private readonly IValueJoiner m_Joiner;
       protected readonly Func<ISqlBuilder> m_Builders;
       protected bool m_HasScriptedTriggeredEntity;
 
-      public DbScripter(IDb db, IValueJoiner joiner, Func<ISqlBuilder> builders)
+      public DbScripter(IDb db, Func<ISqlBuilder> builders)
       {
          m_Db = db;
          m_Builders = builders;
-         m_Joiner = joiner;
       }
 
       protected DateTime CorrectDateTime(DateTime dateTime)
@@ -43,7 +41,7 @@ namespace DrivenDb.Base
 
       public virtual void InsertWriteInitializer(IDbCommand command)
       {
-         
+
       }
 
       public virtual void AppendWriteFinalizer(IDbCommand command)
@@ -62,8 +60,8 @@ namespace DrivenDb.Base
          AppendQuery(command, -1, query, parameters);
       }
 
-      public void ScriptSelect(IDbCommand command, string query, params object[] parameters)         
-      {         
+      public void ScriptSelect(IDbCommand command, string query, params object[] parameters)
+      {
          AppendQuery(command, -1, query, parameters);
       }
 
@@ -96,8 +94,8 @@ namespace DrivenDb.Base
 
       public void ScriptUpdate<T>(IDbCommand command, int index, T entity)
           where T : IDbEntity
-      {         
-         var builder = m_Builders();         
+      {
+         var builder = m_Builders();
          var parameters = InitializeBuilderForUpdate(builder, entity);
 
          AppendQuery(command, index, builder.ToUpdate(), parameters);
@@ -158,7 +156,7 @@ namespace DrivenDb.Base
          builder.Table = (metadata.TableOverride ?? metadata.Table).Name;
 
          metadata.PrimaryColumns.ForEach(
-            k => builder.AddWhere(k.Name, count++) 
+            k => builder.AddWhere(k.Name, count++)
             );
 
          var parameters = entity.PrimaryColumns.Select(
@@ -200,7 +198,7 @@ namespace DrivenDb.Base
          AppendQuery(command, -1, builder.ToSelect(), parameters);
       }
 
-      public void ScriptInsert<T>(IDbCommand command, int index, T entity, bool returnId) 
+      public void ScriptInsert<T>(IDbCommand command, int index, T entity, bool returnId)
          where T : IDbEntity
       {
          var builder = m_Builders();
@@ -211,7 +209,7 @@ namespace DrivenDb.Base
             m_HasScriptedTriggeredEntity = true;
          }
 
-         AppendQuery(command, index, builder.ToInsert(entity, index, returnId), parameters);         
+         AppendQuery(command, index, builder.ToInsert(entity, index, returnId), parameters);
       }
 
       protected static IEnumerable<object> InitializeBuilderForInsert<T>(ISqlBuilder builder, T entity) where T : IDbEntity
@@ -240,132 +238,168 @@ namespace DrivenDb.Base
          AppendParameters(command, index, gnuparameters);
       }
 
-      private IEnumerable<object> ManipulateQuery(out string outputQuery, int index, string inputQuery, object[] parameters)
+      private IEnumerable<object> ManipulateQuery(out string outputQuery, int queryIndex, string inputQuery, object[] parameters)
       {
          var values = new List<object>();
-         var prefix = index > -1 ? ToPrefix(index) : null;
-         var decrement = 0;
 
-         if (index > -1)
-         {
-            inputQuery = m_Indexer.Replace(inputQuery, "@" + prefix + "$1$2");
-         }
-
-         for (var i = 0; parameters != null && i < parameters.Length; i++)
-         {
-            var name = "@" + prefix + i;
-            var gnuname = "@" + prefix + (i - decrement);
-
-            if (decrement > 0)
-            {
-               inputQuery = Regex.Replace(inputQuery, name + "($|[^0-9])", gnuname + "$1");
-            }
-
-            //
-            // convert convertable parameters
-            //
-            var convertable = parameters[i] as IParamConvertible;
-
-            if (convertable != null)
-            {
-               parameters[i] = convertable.ToParameterValue();
-            }
-
-            //
-            // swap null for DBNull.Value
-            //
-            if (parameters[i] == null)
-            {
-               values.Add(DBNull.Value);
-               continue;
-            }
-
-            //
-            // pass through IDbDataParameters
-            //
-            var dbparameter = parameters[i] as IDbDataParameter;
-
-            if (dbparameter != null)
-            {
-               values.Add(dbparameter);
-               continue;
-            }
-
-            //
-            // if ienumerable, replace parameter with a delimited list
-            //
-            var sparameter = parameters[i] as string;
-            var bparameter = parameters[i] as byte[];
-
-            if (sparameter == null && bparameter == null)
-            {
-               var enumerable = parameters[i] as IEnumerable;
-
-               if (enumerable != null)
-               {
-                  if (!m_Db.AllowEnumerableParameters)
-                  {
-                     throw new InactiveExtensionException("AllowEnumerableParameters");
-                  }
-
-                  if (!enumerable.GetEnumerator().MoveNext())
-                  {
-                     throw new ArgumentException("Empty enumeration parameter not allowed");
-                  }
-
-                  inputQuery = Regex.Replace(inputQuery, "(" + gnuname + ")($|[^0-9])", m_Joiner.Join(enumerable) + "$2");
-                  decrement++;
-                  continue;
-               }
-            }
-
-            //
-            // if datetime, parameter check min/max values
-            //                        
-            if (parameters[i] is DateTime)
-            {
-               var dateTime = (DateTime)parameters[i];
-
-               if (m_Db.LimitDateParameters)
-                  values.Add(CorrectDateTime(dateTime));
-               else
-                  values.Add(dateTime);
-
-               continue;
-            }
-
-            //
-            // if datetimeoffset, parameter check min/max values
-            //
-            if (parameters[i] is DateTimeOffset)
-            {
-               var dateTime = ((DateTimeOffset)parameters[i]).DateTime;
-               
-               if (m_Db.LimitDateParameters)
-                  values.Add(CorrectDateTime(dateTime));
-               else
-                  values.Add(dateTime);
-
-               continue;
-            }
-
-            values.Add(parameters[i]);
-         }
-
-         outputQuery = inputQuery;
+         outputQuery = ReplaceParameterNames(
+            AddPrefixIfNeeded(queryIndex, inputQuery),
+            queryIndex,
+            AccumulateParametersAndBuildIndexMaps(parameters, values));
 
          return values;
       }
 
+      private static string ReplaceParameterNames(string inputQuery, int queryIndex, IEnumerable<IndexMap> substitutionList)
+      {
+         var prefix = ToPrefix(queryIndex);
+
+         // Replace in reverse order to not double replace any enumerable parameter replacements that might clash with original
+         // parameter names. e.g. In '... [Foo] IN (@0) AND [Bar] = @1', if the enumerable for `@0` has at least two items,
+         // replacement for `@1` needs to happen first or else the result will be '... [Foo] IN (@0,@2) AND [Bar] = @2' instead
+         // of '... [Foo] IN (@0,@1) AND [Bar] = @2' as intended.
+         substitutionList.GroupBy(item => item.OriginalIndex).Where(IsMappedToDifferentName).Reverse().ForEach(group =>
+         {
+            inputQuery = Regex.Replace(
+               inputQuery,
+               GetParameterName(prefix, group.Key) + "($|[^0-9])",
+               GetParameterName(prefix, group.ToList()) + "$1");
+         });
+
+         return inputQuery;
+      }
+
+      private static bool IsMappedToDifferentName(IGrouping<int, IndexMap> grouping)
+      {
+         return grouping.Count() > 1 || grouping.Key != grouping.First().NewIndex;
+      }
+
+      private struct IndexMap
+      {
+         public int OriginalIndex;
+         public int NewIndex;
+      }
+
+      private IEnumerable<IndexMap> AccumulateParametersAndBuildIndexMaps(IEnumerable<object> parameters, ICollection<object> values)
+      {
+         var substitutionList = new List<IndexMap>();
+
+         parameters.ForEach((parameter, index) =>
+         {
+            if (IsEnumerableParameter(parameter))
+            {
+               // IsEnumerableParameter already ensures that `parameter` is not null if we hit this branch
+               // ReSharper disable once AssignNullToNotNullAttribute
+               var enumerable = (parameter as IEnumerable).Cast<object>().ToList();
+
+               substitutionList.AddRange(HandleEnumerableParameter(enumerable, index, values));
+            }
+            else
+            {
+               substitutionList.Add(HandleParameter(parameter, index, values));
+            }
+         });
+
+         return substitutionList;
+      }
+
+      private IndexMap HandleParameter(object parameter, int index, ICollection<object> values)
+      {
+         values.Add(GetParameterValue(parameter));
+         return new IndexMap()
+         {
+            OriginalIndex = index,
+            NewIndex = values.Count - 1
+         };
+      }
+
+      private IEnumerable<IndexMap> HandleEnumerableParameter(List<object> parameter, int index,
+         ICollection<object> values)
+      {
+         GuardAgainstEnumerableParametersNotAllowed();
+         GuardAgainstEmptyEnumerableParameters(parameter);
+
+         return parameter.Select(enumParam => HandleParameter(enumParam, index, values));
+      }
+
+      private void GuardAgainstEnumerableParametersNotAllowed()
+      {
+         if (!m_Db.AllowEnumerableParameters)
+         {
+            throw new InactiveExtensionException("AllowEnumerableParameters");
+         }
+      }
+
+      private static void GuardAgainstEmptyEnumerableParameters<T>(IEnumerable<T> enumerable)
+      {
+         if (!enumerable.Any())
+         {
+            throw new ArgumentException("Empty enumeration parameter not allowed");
+         }
+      }
+
+      private object GetParameterValue(object parameter)
+      {
+         //
+         // convert convertable parameters
+         //
+         var convertable = parameter as IParamConvertible;
+         if (convertable != null)
+         {
+            return convertable.ToParameterValue();
+         }
+
+         //
+         // swap null for DBNull.Value
+         //
+         if (parameter == null)
+         {
+            return DBNull.Value;
+         }
+
+         //
+         // pass through IDbDataParameters
+         //
+         var dbparameter = parameter as IDbDataParameter;
+         if (dbparameter != null)
+         {
+            return dbparameter;
+         }
+
+         //
+         // if datetime, parameter check min/max values
+         //
+         if (parameter is DateTime)
+         {
+            var dateTime = (DateTime)parameter;
+            return m_Db.LimitDateParameters ? CorrectDateTime(dateTime) : dateTime;
+         }
+
+         //
+         // if datetimeoffset, parameter check min/max values
+         //
+         if (parameter is DateTimeOffset)
+         {
+            var dateTime = ((DateTimeOffset)parameter).DateTime;
+            return m_Db.LimitDateParameters ? CorrectDateTime(dateTime) : dateTime;
+         }
+
+         return parameter;
+      }
+
+      private static bool IsEnumerableParameter(object parameter)
+      {
+         return (parameter as string) == null
+            && (parameter as byte[]) == null
+            && (parameter as IEnumerable) != null;
+      }
+
       private void AppendParameters(IDbCommand command, int index, IEnumerable<object> parameters)
       {
-         var i = -1;
-         var prefix = index > -1 ? ToPrefix(index) : null;
+         var prefix = ToPrefix(index);
 
-         foreach (var parameter in parameters)
+         parameters.ForEach((parameter, i) =>
          {
-            i++;
-
             if (parameter is IDbDataParameter)
             {
                command.Parameters.Add(parameter);
@@ -374,22 +408,39 @@ namespace DrivenDb.Base
             {
                var gnu = command.CreateParameter();
 
-               gnu.ParameterName = "@" + prefix + i;
+               gnu.ParameterName = GetParameterName(prefix, i);
                gnu.Value = parameter;
 
-               if (m_Db.DefaultStringParametersToAnsiString && parameter is string)               
+               if (m_Db.DefaultStringParametersToAnsiString && parameter is string)
                {
                   gnu.DbType = DbType.AnsiString;
                }
 
                command.Parameters.Add(gnu);
             }
-         }
+         });
+      }
+
+      private static string AddPrefixIfNeeded(int index, string inputQuery)
+      {
+         return index > -1
+            ? m_Indexer.Replace(inputQuery, "@" + ToPrefix(index) + "$1$2")
+            : inputQuery;
+      }
+
+      private static string GetParameterName(string prefix, int parameterIndex)
+      {
+         return "@" + prefix + parameterIndex;
+      }
+
+      private static string GetParameterName(string prefix, IEnumerable<IndexMap> parameterIndexes)
+      {
+         return string.Join(",", parameterIndexes.Select(indexMap => GetParameterName(prefix, indexMap.NewIndex)));
       }
 
       private static string ToPrefix(int index)
       {
-         return index + "_";         
+         return index > -1 ? index + "_" : null;
       }
    }
 }

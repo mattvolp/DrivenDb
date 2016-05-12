@@ -97,7 +97,6 @@
     <Compile Include="Language\MsSql\ImageTable.cs" />
     <Compile Include="Language\MsSql\MsSqlAccessorTests.cs" />
     <Compile Include="Language\MsSql\MsSqlScripterTests.cs" />
-    <Compile Include="Language\MsSql\MsSqlValueJoinerTests.cs" />
     <Compile Include="Language\MsSql\TextTable.cs" />
     <Compile Include="Language\MsSql\TimeTable.cs" />
     <Compile Include="Language\MsSql\VarbinaryTest.cs" />
