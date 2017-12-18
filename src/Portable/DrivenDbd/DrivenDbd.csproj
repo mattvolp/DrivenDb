@@ -151,6 +151,9 @@
     <Compile Include="..\..\DrivenDb\Language\Exceptions\MissingResultException.cs">
       <Link>Language\Exceptions\MissingResultException.cs</Link>
     </Compile>
+    <Compile Include="..\..\DrivenDb\Language\Extensions.cs">
+      <Link>Language\Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\DrivenDb\Language\Interfaces\IDb.cs">
       <Link>Language\Interfaces\IDb.cs</Link>
     </Compile>

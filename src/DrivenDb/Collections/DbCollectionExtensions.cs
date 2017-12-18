@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace DrivenDb.Collections
 {
-    public static class DbCollectionExtensions
+   public static class DbCollectionExtensions
     {
         public static IDbIndex<K, T> ToIndexWithFail<K, T>(this IEnumerable<T> enumerable, Func<T, K> extractor)
            where T : class, IDbEntity<T>

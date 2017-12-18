@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace DrivenDb
 {
-   public static class Extensions
+   internal static class Extensions
    {
       public static void ForEach<T>(this IEnumerable<T> instance, Action<T> action)
       {
