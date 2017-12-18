@@ -121,10 +121,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DrivenDb.Async\DrivenDb.Async.csproj">
-      <Project>{223c133a-9c62-4898-9e06-7343f915267e}</Project>
-      <Name>DrivenDb.Async</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DrivenDb\DrivenDb.csproj">
       <Project>{ac60fade-3264-4ba0-8157-6899d77b02c7}</Project>
       <Name>DrivenDb</Name>

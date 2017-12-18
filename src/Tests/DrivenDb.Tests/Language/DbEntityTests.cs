@@ -644,6 +644,13 @@ namespace DrivenDb.Tests.Language
             set { m_MyNumber = value; }
          }
 
+         private void IngoreThis()
+         {
+            PropertyChanged(null, null);
+         }
+
+
+
          public event PropertyChangedEventHandler PropertyChanged;
       }
 

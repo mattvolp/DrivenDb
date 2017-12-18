@@ -20,8 +20,8 @@ namespace DrivenDb.MsSql
 {
    internal class MsSqlAccessor : DbAccessor, IMsSqlAccessor
    {
-      protected readonly IMsSqlScripter m_Scripter;
-      protected readonly IDb m_Db;
+      protected new readonly IMsSqlScripter m_Scripter;
+      protected new readonly IDb m_Db;
 
       public MsSqlAccessor(IMsSqlScripter scripter, IDbMapper mapper, IDb db, IDbAggregator aggregator)
          : base(scripter, mapper, db, aggregator)
